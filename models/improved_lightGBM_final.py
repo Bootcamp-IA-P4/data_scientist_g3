@@ -6,7 +6,7 @@ from sklearn.metrics import (
     classification_report, confusion_matrix, roc_auc_score, 
     precision_recall_curve, auc, f1_score, precision_score, 
     recall_score, balanced_accuracy_score, average_precision_score,
-    matthews_corrcoef, make_scorer, roc_curve
+    matthews_corrcoef, make_scorer, roc_curve, accuracy_score, log_loss
 )
 from sklearn.utils.class_weight import compute_class_weight
 from imblearn.over_sampling import SMOTE, ADASYN, BorderlineSMOTE
@@ -329,6 +329,271 @@ class AdvancedStrokeLightGBM:
         
         return score
     
+    def analyze_overfitting(self, X_train, y_train, X_val, y_val):
+        """Analyze model overfitting
+        
+        Args:
+            X_train: Training data
+            y_train: Training labels
+            X_val: Validation data
+            y_val: Validation labels
+        """
+        print("\n=== OVERFITTING ANALYSIS ===")
+        
+        # Get predictions
+        y_train_pred_proba = self.best_model.predict(X_train, num_iteration=self.best_model.best_iteration)
+        y_val_pred_proba = self.best_model.predict(X_val, num_iteration=self.best_model.best_iteration)
+        
+        y_train_pred = (y_train_pred_proba >= self.optimal_threshold).astype(int)
+        y_val_pred = (y_val_pred_proba >= self.optimal_threshold).astype(int)
+        
+        # Calculate metrics
+        metrics = {
+            'accuracy': {
+                'train': accuracy_score(y_train, y_train_pred),
+                'val': accuracy_score(y_val, y_val_pred)
+            },
+            'roc_auc': {
+                'train': roc_auc_score(y_train, y_train_pred_proba),
+                'val': roc_auc_score(y_val, y_val_pred_proba)
+            },
+            'pr_auc': {
+                'train': average_precision_score(y_train, y_train_pred_proba),
+                'val': average_precision_score(y_val, y_val_pred_proba)
+            },
+            'f1_score': {
+                'train': f1_score(y_train, y_train_pred, pos_label=1, zero_division=0),
+                'val': f1_score(y_val, y_val_pred, pos_label=1, zero_division=0)
+            },
+            'precision': {
+                'train': precision_score(y_train, y_train_pred, pos_label=1, zero_division=0),
+                'val': precision_score(y_val, y_val_pred, pos_label=1, zero_division=0)
+            },
+            'recall': {
+                'train': recall_score(y_train, y_train_pred, pos_label=1, zero_division=0),
+                'val': recall_score(y_val, y_val_pred, pos_label=1, zero_division=0)
+            },
+            'balanced_accuracy': {
+                'train': balanced_accuracy_score(y_train, y_train_pred),
+                'val': balanced_accuracy_score(y_val, y_val_pred)
+            },
+            'log_loss': {
+                'train': log_loss(y_train, y_train_pred_proba),
+                'val': log_loss(y_val, y_val_pred_proba)
+            }
+        }
+        
+        # Output results
+        print("\nMetrics comparison:")
+        print(f"{'Metric':<20} {'Training':<12} {'Validation':<12} {'Difference':<12} {'Overfitting':<12}")
+        print("-" * 70)
+        
+        for metric, values in metrics.items():
+            train_score = values['train']
+            val_score = values['val']
+            diff = train_score - val_score
+            
+            # Determine overfitting level
+            if metric == 'log_loss':
+                # For log_loss, overfitting is when train < val
+                overfitting = "Yes" if val_score - train_score > 0.1 else "No" if val_score - train_score < 0.05 else "Partial"
+            else:
+                # For other metrics, overfitting is when train > val
+                overfitting = "Yes" if diff > 0.1 else "No" if diff < 0.05 else "Partial"
+            
+            print(f"{metric:<20} {train_score:<12.4f} {val_score:<12.4f} {abs(diff):<12.4f} {overfitting:<12}")
+        
+        # Visualization
+        plt.figure(figsize=(20, 10))
+        
+        # Metrics plot
+        plt.subplot(2, 2, 1)
+        metrics_names = list(metrics.keys())
+        train_scores = [metrics[m]['train'] for m in metrics_names]
+        val_scores = [metrics[m]['val'] for m in metrics_names]
+        
+        x = np.arange(len(metrics_names))
+        width = 0.35
+        
+        plt.bar(x - width/2, train_scores, width, label='Training')
+        plt.bar(x + width/2, val_scores, width, label='Validation')
+        
+        plt.xlabel('Metrics')
+        plt.ylabel('Value')
+        plt.title('Metrics Comparison on Training and Validation Sets')
+        plt.xticks(x, metrics_names, rotation=45)
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        # Difference plot
+        plt.subplot(2, 2, 2)
+        differences = [metrics[m]['train'] - metrics[m]['val'] for m in metrics_names]
+        
+        plt.bar(x, differences)
+        plt.axhline(y=0.1, color='r', linestyle='--', label='Overfitting threshold')
+        plt.axhline(y=0.05, color='g', linestyle='--', label='Partial overfitting threshold')
+        
+        plt.xlabel('Metrics')
+        plt.ylabel('Difference (Training - Validation)')
+        plt.title('Metrics Difference')
+        plt.xticks(x, metrics_names, rotation=45)
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        # Probability distribution
+        plt.subplot(2, 2, 3)
+        plt.hist(y_train_pred_proba[y_train == 0], bins=30, alpha=0.5, label='No stroke (train)', density=True)
+        plt.hist(y_train_pred_proba[y_train == 1], bins=30, alpha=0.5, label='Stroke (train)', density=True)
+        plt.hist(y_val_pred_proba[y_val == 0], bins=30, alpha=0.3, label='No stroke (val)', density=True)
+        plt.hist(y_val_pred_proba[y_val == 1], bins=30, alpha=0.3, label='Stroke (val)', density=True)
+        plt.axvline(x=self.optimal_threshold, color='red', linestyle='--', 
+                   label=f'Threshold: {self.optimal_threshold:.3f}')
+        plt.xlabel('Probability')
+        plt.ylabel('Density')
+        plt.title('Probability Distribution')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        # Prediction confidence plot
+        plt.subplot(2, 2, 4)
+        train_confidence = np.abs(y_train_pred_proba - 0.5)
+        val_confidence = np.abs(y_val_pred_proba - 0.5)
+        
+        plt.hist(train_confidence, bins=30, alpha=0.5, label='Training', density=True)
+        plt.hist(val_confidence, bins=30, alpha=0.5, label='Validation', density=True)
+        plt.xlabel('Prediction Confidence')
+        plt.ylabel('Density')
+        plt.title('Prediction Confidence Distribution')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        plt.tight_layout()
+        plt.show()
+        
+        return metrics
+    
+    def analyze_train_test_overfitting(self, X_train, y_train, X_test, y_test):
+        """Analyze overfitting on training and test sets
+        
+        Args:
+            X_train: Training data
+            y_train: Training labels
+            X_test: Test data
+            y_test: Test labels
+        """
+        print("\n=== OVERFITTING ANALYSIS (TRAINING vs TEST) ===")
+        
+        # Get predictions
+        y_train_pred_proba = self.best_model.predict(X_train, num_iteration=self.best_model.best_iteration)
+        y_test_pred_proba = self.best_model.predict(X_test, num_iteration=self.best_model.best_iteration)
+        
+        y_train_pred = (y_train_pred_proba >= self.optimal_threshold).astype(int)
+        y_test_pred = (y_test_pred_proba >= self.optimal_threshold).astype(int)
+        
+        # Calculate metrics (only those without overfitting)
+        metrics = {
+            'accuracy': {
+                'train': accuracy_score(y_train, y_train_pred),
+                'test': accuracy_score(y_test, y_test_pred)
+            },
+            'roc_auc': {
+                'train': roc_auc_score(y_train, y_train_pred_proba),
+                'test': roc_auc_score(y_test, y_test_pred_proba)
+            },
+            'recall': {
+                'train': recall_score(y_train, y_train_pred, pos_label=1, zero_division=0),
+                'test': recall_score(y_test, y_test_pred, pos_label=1, zero_division=0)
+            },
+            'balanced_accuracy': {
+                'train': balanced_accuracy_score(y_train, y_train_pred),
+                'test': balanced_accuracy_score(y_test, y_test_pred)
+            },
+            'log_loss': {
+                'train': log_loss(y_train, y_train_pred_proba),
+                'test': log_loss(y_test, y_test_pred_proba)
+            }
+        }
+        
+        # Output results
+        print("\nMetrics comparison:")
+        print(f"{'Metric':<20} {'Training':<12} {'Test':<12} {'Difference':<12}")
+        print("-" * 60)
+        
+        for metric, values in metrics.items():
+            train_score = values['train']
+            test_score = values['test']
+            diff = train_score - test_score
+            
+            print(f"{metric:<20} {train_score:<12.4f} {test_score:<12.4f} {abs(diff):<12.4f}")
+        
+        # Visualization
+        plt.figure(figsize=(20, 10))
+        
+        # Metrics plot
+        plt.subplot(2, 2, 1)
+        metrics_names = list(metrics.keys())
+        train_scores = [metrics[m]['train'] for m in metrics_names]
+        test_scores = [metrics[m]['test'] for m in metrics_names]
+        
+        x = np.arange(len(metrics_names))
+        width = 0.35
+        
+        plt.bar(x - width/2, train_scores, width, label='Training')
+        plt.bar(x + width/2, test_scores, width, label='Test')
+        
+        plt.xlabel('Metrics')
+        plt.ylabel('Value')
+        plt.title('Metrics Comparison on Training and Test Sets')
+        plt.xticks(x, metrics_names, rotation=45)
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        # Difference plot
+        plt.subplot(2, 2, 2)
+        differences = [metrics[m]['train'] - metrics[m]['test'] for m in metrics_names]
+        
+        plt.bar(x, differences)
+        plt.axhline(y=0.05, color='g', linestyle='--', label='Acceptable difference threshold')
+        
+        plt.xlabel('Metrics')
+        plt.ylabel('Difference (Training - Test)')
+        plt.title('Metrics Difference')
+        plt.xticks(x, metrics_names, rotation=45)
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        # Probability distribution
+        plt.subplot(2, 2, 3)
+        plt.hist(y_train_pred_proba[y_train == 0], bins=30, alpha=0.5, label='No stroke (train)', density=True)
+        plt.hist(y_train_pred_proba[y_train == 1], bins=30, alpha=0.5, label='Stroke (train)', density=True)
+        plt.hist(y_test_pred_proba[y_test == 0], bins=30, alpha=0.3, label='No stroke (test)', density=True)
+        plt.hist(y_test_pred_proba[y_test == 1], bins=30, alpha=0.3, label='Stroke (test)', density=True)
+        plt.axvline(x=self.optimal_threshold, color='red', linestyle='--', 
+                   label=f'Threshold: {self.optimal_threshold:.3f}')
+        plt.xlabel('Probability')
+        plt.ylabel('Density')
+        plt.title('Probability Distribution')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        # Prediction confidence plot
+        plt.subplot(2, 2, 4)
+        train_confidence = np.abs(y_train_pred_proba - 0.5)
+        test_confidence = np.abs(y_test_pred_proba - 0.5)
+        
+        plt.hist(train_confidence, bins=30, alpha=0.5, label='Training', density=True)
+        plt.hist(test_confidence, bins=30, alpha=0.5, label='Test', density=True)
+        plt.xlabel('Prediction Confidence')
+        plt.ylabel('Density')
+        plt.title('Prediction Confidence Distribution')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        
+        plt.tight_layout()
+        plt.show()
+        
+        return metrics
+    
     def train_with_validation(self, X, y, n_trials=200, test_size=0.15, val_size=0.15):
         """Training with separate validation set"""
         
@@ -638,6 +903,10 @@ class AdvancedStrokeLightGBM:
             print(f"  FN/FP ratio: {fn/fp:.2f}")
         else:
             print("  FP = 0 (division by zero not possible)")
+        
+        # Overfitting analysis on test set
+        print("\n=== OVERFITTING ANALYSIS (TRAINING vs TEST) ===")
+        test_metrics = self.analyze_train_test_overfitting(X_train_balanced, y_train_balanced, X_test, y_test)
         
         return X_test, y_test, study
     
