@@ -87,5 +87,5 @@ else:
     print("✅ No parece haber overfitting significativo.")
 
 # 9. Guardar pipeline completo
-joblib.dump(final_pipeline, "gradient_boosting_optuna_pipeline.pkl")
+joblib.dump(final_pipeline, "ModelGB.pkl")
 
