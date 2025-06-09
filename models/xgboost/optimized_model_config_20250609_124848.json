@@ -1,0 +1,96 @@
+{
+  "model_info": {
+    "model_type": "XGBoost Optimizado",
+    "model_class": "XGBClassifier",
+    "training_date": "2025-06-09T12:48:48.622843",
+    "version": "2.0",
+    "optimization_approach": "Equilibrio m\u00e9dico realista",
+    "source": "Optimizaci\u00f3n desde datos originales"
+  },
+  "data_info": {
+    "feature_names": [
+      "age",
+      "avg_glucose_level_log",
+      "bmi",
+      "hypertension",
+      "heart_disease",
+      "gender",
+      "ever_married",
+      "Residence_type",
+      "work_type_children",
+      "work_type_Govt_job",
+      "work_type_Never_worked",
+      "work_type_Private",
+      "work_type_Self-employed",
+      "smoking_status_formerly smoked",
+      "smoking_status_never smoked",
+      "smoking_status_smokes",
+      "smoking_status_Unknown"
+    ],
+    "n_features": 17,
+    "balancing_method": "weights_only",
+    "train_samples": 3984,
+    "test_samples": 997,
+    "original_ratio": "19.1:1",
+    "final_ratio": "19.1:1"
+  },
+  "hyperparameters": {
+    "max_depth": 2,
+    "min_child_weight": 19,
+    "gamma": 0.8671005498659088,
+    "learning_rate": 0.005346044187905378,
+    "n_estimators": 694,
+    "subsample": 0.6900476603528157,
+    "colsample_bytree": 0.6317651281629711,
+    "colsample_bylevel": 0.7305608150137011,
+    "reg_alpha": 4.849967765493054,
+    "reg_lambda": 2.0791051374842158,
+    "scale_pos_weight": 14.561448522473098
+  },
+  "performance_metrics": {
+    "test_f1_score_global": 0.26621160409556316,
+    "test_roc_auc": 0.8478986272439282,
+    "test_precision_global": 0.16049382716049382,
+    "test_recall_global": 0.78,
+    "test_accuracy": 0.7843530591775326,
+    "stroke_precision": 0.16049382716049382,
+    "stroke_recall": 0.78,
+    "stroke_f1": 0.26621160409556316,
+    "overfitting": -0.0006514381204594244,
+    "medical_score": 5,
+    "medical_viability": true
+  },
+  "comparison_with_base": {
+    "f1_improvement": 0.04838982191734534,
+    "roc_auc_improvement": 0.03338965153115103,
+    "stroke_precision_change": -0.055192447349310114,
+    "stroke_recall_improvement": 0.56
+  },
+  "feature_importance": {
+    "age": 0.2773195207118988,
+    "avg_glucose_level_log": 0.0915384516119957,
+    "bmi": 0.05708884447813034,
+    "hypertension": 0.11351834237575531,
+    "heart_disease": 0.056257277727127075,
+    "gender": 0.0192119088023901,
+    "ever_married": 0.09477852284908295,
+    "Residence_type": 0.015864524990320206,
+    "work_type_children": 0.08318447321653366,
+    "work_type_Govt_job": 0.024294931441545486,
+    "work_type_Never_worked": 0.0,
+    "work_type_Private": 0.016853569075465202,
+    "work_type_Self-employed": 0.031471095979213715,
+    "smoking_status_formerly smoked": 0.034214090555906296,
+    "smoking_status_never smoked": 0.03221003711223602,
+    "smoking_status_smokes": 0.021826256066560745,
+    "smoking_status_Unknown": 0.03036813624203205
+  },
+  "balancing_info": {
+    "method": "weights_only",
+    "description": "Solo class weights integrados en XGBoost - sin SMOTE",
+    "preprocessing_required": false,
+    "optimization_result": "Seleccionado por algoritmo de optimizaci\u00f3n",
+    "scale_pos_weight": 14.561448522473098,
+    "smote_applied": false
+  }
+}
