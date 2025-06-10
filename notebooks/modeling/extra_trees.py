@@ -302,3 +302,21 @@ plt.savefig('../../reports/figures/learning_curves.png')
 plt.close()
 
 print("\nLas gráficas han sido guardadas en el directorio 'reports/figures/'")
+
+# Después de seleccionar el mejor modelo y antes de las visualizaciones
+print(f"\nMejor método de balanceo: {best_method}")
+
+# Guardar el mejor modelo en formato pickle
+import pickle
+
+# Crear el directorio models/extra_trees si no existe
+import os
+model_dir = '../../models/extra_trees'
+os.makedirs(model_dir, exist_ok=True)
+
+# Guardar el modelo
+model_path = os.path.join(model_dir, 'best_model.pkl')
+with open(model_path, 'wb') as f:
+    pickle.dump(best_model, f)
+
+print(f"\nModelo guardado en: {model_path}")
