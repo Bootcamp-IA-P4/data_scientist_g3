@@ -7,6 +7,7 @@ from imblearn.over_sampling import SMOTE, ADASYN
 from imblearn.combine import SMOTEENN, SMOTETomek
 from imblearn.pipeline import Pipeline
 from imblearn.metrics import specificity_score
+from sklearn.inspection import permutation_importance  # Añadir para evaluación de importancia más robusta
 
 # Cargar los datos
 df = pd.read_csv('../../data/processed/preprocessing.csv')
@@ -50,36 +51,37 @@ pipelines = {
 # Definir grid de hiperparámetros
 # Definir grid de hiperparámetros base para el clasificador
 base_classifier_params = {
-    'classifier__n_estimators': [300],
-    'classifier__max_depth': [10, 12],
-    'classifier__min_samples_split': [6],
-    'classifier__min_samples_leaf': [3],
-    'classifier__max_features': ['sqrt', 0.7],
-    'classifier__max_samples': [0.8]
+    'classifier__n_estimators': [200, 300],  # Reducir el número de árboles
+    'classifier__max_depth': [6, 8],        # Limitar profundidad máxima
+    'classifier__min_samples_split': [5, 10, 15],  # Reducir opciones
+    'classifier__min_samples_leaf': [6, 8],     # Reducir opciones
+    'classifier__max_features': ['sqrt', 0.5],   # Menos opciones de características
+    'classifier__max_samples': [0.7],           # Un solo valor
+    'classifier__ccp_alpha': [0.001, 0.01]     # Menos opciones de poda
 }
 
 # Parámetros específicos para cada técnica de balanceo
 sampler_params = {
     'smote': {
-        'sampler__k_neighbors': [5],
+        'sampler__k_neighbors': [3, 5],
         'sampler__sampling_strategy': ['auto']
     },
     'adasyn': {
-        'sampler__n_neighbors': [5],
+        'sampler__n_neighbors': [3, 5],
         'sampler__sampling_strategy': ['auto']
     },
     'smoteenn': {
-        'sampler__smote__k_neighbors': [5],
+        'sampler__smote__k_neighbors': [3, 5],
         'sampler__sampling_strategy': ['auto']
     },
     'smotetomek': {
-        'sampler__smote__k_neighbors': [5],
+        'sampler__smote__k_neighbors': [3, 5],
         'sampler__sampling_strategy': ['auto']
     }
 }
 
 # Configurar validación cruzada estratificada
-skf = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
+skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
 # Evaluar cada técnica de balanceo
 best_scores = {}
@@ -170,7 +172,6 @@ feature_importance = feature_importance.sort_values('importance', ascending=Fals
 print("\nImportancia de Características (%):")
 print(feature_importance.to_string(float_format=lambda x: '{:.2f}'.format(x)))
 
-# ... existing code ...
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -269,6 +270,35 @@ for i, v in enumerate(df_overfitting['Valor']):
     plt.text(i // 2, v, f'{v:.3f}', ha='center')
 plt.tight_layout()
 plt.savefig('../../reports/figures/overfitting_analysis.png')
+plt.close()
+
+# Añadir curvas de aprendizaje para diagnosticar overfitting
+from sklearn.model_selection import learning_curve
+
+plt.figure(figsize=(10, 6))
+train_sizes, train_scores, test_scores = learning_curve(
+    best_model, X, y, cv=5, scoring='f1_weighted',
+    train_sizes=np.linspace(0.1, 1.0, 10), n_jobs=-1
+)
+
+train_scores_mean = np.mean(train_scores, axis=1)
+train_scores_std = np.std(train_scores, axis=1)
+test_scores_mean = np.mean(test_scores, axis=1)
+test_scores_std = np.std(test_scores, axis=1)
+
+plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                 train_scores_mean + train_scores_std, alpha=0.1, color="r")
+plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                 test_scores_mean + test_scores_std, alpha=0.1, color="g")
+plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="F1 Entrenamiento")
+plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="F1 Validación")
+plt.title('Curvas de Aprendizaje')
+plt.xlabel('Tamaño del conjunto de entrenamiento')
+plt.ylabel('F1 Score')
+plt.legend(loc="best")
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('../../reports/figures/learning_curves.png')
 plt.close()
 
 print("\nLas gráficas han sido guardadas en el directorio 'reports/figures/'")
