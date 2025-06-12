@@ -3,7 +3,6 @@
 from pydantic import BaseModel, Field
 from typing import Literal, Optional, List
 from datetime import datetime
-from uuid import UUID
 
 # Modelos para predicción de stroke
 class StrokeRequest(BaseModel):
@@ -47,12 +46,12 @@ class StrokeResponse(BaseModel):
 class StrokePredictionDB(BaseModel):
     """Modelo de base de datos para guardar predicciones"""
     
-    id: Optional[UUID] = None
-    created_at: Optional[datetime] = None
+    id: Optional[int] = None
+    fecha_creacion: Optional[str] = None 
     gender: str
     age: int
-    hypertension: bool
-    heart_disease: bool
+    hypertension: str
+    heart_disease: str
     ever_married: str
     work_type: str
     residence_type: str
