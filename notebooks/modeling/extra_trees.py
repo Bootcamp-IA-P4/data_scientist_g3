@@ -302,3 +302,11 @@ plt.savefig('../../reports/figures/learning_curves.png')
 plt.close()
 
 print("\nLas gráficas han sido guardadas en el directorio 'reports/figures/'")
+
+# Guardar el mejor modelo en formato pkl
+import joblib
+modelo_path = '../../models/extra_trees/extra_trees_model.pkl'
+import os
+os.makedirs(os.path.dirname(modelo_path), exist_ok=True)
+joblib.dump(best_model, modelo_path)
+print(f"\nEl modelo ha sido guardado en: {modelo_path}")
