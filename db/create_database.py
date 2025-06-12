@@ -36,69 +36,132 @@ def read_schema_file() -> str:
         return file.read()
 
 def execute_sql_script(connection, sql_script: str) -> bool:
-    """Ejecutar script SQL usando conexión directa a PostgreSQL"""
+    """Ejecutar script SQL con mejor parsing para funciones PostgreSQL"""
     try:
         cursor = connection.cursor()
         
-        # Limpiar y dividir comandos de forma más robusta
-        # Eliminar comentarios línea por línea primero
-        lines = []
-        for line in sql_script.split('\n'):
-            line = line.strip()
-            if line and not line.startswith('--'):
-                lines.append(line)
+        # Ejecutar todo el script de una vez para mantener el contexto
+        print("🔧 Ejecutando script SQL completo...")
+        print("📋 Creando secuencia, tabla, índices, función y vista...")
         
-        # Unir líneas y dividir por punto y coma
-        clean_script = ' '.join(lines)
-        commands = [cmd.strip() for cmd in clean_script.split(';') if cmd.strip()]
-        
-        print(f"📋 Ejecutando {len(commands)} comandos SQL...")
-        
-        # Mostrar los primeros caracteres de cada comando para debug
-        for i, command in enumerate(commands, 1):
-            command_preview = command[:80].replace('\n', ' ')
-            print(f"   [{i}/{len(commands)}] {command_preview}...")
-        
-        print("\n🔧 Ejecutando comandos...")
-        
-        for i, command in enumerate(commands, 1):
-            print(f"   [{i}/{len(commands)}] Ejecutando...")
+        try:
+            cursor.execute(sql_script)
+            connection.commit()
+            print("✅ Script ejecutado correctamente")
             
-            # DEBUG: Imprimir comando completo si falla
-            try:
-                cursor.execute(command)
-                connection.commit()
-                print(f"   ✅ Comando {i} ejecutado correctamente")
-            except psycopg2.Error as e:
-                print(f"   ❌ ERROR EN COMANDO {i}:")
-                print(f"   COMANDO COMPLETO: {repr(command)}")
-                print(f"   ERROR: {e}")
+            # Verificar componentes creados
+            cursor.execute("SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'stroke_predictions';")
+            table_count = cursor.fetchone()[0]
+            
+            cursor.execute("SELECT COUNT(*) FROM information_schema.views WHERE table_name = 'stroke_predictions_formatted';")
+            view_count = cursor.fetchone()[0]
+            
+            cursor.execute("SELECT COUNT(*) FROM information_schema.routines WHERE routine_name = 'format_date_spanish';")
+            function_count = cursor.fetchone()[0]
+            
+            print(f"📊 Componentes creados:")
+            print(f"   - Tabla 'stroke_predictions': {'✅' if table_count > 0 else '❌'}")
+            print(f"   - Vista 'stroke_predictions_formatted': {'✅' if view_count > 0 else '❌'}")
+            print(f"   - Función 'format_date_spanish': {'✅' if function_count > 0 else '❌'}")
+            
+            cursor.close()
+            return True
+            
+        except psycopg2.Error as e:
+            print(f"❌ Error ejecutando script: {e}")
+            connection.rollback()
+            
+            # Si falla todo junto, intentar por partes
+            print("🔄 Intentando ejecutar por componentes...")
+            return execute_sql_by_components(connection, sql_script)
+        
+    except Exception as e:
+        print(f"❌ Error general ejecutando SQL: {e}")
+        connection.rollback()
+        return False
+
+def execute_sql_by_components(connection, sql_script: str) -> bool:
+    """Ejecutar SQL dividido en componentes lógicos"""
+    try:
+        cursor = connection.cursor()
+        
+        # Dividir el script en componentes lógicos
+        components = [
+            "CREATE SEQUENCE",
+            "CREATE TABLE", 
+            "CREATE INDEX",
+            "CREATE OR REPLACE FUNCTION",
+            "CREATE VIEW",
+            "COMMENT ON"
+        ]
+        
+        lines = sql_script.split('\n')
+        current_component = []
+        component_type = ""
+        
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith('--'):
+                continue
                 
-                # Manejar errores comunes
-                error_msg = str(e).lower()
-                if "already exists" in error_msg:
-                    print(f"   ⚠️ Objeto ya existe (OK)")
-                    connection.rollback()  # Rollback para continuar
-                elif "does not exist" in error_msg and ("comment on" in command.lower()):
-                    print(f"   ⚠️ Comentario omitido")
-                    connection.rollback()
-                else:
-                    connection.rollback()
+            # Detectar inicio de nuevo componente
+            for comp in components:
+                if line.startswith(comp):
+                    # Ejecutar componente anterior si existe
+                    if current_component and component_type:
+                        execute_component(cursor, connection, current_component, component_type)
+                    
+                    # Iniciar nuevo componente
+                    current_component = [line]
+                    component_type = comp
+                    break
+            else:
+                # Continuar con el componente actual
+                if current_component:
+                    current_component.append(line)
+        
+        # Ejecutar último componente
+        if current_component and component_type:
+            execute_component(cursor, connection, current_component, component_type)
         
         cursor.close()
         return True
         
     except Exception as e:
-        print(f"❌ Error ejecutando SQL: {e}")
-        connection.rollback()
+        print(f"❌ Error ejecutando por componentes: {e}")
         return False
 
+def execute_component(cursor, connection, component_lines, component_type):
+    """Ejecutar un componente individual del SQL"""
+    try:
+        component_sql = ' '.join(component_lines)
+        
+        # Para funciones, manejar correctamente los delimitadores $$
+        if "FUNCTION" in component_type:
+            # Asegurarse de que la función termine correctamente
+            if not component_sql.rstrip().endswith(';'):
+                component_sql += ';'
+        
+        print(f"   Ejecutando {component_type}...")
+        cursor.execute(component_sql)
+        connection.commit()
+        print(f"   ✅ {component_type} creado correctamente")
+        
+    except psycopg2.Error as e:
+        error_msg = str(e).lower()
+        if "already exists" in error_msg:
+            print(f"   ⚠️ {component_type} ya existe (OK)")
+            connection.rollback()
+        else:
+            print(f"   ❌ Error en {component_type}: {e}")
+            connection.rollback()
+
 def verify_table_creation(connection) -> bool:
-    """Verificar que la tabla se creó correctamente"""
+    """Verificar que todos los componentes se crearon correctamente"""
     try:
         cursor = connection.cursor()
         
-        # Verificar que la tabla existe
+        # Verificar tabla
         cursor.execute("""
             SELECT EXISTS (
                 SELECT FROM information_schema.tables 
@@ -106,34 +169,56 @@ def verify_table_creation(connection) -> bool:
                 AND table_name = 'stroke_predictions'
             );
         """)
-        
         table_exists = cursor.fetchone()[0]
         
-        if table_exists:
+        # Verificar vista
+        cursor.execute("""
+            SELECT EXISTS (
+                SELECT FROM information_schema.views 
+                WHERE table_schema = 'public' 
+                AND table_name = 'stroke_predictions_formatted'
+            );
+        """)
+        view_exists = cursor.fetchone()[0]
+        
+        # Verificar función
+        cursor.execute("""
+            SELECT EXISTS (
+                SELECT FROM information_schema.routines 
+                WHERE routine_schema = 'public' 
+                AND routine_name = 'format_date_spanish'
+            );
+        """)
+        function_exists = cursor.fetchone()[0]
+        
+        if table_exists and view_exists and function_exists:
             # Contar registros existentes
             cursor.execute("SELECT COUNT(*) FROM stroke_predictions;")
             count = cursor.fetchone()[0]
-            print(f"✅ Tabla 'stroke_predictions' creada correctamente ({count} registros)")
             
-            # Verificar estructura básica
-            cursor.execute("""
-                SELECT column_name, data_type 
-                FROM information_schema.columns 
-                WHERE table_name = 'stroke_predictions' 
-                ORDER BY ordinal_position;
-            """)
-            columns = cursor.fetchall()
-            print(f"📊 Tabla tiene {len(columns)} columnas")
+            # Probar la vista formateada
+            cursor.execute("SELECT format_date_spanish(NOW());")
+            formatted_date = cursor.fetchone()[0]
+            
+            print(f"✅ Tabla 'stroke_predictions' creada correctamente ({count} registros)")
+            print(f"✅ Vista 'stroke_predictions_formatted' creada correctamente")
+            print(f"✅ Función 'format_date_spanish' creada correctamente")
+            print(f"📅 Fecha de ejemplo: {formatted_date}")
             
             cursor.close()
             return True
         else:
-            print("❌ La tabla no fue creada")
+            missing = []
+            if not table_exists: missing.append("tabla")
+            if not view_exists: missing.append("vista")
+            if not function_exists: missing.append("función")
+            
+            print(f"❌ Faltan componentes: {', '.join(missing)}")
             cursor.close()
             return False
         
     except Exception as e:
-        print(f"❌ Error verificando tabla: {e}")
+        print(f"❌ Error verificando componentes: {e}")
         return False
 
 def main():
@@ -163,7 +248,7 @@ def main():
             sys.exit(1)
         
         # 4. Verificar creación
-        print("\n🔍 Verificando creación de tablas...")
+        print("\n🔍 Verificando creación de componentes...")
         if verify_table_creation(connection):
             print("✅ Verificación exitosa")
         else:
@@ -173,6 +258,7 @@ def main():
         print("\n" + "=" * 50)
         print("🎉 ¡Base de datos configurada exitosamente!")
         print("📊 Tabla 'stroke_predictions' lista para usar")
+        print("📅 Vista 'stroke_predictions_formatted' con fechas españolas")
         print("🔗 Conexión directa a PostgreSQL funcionando")
         print("=" * 50)
         
