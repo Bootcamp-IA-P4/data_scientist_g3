@@ -55,11 +55,11 @@ async def get_stroke_predictions(limit: int = 50) -> List[Dict]:
         cursor = conn.cursor()
         
         select_sql = """
-            SELECT id, created_at, gender, age, hypertension, heart_disease, 
+            SELECT id, fecha_creacion, gender, age, hypertension, heart_disease, 
                    ever_married, work_type, residence_type, avg_glucose_level, 
                    bmi, smoking_status, prediction, probability, risk_level
-            FROM stroke_predictions 
-            ORDER BY created_at DESC 
+            FROM stroke_predictions_formatted 
+            ORDER BY id DESC 
             LIMIT %s
         """
         
@@ -67,7 +67,7 @@ async def get_stroke_predictions(limit: int = 50) -> List[Dict]:
         rows = cursor.fetchall()
         
         columns = [
-            'id', 'created_at', 'gender', 'age', 'hypertension', 'heart_disease',
+            'id', 'fecha_creacion', 'gender', 'age', 'hypertension', 'heart_disease',
             'ever_married', 'work_type', 'residence_type', 'avg_glucose_level',
             'bmi', 'smoking_status', 'prediction', 'probability', 'risk_level'
         ]
@@ -75,13 +75,6 @@ async def get_stroke_predictions(limit: int = 50) -> List[Dict]:
         predictions = []
         for row in rows:
             prediction = dict(zip(columns, row))
-            
-            # Formatear fecha en español: DD/MM/AAAA HH:MM
-            if prediction['created_at']:
-                dt = prediction['created_at']
-                # Convertir a formato español
-                prediction['created_at'] = dt.strftime("%d/%m/%Y %H:%M")
-            
             predictions.append(prediction)
         
         cursor.close()

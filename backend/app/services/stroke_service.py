@@ -63,8 +63,8 @@ async def _call_stroke_pipeline(request: StrokeRequest) -> Dict:
     #     pipeline_data = {
     #         'gender': request.gender,
     #         'age': request.age,
-    #         'hypertension': request.hypertension == "Sí",
-    #         'heart_disease': request.heart_disease == "Sí",
+    #         'hypertension': request.hypertension,
+    #         'heart_disease': request.heart_disease,
     #         'ever_married': request.ever_married,
     #         'work_type': request.work_type,
     #         'residence_type': request.residence_type,
@@ -159,8 +159,8 @@ async def _save_prediction_to_db(request: StrokeRequest, response: StrokeRespons
     prediction_data = {
         'gender': request.gender,
         'age': request.age,
-        'hypertension': request.hypertension == "Sí",
-        'heart_disease': request.heart_disease == "Sí",
+        'hypertension': request.hypertension,  
+        'heart_disease': request.heart_disease, 
         'ever_married': request.ever_married,
         'work_type': request.work_type,
         'residence_type': request.residence_type,
