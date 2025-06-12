@@ -1,0 +1,15 @@
+artifact_uri: file:///c:/Users/admin/Desktop/Proyecto_9/data_scientist_g3/notebooks/modeling/mlruns/0/c1fc3faaa2f74a60b7d738048e8a1620/artifacts
+end_time: 1749548475019
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c1fc3faaa2f74a60b7d738048e8a1620
+run_name: LDA_Base
+run_uuid: c1fc3faaa2f74a60b7d738048e8a1620
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1749548469580
+status: 3
+tags: []
+user_id: admin
