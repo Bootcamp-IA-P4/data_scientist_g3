@@ -1,0 +1,21 @@
+artifact_path: lda_optuna
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.2
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.6.1
+mlflow_version: 2.22.1
+model_size_bytes: 6294
+model_uuid: ba800ce4ae8b4a219c35afc7da4093c2
+prompts: null
+run_id: 5f1cfdd18daf47669c3bfcc76e88ccec
+utc_time_created: '2025-06-10 09:43:52.942512'

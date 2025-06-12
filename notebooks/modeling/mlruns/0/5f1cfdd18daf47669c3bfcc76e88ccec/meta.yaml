@@ -1,0 +1,15 @@
+artifact_uri: file:///c:/Users/admin/Desktop/Proyecto_9/data_scientist_g3/notebooks/modeling/mlruns/0/5f1cfdd18daf47669c3bfcc76e88ccec/artifacts
+end_time: 1749548636456
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5f1cfdd18daf47669c3bfcc76e88ccec
+run_name: LDA_Optuna
+run_uuid: 5f1cfdd18daf47669c3bfcc76e88ccec
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1749548632807
+status: 3
+tags: []
+user_id: admin
