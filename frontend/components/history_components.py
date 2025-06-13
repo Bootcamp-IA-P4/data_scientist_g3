@@ -1,4 +1,3 @@
-# components/history_components.py
 from dash import html, dash_table
 
 def create_history_table(history_data):
@@ -14,7 +13,6 @@ def create_history_table(history_data):
                   style={'text-align': 'center', 'color': '#6c757d', 'font-style': 'italic'})
         ], className="history-section")
     
-    # Preparar datos para la tabla según la guía
     table_data = []
     for pred in history_data:
         # Determinar resultado según prediction
@@ -23,15 +21,15 @@ def create_history_table(history_data):
         # Formatear datos según lo que viene del GET /predictions/stroke
         table_data.append({
             'ID': pred.get('id', ''),
-            'Fecha': pred.get('fecha_creacion', ''),  # Ya viene en formato "DD/MM/YYYY HH:MM"
+            'Fecha': pred.get('fecha_creacion', ''),  # en formato "DD/MM/YYYY HH:MM"
             'Edad': pred.get('age', ''),
             'Género': pred.get('gender', ''),
-            'Porcentaje': f"{(pred.get('probability', 0) * 100):.1f}%",  # probability * 100
-            'Nivel': pred.get('risk_level', ''),  # risk_level del backend
+            'Porcentaje': f"{(pred.get('probability', 0) * 100):.1f}%",  
+            'Nivel': pred.get('risk_level', ''),  
             'Resultado': resultado
         })
     
-    # Crear tabla con estilos
+    # Creando tabla 
     table = dash_table.DataTable(
         data=table_data,
         columns=[
@@ -107,7 +105,6 @@ def prepare_history_data(raw_data):
     processed_data = []
     
     for item in raw_data:
-        # Validar que tenemos los campos mínimos necesarios
         if not all(key in item for key in ['id', 'prediction', 'probability']):
             continue
         
