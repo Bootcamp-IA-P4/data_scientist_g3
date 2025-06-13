@@ -1,10 +1,13 @@
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+load_dotenv(PROJECT_ROOT / ".env")
 
 API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8000')
 FRONTEND_PORT = int(os.getenv('FRONTEND_PORT', 8050))
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 # Valores exactos para dropdowns
 DROPDOWN_VALUES = {
