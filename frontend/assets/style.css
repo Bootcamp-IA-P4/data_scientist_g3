@@ -1,0 +1,662 @@
+/* assets/styles.css */
+/* Estilos futuristas para el Predictor de Riesgo de Stroke */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    /* Colores principales futuristas */
+    --color-primary: #2563EB; /* Azul tecnológico */
+    --color-primary-dark: #1E40AF; /* Azul más oscuro */
+    --color-primary-light: #3B82F6; /* Azul claro */
+    --color-accent: #8B5CF6; /* Púrpura futurista */
+    --color-accent-dark: #7C3AED; /* Púrpura oscuro */
+    --color-accent-light: #A78BFA; /* Púrpura claro */
+    
+    /* Fondos y superficies */
+    --color-background: #0F172A; /* Azul oscuro espacial */
+    --color-surface: #1E293B; /* Superficie principal */
+    --color-surface-light: #334155; /* Superficie clara */
+    --color-glass: rgba(30, 41, 59, 0.8); /* Efecto cristal */
+    
+    /* Textos */
+    --color-text-primary: #F8FAFC; /* Blanco suave */
+    --color-text-secondary: #94A3B8; /* Gris claro */
+    --color-text-on-primary: #FFFFFF; /* Blanco puro */
+    --color-text-muted: #64748B; /* Gris medio */
+    
+    /* Bordes y elementos */
+    --color-border: #334155; /* Borde sutil */
+    --color-border-accent: #3B82F6; /* Borde con acento */
+    
+    /* Estados de alerta */
+    --color-success: #10B981; /* Verde tecnológico */
+    --color-danger: #EF4444; /* Rojo vibrante */
+    --color-warning: #F59E0B; /* Amarillo/naranja */
+    --color-info: #06B6D4; /* Cian tecnológico */
+    
+    /* Efectos neón */
+    --glow-primary: 0 0 20px rgba(37, 99, 235, 0.5);
+    --glow-accent: 0 0 20px rgba(139, 92, 246, 0.5);
+    --glow-success: 0 0 20px rgba(16, 185, 129, 0.5);
+    --glow-danger: 0 0 20px rgba(239, 68, 68, 0.5);
+    
+    /* Tipografía */
+    --font-primary: 'Inter', sans-serif;
+    --border-radius-main: 12px;
+    --box-shadow-main: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    --box-shadow-glow: 0 8px 32px rgba(37, 99, 235, 0.2);
+}
+
+/* Estilos generales del body */
+body {
+    font-family: var(--font-primary) !important;
+    background: linear-gradient(135deg, var(--color-background) 0%, #1E293B 100%) !important;
+    color: var(--color-text-primary) !important;
+    line-height: 1.7;
+    padding: 20px;
+    margin: 0;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+}
+
+/* Efecto de partículas de fondo */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Títulos y encabezados futuristas */
+h1 {
+    color: var(--color-text-primary) !important;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+    font-size: 2.5rem;
+    text-shadow: var(--glow-primary);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+h2 {
+    color: var(--color-text-primary) !important;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-shadow: var(--glow-primary);
+}
+
+h3 {
+    color: var(--color-text-primary) !important;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+/* Contenedor del formulario con efecto cristal */
+.form-container {
+    background: var(--color-glass) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 30px;
+    border-radius: var(--border-radius-main) !important;
+    box-shadow: var(--box-shadow-main) !important;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto de brillo sutil en los contenedores */
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+/* Grupos del formulario */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label,
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600 !important;
+    color: var(--color-text-primary) !important;
+    font-size: 1.1rem !important;
+}
+
+/* Inputs numéricos futuristas */
+input[type="number"] {
+    border: 2px solid var(--color-border) !important;
+    border-radius: var(--border-radius-main) !important;
+    padding: 12px 15px !important;
+    font-size: 1rem !important;
+    background: rgba(15, 23, 42, 0.8) !important;
+    color: var(--color-text-primary) !important;
+    transition: all 0.3s ease;
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+input[type="number"]:focus {
+    outline: none !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: var(--glow-primary) !important;
+    background: rgba(15, 23, 42, 0.9) !important;
+}
+
+input[type="number"]::placeholder {
+    color: var(--color-text-muted) !important;
+}
+
+/* Estilos para dropdowns de Dash */
+.dash-dropdown {
+    margin-bottom: 10px;
+}
+
+.dash-dropdown .Select-control {
+    border: 2px solid var(--color-border) !important;
+    border-radius: var(--border-radius-main) !important;
+    background: rgba(15, 23, 42, 0.8) !important;
+    padding: 8px !important;
+    transition: all 0.3s ease;
+    min-height: 48px !important;
+}
+
+.dash-dropdown .Select-control:hover {
+    border-color: var(--color-primary) !important;
+}
+
+.dash-dropdown .Select-control.is-focused {
+    border-color: var(--color-primary) !important;
+    box-shadow: var(--glow-primary) !important;
+    background: rgba(15, 23, 42, 0.9) !important;
+}
+
+.dash-dropdown .Select-value-label,
+.dash-dropdown .Select-placeholder {
+    color: var(--color-text-primary) !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+}
+
+.dash-dropdown .Select-arrow-zone {
+    color: var(--color-text-secondary) !important;
+}
+
+.dash-dropdown .Select-arrow {
+    border-top-color: var(--color-text-secondary) !important;
+}
+
+.dash-dropdown .Select-menu-outer {
+    background: var(--color-surface) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: var(--border-radius-main) !important;
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+
+.dash-dropdown .Select-menu {
+    background: transparent !important;
+}
+
+.dash-dropdown .Select-menu .Select-option {
+    color: var(--color-text-primary) !important;
+    background: transparent !important;
+    padding: 12px 15px !important;
+    transition: background-color 0.2s ease;
+}
+
+.dash-dropdown .Select-menu .Select-option:hover,
+.dash-dropdown .Select-menu .Select-option.is-focused {
+    background: var(--color-primary) !important;
+    color: var(--color-text-on-primary) !important;
+}
+
+.dash-dropdown .Select-menu .Select-option.is-selected {
+    background: var(--color-primary-dark) !important;
+    color: var(--color-text-on-primary) !important;
+}
+
+/* Botones futuristas */
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%) !important;
+    border: none !important;
+    color: var(--color-text-on-primary) !important;
+    font-size: 1.2rem !important;
+    padding: 12px 30px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+    border-radius: var(--border-radius-main) !important;
+    box-shadow: var(--glow-primary);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-accent-dark) 100%) !important;
+    box-shadow: var(--glow-accent) !important;
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    background: var(--color-surface-light) !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+/* Tarjetas de resultados - Base futurista */
+.result-card {
+    padding: 30px;
+    border-radius: var(--border-radius-main);
+    margin: 20px 0;
+    text-align: center;
+    box-shadow: var(--box-shadow-main);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Tarjetas de resultados por nivel de riesgo con efectos neón */
+.result-card-low { 
+    background: rgba(16, 185, 129, 0.1) !important;
+    border-left: 4px solid var(--color-success) !important;
+    box-shadow: var(--glow-success) !important;
+}
+
+.result-card-medium { 
+    background: rgba(245, 158, 11, 0.1) !important;
+    border-left: 4px solid var(--color-warning) !important;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3) !important;
+}
+
+.result-card-high { 
+    background: rgba(239, 68, 68, 0.1) !important;
+    border-left: 4px solid var(--color-danger) !important;
+    box-shadow: var(--glow-danger) !important;
+}
+
+.result-card-critical { 
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-left: 4px solid var(--color-danger) !important;
+    box-shadow: var(--glow-danger) !important;
+}
+
+/* Elementos de la tarjeta de resultados */
+.percentage-display {
+    font-size: 4em !important;
+    font-weight: 800 !important;
+    margin: 20px 0 !important;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: var(--glow-primary);
+}
+
+.diagnosis-message {
+    font-size: 1.8em !important;
+    font-weight: 700 !important;
+    margin-bottom: 15px !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.risk-level {
+    font-size: 1.4em !important;
+    margin: 15px 0 !important;
+    font-weight: 600;
+    color: var(--color-text-secondary) !important;
+}
+
+.recommendation {
+    font-style: italic;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: var(--border-radius-main);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    color: var(--color-text-secondary) !important;
+}
+
+/* Disclaimer médico futurista */
+.disclaimer {
+    background: rgba(30, 41, 59, 0.6) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 20px;
+    border-radius: var(--border-radius-main) !important;
+    margin: 20px 0;
+    font-size: 0.95em;
+    color: var(--color-text-secondary) !important;
+    text-align: center;
+}
+
+/* Sección del historial futurista */
+.history-section {
+    background: var(--color-glass) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 30px;
+    border-radius: var(--border-radius-main) !important;
+    box-shadow: var(--box-shadow-main) !important;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.history-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+/* Estilos para la tabla del historial futurista */
+.dash-table-container {
+    font-family: var(--font-primary) !important;
+    background: transparent !important;
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table {
+    border-collapse: collapse;
+    width: 100%;
+    background: transparent !important;
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%) !important;
+    color: var(--color-text-on-primary) !important;
+    font-weight: 700 !important;
+    padding: 15px !important;
+    text-align: center;
+    border: none !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td {
+    padding: 12px 15px !important;
+    text-align: center;
+    border: none !important;
+    background: rgba(30, 41, 59, 0.3) !important;
+    color: var(--color-text-primary) !important;
+    border-bottom: 1px solid var(--color-border) !important;
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr:hover td {
+    background: rgba(37, 99, 235, 0.1) !important;
+    box-shadow: inset 0 0 10px rgba(37, 99, 235, 0.2);
+}
+
+/* Mensajes de error futuristas */
+div[style*="background-color: #f8d7da"] {
+    color: var(--color-danger) !important;
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 1px solid var(--color-danger) !important;
+    padding: 20px;
+    border-radius: var(--border-radius-main) !important;
+    margin: 20px 0;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: var(--glow-danger);
+}
+
+/* Mensajes de carga futuristas */
+.loading-message {
+    color: var(--color-text-secondary) !important;
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+    background: rgba(30, 41, 59, 0.3);
+    border-radius: var(--border-radius-main);
+    backdrop-filter: blur(10px);
+}
+
+/* Efectos de brillo adicionales */
+.result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos responsivos para móviles */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .form-container {
+        padding: 20px;
+    }
+    
+    .form-group {
+        width: 100% !important;
+        margin-right: 0 !important;
+        display: block !important;
+    }
+    
+    .percentage-display {
+        font-size: 2.5em !important;
+    }
+    
+    .diagnosis-message {
+        font-size: 1.3em !important;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        margin: 10px 0;
+    }
+    
+    h1 {
+        font-size: 2rem !important;
+    }
+}
+
+/* Estilos para tablets */
+@media (max-width: 992px) and (min-width: 769px) {
+    .form-group {
+        width: 48% !important;
+        margin-right: 2% !important;
+    }
+}
+
+/* Estados de validación futuristas */
+.input-valid {
+    border-color: var(--color-success) !important;
+    box-shadow: var(--glow-success) !important;
+}
+
+.input-invalid {
+    border-color: var(--color-danger) !important;
+    box-shadow: var(--glow-danger) !important;
+}-inner table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th {
+    background-color: #007bff !important;
+    color: white !important;
+    font-weight: bold;
+    padding: 12px;
+    text-align: center;
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Mensajes de error */
+.error-message {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+/* Mensajes de carga */
+.loading-message {
+    color: #6c757d;
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Estilos responsivos para móviles */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .form-container {
+        padding: 20px;
+    }
+    
+    .form-group {
+        width: 100% !important;
+        margin-right: 0 !important;
+        display: block !important;
+    }
+    
+    .percentage-display {
+        font-size: 2em;
+    }
+    
+    .diagnosis-message {
+        font-size: 1.2em;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
+
+/* Estilos para tablets */
+@media (max-width: 992px) and (min-width: 769px) {
+    .form-group {
+        width: 48% !important;
+        margin-right: 2% !important;
+    }
+}
+
+/* Animaciones suaves */
+.result-card {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para elementos deshabilitados */
+.btn-primary:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-primary:disabled:hover {
+    background-color: #6c757d;
+}
+
+/* Tooltips y ayudas */
+.form-help {
+    font-size: 0.875em;
+    color: #6c757d;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* Separadores visuales */
+.section-divider {
+    border-top: 1px solid #dee2e6;
+    margin: 30px 0;
+}
+
+/* Estados de validación */
+.input-valid {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+}
+
+.input-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
