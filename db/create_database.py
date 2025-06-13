@@ -161,7 +161,7 @@ def verify_table_creation(connection) -> bool:
     try:
         cursor = connection.cursor()
         
-        # Verificar tabla
+        # Verificar tabla stroke_predictions
         cursor.execute("""
             SELECT EXISTS (
                 SELECT FROM information_schema.tables 
@@ -169,9 +169,19 @@ def verify_table_creation(connection) -> bool:
                 AND table_name = 'stroke_predictions'
             );
         """)
-        table_exists = cursor.fetchone()[0]
+        stroke_table_exists = cursor.fetchone()[0]
+
+        # Verificar tabla image_predictions
+        cursor.execute("""
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'image_predictions'
+            );
+        """)
+        image_table_exists = cursor.fetchone()[0]
         
-        # Verificar vista
+        # Verificar vistas
         cursor.execute("""
             SELECT EXISTS (
                 SELECT FROM information_schema.views 
@@ -179,7 +189,16 @@ def verify_table_creation(connection) -> bool:
                 AND table_name = 'stroke_predictions_formatted'
             );
         """)
-        view_exists = cursor.fetchone()[0]
+        stroke_view_exists = cursor.fetchone()[0]
+
+        cursor.execute("""
+            SELECT EXISTS (
+                SELECT FROM information_schema.views 
+                WHERE table_schema = 'public' 
+                AND table_name = 'image_predictions_formatted'
+            );
+        """)
+        image_view_exists = cursor.fetchone()[0]
         
         # Verificar función
         cursor.execute("""
@@ -191,17 +210,22 @@ def verify_table_creation(connection) -> bool:
         """)
         function_exists = cursor.fetchone()[0]
         
-        if table_exists and view_exists and function_exists:
+        if all([stroke_table_exists, image_table_exists, stroke_view_exists, image_view_exists, function_exists]):
             # Contar registros existentes
             cursor.execute("SELECT COUNT(*) FROM stroke_predictions;")
-            count = cursor.fetchone()[0]
+            stroke_count = cursor.fetchone()[0]
+            
+            cursor.execute("SELECT COUNT(*) FROM image_predictions;")
+            image_count = cursor.fetchone()[0]
             
             # Probar la vista formateada
             cursor.execute("SELECT format_date_spanish(NOW());")
             formatted_date = cursor.fetchone()[0]
             
-            print(f"✅ Tabla 'stroke_predictions' creada correctamente ({count} registros)")
+            print(f"✅ Tabla 'stroke_predictions' creada correctamente ({stroke_count} registros)")
+            print(f"✅ Tabla 'image_predictions' creada correctamente ({image_count} registros)")
             print(f"✅ Vista 'stroke_predictions_formatted' creada correctamente")
+            print(f"✅ Vista 'image_predictions_formatted' creada correctamente")
             print(f"✅ Función 'format_date_spanish' creada correctamente")
             print(f"📅 Fecha de ejemplo: {formatted_date}")
             
@@ -209,9 +233,11 @@ def verify_table_creation(connection) -> bool:
             return True
         else:
             missing = []
-            if not table_exists: missing.append("tabla")
-            if not view_exists: missing.append("vista")
-            if not function_exists: missing.append("función")
+            if not stroke_table_exists: missing.append("tabla stroke_predictions")
+            if not image_table_exists: missing.append("tabla image_predictions")
+            if not stroke_view_exists: missing.append("vista stroke_predictions_formatted")
+            if not image_view_exists: missing.append("vista image_predictions_formatted")
+            if not function_exists: missing.append("función format_date_spanish")
             
             print(f"❌ Faltan componentes: {', '.join(missing)}")
             cursor.close()
@@ -258,7 +284,8 @@ def main():
         print("\n" + "=" * 50)
         print("🎉 ¡Base de datos configurada exitosamente!")
         print("📊 Tabla 'stroke_predictions' lista para usar")
-        print("📅 Vista 'stroke_predictions_formatted' con fechas españolas")
+        print("📸 Tabla 'image_predictions' lista para predicciones de imágenes")
+        print("📅 Vista formateadas con fechas españolas")
         print("🔗 Conexión directa a PostgreSQL funcionando")
         print("=" * 50)
         
