@@ -1,4 +1,3 @@
-# components/results_components.py
 from dash import html
 from config.settings import CSS_CLASSES, RECOMMENDATIONS
 
@@ -25,7 +24,7 @@ def create_result_card(prediction, probability, risk_level):
     card_class = get_risk_color_class(risk_level)
     recommendation = get_recommendation(risk_level)
     
-    # Crear tarjeta completa
+    # Creando tarjeta completa
     return html.Div([
         # Mensaje principal
         html.Div(

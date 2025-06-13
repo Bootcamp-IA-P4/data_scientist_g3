@@ -1,9 +1,7 @@
-# app.py - Aplicación Principal
 import dash
 from dash import dcc, html, Input, Output, State, callback
 from config.settings import FRONTEND_PORT
 
-# Importar componentes y servicios
 from services.api_client import api_client
 from components.form_components import (
     create_form_layout, 
@@ -20,24 +18,20 @@ from components.history_components import create_history_table
 # Inicializar la aplicación Dash
 app = dash.Dash(__name__)
 
-# Configurar el título de la página
+# Título de la página
 app.title = "Predictor de Riesgo de Stroke"
 
-# Layout principal de la aplicación
+# Layout principal
 app.layout = html.Div([
-    # Título principal
     html.H1("🧠 Predictor de Riesgo de Stroke"),
     
-    # Formulario de entrada
     create_form_layout(),
     
-    # Área de resultados
     html.Div(id='results-container'),
     
     # Disclaimer médico
     create_disclaimer(),
     
-    # Área de historial
     html.Div(id='history-container'),
     
     # Store para guardar datos temporalmente
@@ -70,7 +64,6 @@ def handle_prediction(n_clicks, edad, genero, glucosa, bmi, hipertension,
     4. Muestra los resultados
     """
     
-    # Si no se ha clickeado el botón, no hacer nada
     if n_clicks == 0:
         return html.Div(), {}
     
@@ -92,7 +85,6 @@ def handle_prediction(n_clicks, edad, genero, glucosa, bmi, hipertension,
     # Enviar predicción al backend
     result = api_client.predict_stroke(form_data)
     
-    # Verificar si hubo error en la respuesta
     if 'error' in result:
         return create_error_message(f"❌ {result['error']}"), {}
     
@@ -118,7 +110,6 @@ def show_history(n_clicks):
     2. Crea la tabla de historial
     """
     
-    # Si no se ha clickeado el botón, no mostrar nada
     if n_clicks == 0:
         return html.Div()
     
@@ -128,6 +119,5 @@ def show_history(n_clicks):
     # Crear y retornar tabla de historial
     return create_history_table(history_data)
 
-# Ejecutar la aplicación
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=FRONTEND_PORT)

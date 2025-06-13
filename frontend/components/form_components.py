@@ -1,127 +1,114 @@
-# components/form_components.py
 from dash import dcc, html
 from config.settings import DROPDOWN_VALUES
 
 def create_form_layout():
-    """Crea el layout completo del formulario con los 10 campos"""
+    """Crea el layout completo del formulario con los 10 campos - CENTRADO Y VERTICAL"""
     
     return html.Div([
         html.H2("Datos del Paciente"),
         
-        # Fila 1: Edad, Género, Glucosa
+        # Campo 1: Edad
         html.Div([
-            html.Div([
-                html.Label("Edad (0-120 años):", className="form-label"),
-                dcc.Input(
-                    id='edad-input',
-                    type='number',
-                    min=0, max=120,
-                    placeholder="Ej: 45"
-                )
-            ], className="form-group", 
-               style={'width': '30%', 'display': 'inline-block', 'margin-right': '3%'}),
-            
-            html.Div([
-                html.Label("Género:", className="form-label"),
-                dcc.Dropdown(
-                    id='genero-dropdown',
-                    options=DROPDOWN_VALUES['genero'],
-                    placeholder="Seleccione género"
-                )
-            ], className="form-group", 
-               style={'width': '30%', 'display': 'inline-block', 'margin-right': '3%'}),
-            
-            html.Div([
-                html.Label("Glucosa (50-500 mg/dL):", className="form-label"),
-                dcc.Input(
-                    id='glucosa-input',
-                    type='number',
-                    min=50, max=500,
-                    placeholder="Ej: 120"
-                )
-            ], className="form-group", 
-               style={'width': '30%', 'display': 'inline-block'})
-        ]),
+            html.Label("Edad (0-120 años):", className="form-label"),
+            dcc.Input(
+                id='edad-input',
+                type='number',
+                min=0, max=120,
+                placeholder="Ej: 45"
+            )
+        ], className="form-group"),
         
-        # Fila 2: BMI, Hipertensión, Enfermedad cardíaca
+        # Campo 2: Género
         html.Div([
-            html.Div([
-                html.Label("BMI (10-60) - Opcional:", className="form-label"),
-                dcc.Input(
-                    id='bmi-input',
-                    type='number',
-                    min=10, max=60,
-                    placeholder="Ej: 25.5"
-                )
-            ], className="form-group", 
-               style={'width': '30%', 'display': 'inline-block', 'margin-right': '3%'}),
-            
-            html.Div([
-                html.Label("Hipertensión:", className="form-label"),
-                dcc.Dropdown(
-                    id='hipertension-dropdown',
-                    options=DROPDOWN_VALUES['hipertension'],
-                    placeholder="Seleccione opción"
-                )
-            ], className="form-group", 
-               style={'width': '30%', 'display': 'inline-block', 'margin-right': '3%'}),
-            
-            html.Div([
-                html.Label("Enfermedad cardíaca:", className="form-label"),
-                dcc.Dropdown(
-                    id='enfermedad-dropdown',
-                    options=DROPDOWN_VALUES['enfermedad'],
-                    placeholder="Seleccione opción"
-                )
-            ], className="form-group", 
-               style={'width': '30%', 'display': 'inline-block'})
-        ]),
+            html.Label("Género:", className="form-label"),
+            dcc.Dropdown(
+                id='genero-dropdown',
+                options=DROPDOWN_VALUES['genero'],
+                placeholder="Seleccione género"
+            )
+        ], className="form-group"),
         
-        # Fila 3: Casado, Trabajo, Residencia
+        # Campo 3: Glucosa
         html.Div([
-            html.Div([
-                html.Label("Casado alguna vez:", className="form-label"),
-                dcc.Dropdown(
-                    id='casado-dropdown',
-                    options=DROPDOWN_VALUES['casado'],
-                    placeholder="Seleccione opción"
-                )
-            ], className="form-group", 
-               style={'width': '30%', 'display': 'inline-block', 'margin-right': '3%'}),
-            
-            html.Div([
-                html.Label("Trabajo:", className="form-label"),
-                dcc.Dropdown(
-                    id='trabajo-dropdown',
-                    options=DROPDOWN_VALUES['trabajo'],
-                    placeholder="Seleccione tipo de trabajo"
-                )
-            ], className="form-group", 
-               style={'width': '30%', 'display': 'inline-block', 'margin-right': '3%'}),
-            
-            html.Div([
-                html.Label("Residencia:", className="form-label"),
-                dcc.Dropdown(
-                    id='residencia-dropdown',
-                    options=DROPDOWN_VALUES['residencia'],
-                    placeholder="Seleccione tipo de residencia"
-                )
-            ], className="form-group", 
-               style={'width': '30%', 'display': 'inline-block'})
-        ]),
+            html.Label("Glucosa (50-500 mg/dL):", className="form-label"),
+            dcc.Input(
+                id='glucosa-input',
+                type='number',
+                min=50, max=500,
+                placeholder="Ej: 120"
+            )
+        ], className="form-group"),
         
-        # Fila 4: Fumador
+        # Campo 4: BMI (Opcional)
         html.Div([
-            html.Div([
-                html.Label("Estado de fumador:", className="form-label"),
-                dcc.Dropdown(
-                    id='fumador-dropdown',
-                    options=DROPDOWN_VALUES['fumador'],
-                    placeholder="Seleccione estado de fumador"
-                )
-            ], className="form-group", 
-               style={'width': '30%', 'display': 'inline-block'})
-        ]),
+            html.Label("BMI (10-60) - Opcional:", className="form-label"),
+            dcc.Input(
+                id='bmi-input',
+                type='number',
+                min=10, max=60,
+                placeholder="Ej: 25.5"
+            )
+        ], className="form-group"),
+        
+        # Campo 5: Hipertensión
+        html.Div([
+            html.Label("Hipertensión:", className="form-label"),
+            dcc.Dropdown(
+                id='hipertension-dropdown',
+                options=DROPDOWN_VALUES['hipertension'],
+                placeholder="Seleccione opción"
+            )
+        ], className="form-group"),
+        
+        # Campo 6: Enfermedad cardíaca
+        html.Div([
+            html.Label("Enfermedad cardíaca:", className="form-label"),
+            dcc.Dropdown(
+                id='enfermedad-dropdown',
+                options=DROPDOWN_VALUES['enfermedad'],
+                placeholder="Seleccione opción"
+            )
+        ], className="form-group"),
+        
+        # Campo 7: Casado alguna vez
+        html.Div([
+            html.Label("Casado alguna vez:", className="form-label"),
+            dcc.Dropdown(
+                id='casado-dropdown',
+                options=DROPDOWN_VALUES['casado'],
+                placeholder="Seleccione opción"
+            )
+        ], className="form-group"),
+        
+        # Campo 8: Trabajo
+        html.Div([
+            html.Label("Trabajo:", className="form-label"),
+            dcc.Dropdown(
+                id='trabajo-dropdown',
+                options=DROPDOWN_VALUES['trabajo'],
+                placeholder="Seleccione tipo de trabajo"
+            )
+        ], className="form-group"),
+        
+        # Campo 9: Residencia
+        html.Div([
+            html.Label("Residencia:", className="form-label"),
+            dcc.Dropdown(
+                id='residencia-dropdown',
+                options=DROPDOWN_VALUES['residencia'],
+                placeholder="Seleccione tipo de residencia"
+            )
+        ], className="form-group"),
+        
+        # Campo 10: Estado de fumador
+        html.Div([
+            html.Label("Estado de fumador:", className="form-label"),
+            dcc.Dropdown(
+                id='fumador-dropdown',
+                options=DROPDOWN_VALUES['fumador'],
+                placeholder="Seleccione estado de fumador"
+            )
+        ], className="form-group"),
         
         # Botones
         html.Div([
@@ -133,7 +120,7 @@ def create_form_layout():
                        id='history-button', 
                        n_clicks=0, 
                        className='btn-primary'),
-        ], style={'text-align': 'center', 'margin': '20px 0'})
+        ])
         
     ], className="form-container")
 
