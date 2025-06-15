@@ -190,9 +190,31 @@ div.form-container div.form-group div.dash-dropdown div.Select-control.is-focuse
 
 div.form-container div.form-group div.dash-dropdown div.Select-value-label,
 div.form-container div.form-group div.dash-dropdown div.Select-placeholder {
-    color: var(--color-text-primary);
+    color: var(--color-text-muted);
     font-size: 1.1rem;
     line-height: 1.5;
+
+}
+
+/* TEXTO SELECCIONADO EN BLANCO - SELECTORES ADICIONALES */
+div.form-container div.form-group div.dash-dropdown div.Select-value-container {
+    color: var(--color-text-primary);
+}
+
+div.form-container div.form-group div.dash-dropdown div.Select-value-container div {
+    color: var(--color-text-primary);
+}
+
+div.form-container div.form-group div.dash-dropdown div.Select-value {
+    color: var(--color-text-primary);
+}
+
+div.form-container div.form-group div.dash-dropdown .Select--single .Select-value {
+    color: var(--color-text-primary);
+}
+
+div.form-container div.form-group div.dash-dropdown .Select--single .Select-value .Select-value-label {
+    color: var(--color-text-primary);
 }
 
 div.form-container div.form-group div.dash-dropdown div.Select-arrow-zone {
@@ -436,6 +458,17 @@ div.history-section div.dash-table-container div.dash-spreadsheet-container div.
 div.history-section div.dash-table-container div.dash-spreadsheet-container div.dash-spreadsheet-inner tr:hover td {
     background: rgba(37, 99, 235, 0.1);
     box-shadow: inset 0 0 10px rgba(37, 99, 235, 0.2);
+}
+
+div.history-section h3 {
+    color: var(--color-primary);
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-shadow: var(--glow-primary);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 /* Mensajes de error */
