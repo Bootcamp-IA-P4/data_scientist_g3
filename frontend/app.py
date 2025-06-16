@@ -14,15 +14,40 @@ from components.results_components import (
     create_disclaimer
 )
 from components.history_components import create_history_table
+from components.navbar_components import create_navbar
 
 # Inicializar la aplicación Dash
-app = dash.Dash(__name__)
+app = dash.Dash(
+    __name__,
+    suppress_callback_exceptions=True,  # Oculta errores de callbacks
+    show_undo_redo=False,              # Oculta botones undo/redo
+    external_stylesheets=[]            # Sin estilos externos que puedan mostrar debugging            
+)
 
 # Título de la página
 app.title = "Predictor de Riesgo de Stroke"
 
 # Layout principal
 app.layout = html.Div([
+    
+    # Video de fondo
+    html.Div([
+    html.Video(
+        src='assets/background-video.mp4',
+        autoPlay=True,
+        muted=True,
+        loop=True
+    )
+    ], className="video-background"),
+    
+    # Overlay oscuro
+    html.Div(className="video-overlay"),
+    
+    # Navbar futurista
+    create_navbar(),
+    
+    # Contenido principal
+    html.Div([
     html.H1("🧠 Predictor de Riesgo de Stroke"),
     
     create_form_layout(),
@@ -36,6 +61,7 @@ app.layout = html.Div([
     
     # Store para guardar datos temporalmente
     dcc.Store(id='prediction-store')
+    ], style={'position': 'relative', 'z-index': '1'})
 ])
 
 # Callback para manejar predicciones
