@@ -1,3 +1,5 @@
+
+import os
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import ExtraTreesClassifier
@@ -10,7 +12,10 @@ from imblearn.metrics import specificity_score
 from sklearn.inspection import permutation_importance  # Añadir para evaluación de importancia más robusta
 
 # Cargar los datos
-df = pd.read_csv('../../data/processed/preprocessing.csv')
+base_dir = os.path.dirname(os.path.abspath(__file__))  
+data_path = os.path.abspath(os.path.join(base_dir, '..', '..', 'data', 'processed', 'preprocessing.csv'))
+print(f"Cargando datos desde: {data_path}")
+df = pd.read_csv(data_path)
 
 # Separar features y target
 X = df.drop('stroke', axis=1)
