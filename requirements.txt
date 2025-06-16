@@ -163,15 +163,9 @@ typing_extensions==4.13.2
 tzdata==2025.2
 uri-template==1.3.0
 urllib3==2.4.0
-<<<<<<< HEAD
-uvicorn==0.34.3
-watchfiles==1.0.5
-||||||| c098824
-=======
 uvicorn==0.34.3
 uvloop==0.21.0
 watchfiles==1.0.5
->>>>>>> f18b8ba4726b454cf6de062e34f830683512d9b1
 wcwidth==0.2.13
 webcolors==24.11.1
 webencodings==0.5.1
@@ -179,14 +173,6 @@ websocket-client==1.8.0
 websockets==14.2
 Werkzeug==3.0.6
 widgetsnbextension==4.0.14
-<<<<<<< HEAD
 xgboost==3.0.2
 yarl==1.20.1
 zipp==3.23.0
-||||||| c098824
-zipp==3.23.0
-=======
-xgboost==3.0.2
-yarl==1.20.1
-zipp==3.23.0
->>>>>>> f18b8ba4726b454cf6de062e34f830683512d9b1
