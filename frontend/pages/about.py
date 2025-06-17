@@ -18,13 +18,11 @@ def get_about_layout():
         # Overlay
         html.Div(className="video-overlay"),
         
-        # Navbar
         create_navbar(),
         
         # Contenido principal
         html.Div([
             
-            # Hero
             html.Div([
                 html.H1("Nuestro Equipo"),
                 html.P("Los desarrolladores detrás del Predictor de Riesgo de Stroke", 
@@ -34,7 +32,6 @@ def get_about_layout():
             # Container
             html.Div([
                 
-                # Info del proyecto
                 html.Div([
                     html.H2("Sobre el Proyecto"),
                     html.P([
@@ -59,7 +56,6 @@ def get_about_layout():
                 # Equipo
                 html.Div([
                     
-                    # Miembro 1
                     html.Div([
                         html.Div([
                             html.Div("👨‍💻", className="avatar")
@@ -70,7 +66,6 @@ def get_about_layout():
                                className="member-description")
                     ], className="team-member"),
                     
-                    # Miembro 2
                     html.Div([
                         html.Div([
                             html.Div("👩‍⚕️", className="avatar")
@@ -81,7 +76,6 @@ def get_about_layout():
                                className="member-description")
                     ], className="team-member"),
                     
-                    # Miembro 3
                     html.Div([
                         html.Div([
                             html.Div("👨‍🎨", className="avatar")
@@ -92,7 +86,6 @@ def get_about_layout():
                                className="member-description")
                     ], className="team-member"),
                     
-                    # Miembro 4
                     html.Div([
                         html.Div([
                             html.Div("👩‍💼", className="avatar")
@@ -103,7 +96,6 @@ def get_about_layout():
                                className="member-description")
                     ], className="team-member"),
                     
-                    # Miembro 5
                     html.Div([
                         html.Div([
                             html.Div("👨‍🔬", className="avatar")

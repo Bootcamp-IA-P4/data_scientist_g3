@@ -21,17 +21,15 @@ app = dash.Dash(
     __name__,
     suppress_callback_exceptions=True,  # Oculta errores de callbacks
     show_undo_redo=False,              # Oculta botones undo/redo
-    external_stylesheets=['assets/style.css', 'assets/about.css']            # Sin estilos externos que puedan mostrar debugging            
+    external_stylesheets=['assets/style.css', 'assets/about.css'] # Sin estilos externos que puedan mostrar debugging            
 )
 
-# Título de la página
 app.title = "Predictor de Riesgo de Stroke"
 
 # Layout principal
 def get_home_layout():
     return html.Div([
         
-        # Video de fondo
         html.Div([
         html.Video(
             src='assets/background-video.mp4',
@@ -44,7 +42,6 @@ def get_home_layout():
         # Overlay oscuro
         html.Div(className="video-overlay"),
         
-        # Navbar futurista
         create_navbar(),
         
         # Contenido principal
