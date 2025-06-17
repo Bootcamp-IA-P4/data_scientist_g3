@@ -103,7 +103,7 @@ networkx==3.4.2
 notebook==7.4.3
 notebook_shim==0.2.4
 numba==0.61.2
-numpy==2.2.6
+numpy==1.26.4
 optuna==4.3.0
 overrides==7.7.0
 packaging==25.0

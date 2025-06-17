@@ -1,5 +1,5 @@
 """
-Pipeline simplificado de predicción de imágenes CNN para stroke
+Pipeline de predicción de imágenes CNN para stroke
 Basado en modelo TorchScript con 98.13% accuracy
 """
 
@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Dict, Union, Optional
 
 class StrokeImagePipeline:
-    """Pipeline CNN simplificado para predicción de stroke"""
+    """Pipeline CNN para predicción de stroke"""
     
     def __init__(self, model_filename: str = "modelo_cnn_stroke_pytorch.zip"):
         self.model = None
@@ -202,7 +202,7 @@ def get_pipeline_status() -> Dict:
 
 # Test
 if __name__ == "__main__":
-    print("🧪 Test Pipeline CNN Simplificado")
+    print("🧪 Test Pipeline CNN")
     print("=" * 40)
     
     status = get_pipeline_status()
