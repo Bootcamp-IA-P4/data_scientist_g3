@@ -19,6 +19,12 @@ def create_navbar():
             href="/",
             className="nav-link active",
             id="stroke-nav-link"),
+
+            dcc.Link([
+            html.I(className="fas fa-brain"),
+            html.Span("Predicción Imagen")
+            ], 
+            href="/image-prediction", className="nav-link"),
            
             # Image Prediction
             html.A([

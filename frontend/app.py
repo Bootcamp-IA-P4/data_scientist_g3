@@ -3,25 +3,24 @@ from dash import dcc, html, Input, Output, State, callback
 from config.settings import FRONTEND_PORT
 from pages.about import get_about_layout
 from services.api_client import api_client
-from components.form_components import (
-    create_form_layout, 
-    validate_form_data, 
-    prepare_form_data
-)
-from components.results_components import (
-    create_result_card, 
-    create_error_message, 
-    create_disclaimer
-)
+from components.form_components import (create_form_layout, validate_form_data, prepare_form_data)
+from components.results_components import (create_result_card, create_error_message, create_disclaimer)
 from components.history_components import create_history_table
 from components.navbar_components import create_navbar
+from pages.image_prediction import get_image_prediction_layout
+from components.image_components import (create_image_preview, create_image_result_card, create_processing_animation, 
+    create_upload_error_message,
+    create_stroke_id_options,
+    validate_image_file
+)
+import base64
 
 # Inicializar la aplicación Dash
 app = dash.Dash(
     __name__,
     suppress_callback_exceptions=True,  # Oculta errores de callbacks
     show_undo_redo=False,              # Oculta botones undo/redo
-    external_stylesheets=['assets/style.css', 'assets/about.css'] # Sin estilos externos que puedan mostrar debugging            
+    external_stylesheets=['assets/style.css', 'assets/about.css', 'assets/image_prediction.css'] # Sin estilos externos que puedan mostrar debugging            
 )
 
 app.title = "Predictor de Riesgo de Stroke"
@@ -74,6 +73,8 @@ app.layout = html.Div([
 def display_page(pathname):
     if pathname == '/about':
         return get_about_layout()
+    elif pathname == '/image-prediction':
+        return get_image_prediction_layout()
     else:
         return get_home_layout()
 
@@ -133,7 +134,7 @@ def handle_prediction(n_clicks, edad, genero, glucosa, bmi, hipertension,
     risk_level = result.get('risk_level', 'Bajo')
     
     # Crear tarjeta de resultados
-    result_card = create_result_card(prediction, probability, risk_level)
+    result_card = create_result_card(prediction, probability, risk_level, show_image_button=True)
     
     return result_card, result
 
@@ -157,6 +158,202 @@ def show_history(n_clicks):
     
     # Crear y retornar tabla de historial
     return create_history_table(history_data)
+
+# Callback para actualizar el enlace de predicción de imagen con el ID correcto
+@callback(
+    Output('predict-image-link', 'href'),
+    [Input('prediction-store', 'data')],
+    prevent_initial_call=True
+)
+def update_image_prediction_link(prediction_data):
+    """Actualizar enlace de predicción de imagen con ID del stroke recién hecho"""
+    if prediction_data and 'id' in prediction_data:
+        stroke_id = prediction_data['id']
+        return f"/image-prediction?stroke_id={stroke_id}"
+    return "/image-prediction"
+
+# Callback para manejar clicks en botones de "Añadir Imagen" desde la tabla de historial  
+@callback(
+    Output('url', 'href', allow_duplicate=True),
+    [Input('history-table', 'active_cell')],
+    [State('history-table', 'data')],
+    prevent_initial_call=True
+)
+def handle_add_image_from_history(active_cell, table_data):
+    """Manejar click en botón 'Añadir Imagen' desde tabla de historial"""
+    if active_cell and table_data:
+        row_index = active_cell['row']
+        column_id = active_cell['column_id']
+        
+        # Verificar si se hizo click en columna "Estado Imagen" 
+        if column_id == 'Estado Imagen':
+            row_data = table_data[row_index]
+            
+            # Verificar si es un caso sin imagen (contiene "Añadir Imagen")
+            if 'Añadir Imagen' in str(row_data.get('Estado Imagen', '')):
+                stroke_id = row_data.get('ID')
+                if stroke_id:
+                    return f"/image-prediction?stroke_id={stroke_id}&origin=history"
+    
+    # No redirigir si no cumple condiciones
+    return dash.no_update
+
+# Callback para mostrar notificación de éxito después de análisis
+@callback(
+    Output('image-results-container', 'children', allow_duplicate=True),
+    [Input('analyze-image-button', 'n_clicks')],
+    prevent_initial_call=True
+)
+def show_analysis_notification(n_clicks):
+    """Mostrar notificación mientras se procesa la imagen"""
+    if n_clicks > 0:
+        return create_processing_animation()
+    return ""
+
+# Callback para validar formulario de imagen en tiempo real
+@callback(
+    [Output('analyze-image-button', 'style'),
+     Output('image-upload-area', 'className')],
+    [Input('stroke-id-dropdown', 'value'),
+     Input('image-upload', 'contents')],
+    prevent_initial_call=True
+)
+def validate_image_form_realtime(stroke_id, image_contents):
+    """Validar formulario de imagen en tiempo real"""
+    
+    # Clases base
+    upload_area_class = "image-upload-area"
+    button_style = {}
+    
+    # Validar si ambos campos están completos
+    if stroke_id and image_contents:
+        upload_area_class += " valid"
+        button_style = {
+            'background': 'linear-gradient(135deg, var(--color-accent) 0%, var(--color-primary) 100%)',
+            'transform': 'scale(1.02)',
+            'box-shadow': '0 0 25px rgba(139, 92, 246, 0.4)'
+        }
+    elif image_contents and not stroke_id:
+        upload_area_class += " invalid"
+    
+    return button_style, upload_area_class
+
+# Callback para cargar datos del stroke seleccionado
+@callback(
+    Output('stroke-id-info', 'children', allow_duplicate=True),
+    [Input('stroke-id-dropdown', 'value')],
+    [State('stroke-predictions-store', 'data')],
+    prevent_initial_call=True
+)
+def show_selected_stroke_info(selected_id, stroke_predictions):
+    """Mostrar información del stroke seleccionado"""
+    
+    if not selected_id or not stroke_predictions:
+        return ""
+    
+    # Buscar la predicción seleccionada
+    selected_pred = next((p for p in stroke_predictions if p.get('id') == selected_id), None)
+    
+    if not selected_pred:
+        return ""
+    
+    # Crear info card
+    return html.Div([
+        html.H5(f"📋 Predicción #{selected_id}"),
+        html.Div([
+            html.Span(f"Riesgo: {selected_pred.get('risk_level', 'N/A')}", className="info-item"),
+            html.Span(f"Probabilidad: {selected_pred.get('probability', 0):.1f}%", className="info-item"),
+            html.Span(f"Fecha: {selected_pred.get('created_at', 'N/A')[:10] if selected_pred.get('created_at') else 'N/A'}", className="info-item")
+        ], className="stroke-info-details")
+    ], className="selected-stroke-info")
+
+# Callback para refrescar datos automáticamente
+@callback(
+    Output('stroke-predictions-store', 'data'),
+    [Input('url', 'pathname')],
+    prevent_initial_call=False
+)
+def load_stroke_predictions_data(pathname):
+    """Cargar datos de predicciones de stroke al entrar a la página"""
+    
+    if pathname == '/image-prediction':
+        try:
+            # Obtener predicciones más recientes
+            predictions = api_client.get_predictions_history()
+            return predictions
+        except Exception as e:
+            print(f"Error cargando predicciones: {e}")
+            return []
+    
+    return []
+
+# Callback para navegación rápida desde acciones
+@callback(
+    Output('url', 'href', allow_duplicate=True),
+    [Input('new-prediction-quick', 'n_clicks'),
+     Input('upload-image-quick', 'n_clicks'),
+     Input('view-stats-quick', 'n_clicks')],
+    prevent_initial_call=True
+)
+def handle_quick_actions(new_pred_clicks, upload_img_clicks, stats_clicks):
+    """Manejar acciones rápidas de navegación"""
+    
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        return dash.no_update
+    
+    button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    
+    if button_id == 'new-prediction-quick':
+        return "/"
+    elif button_id == 'upload-image-quick':
+        return "/image-prediction"
+    elif button_id == 'view-stats-quick':
+        return "/#history"
+    
+    return dash.no_update
+
+# Callback para manejo de errores globales
+@callback(
+    Output('page-content', 'children', allow_duplicate=True),
+    [Input('url', 'pathname')],
+    prevent_initial_call=True
+)
+def handle_page_errors(pathname):
+    """Manejar errores de carga de página"""
+    
+    try:
+        if pathname == '/about':
+            return get_about_layout()
+        elif pathname == '/image-prediction':
+            return get_image_prediction_layout()
+        else:
+            return get_home_layout()
+            
+    except Exception as e:
+        print(f"Error cargando página {pathname}: {e}")
+        
+        # Página de error
+        return html.Div([
+            html.Div([
+                html.Video(
+                    src='assets/background-video.mp4',
+                    autoPlay=True,
+                    muted=True,
+                    loop=True
+                )
+            ], className="video-background"),
+            
+            html.Div(className="video-overlay"),
+            create_navbar(),
+            
+            html.Div([
+                html.H1("❌ Error de Carga"),
+                html.P(f"No se pudo cargar la página: {pathname}"),
+                html.P(f"Error: {str(e)}"),
+                html.A("🏠 Volver al Inicio", href="/", className="btn-primary")
+            ], className="error-page-content")
+        ])
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=FRONTEND_PORT)

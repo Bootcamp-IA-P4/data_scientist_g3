@@ -1,10 +1,12 @@
-# components/history_components.py
+from datetime import datetime
+from typing import List, Dict
 from dash import html
 try:
     from dash import dash_table
 except ImportError:
     # Fallback si dash_table no está disponible
     dash_table = None
+
 
 def create_history_table(history_data):
     """
