@@ -48,3 +48,11 @@ Thumbs.db
 .streamlit/secrets.toml
 
 /.qodo
+/htmlcov
+/tests/htmlcov
+
+
+/tests/test_data.json
+/tests/test_image.png
+/tests/test_image.jpg
+/tests/test_image.jpeg
