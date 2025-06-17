@@ -7,6 +7,7 @@ load_dotenv(PROJECT_ROOT / ".env")
 
 API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8000')
 FRONTEND_PORT = int(os.getenv('FRONTEND_PORT', 8050))
+ABOUT_PORT = 8051 
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 # Valores exactos para dropdowns

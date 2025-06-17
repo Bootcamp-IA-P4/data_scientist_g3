@@ -1,7 +1,7 @@
 import dash
 from dash import dcc, html, Input, Output, State, callback
 from config.settings import FRONTEND_PORT
-
+from pages.about import get_about_layout
 from services.api_client import api_client
 from components.form_components import (
     create_form_layout, 
@@ -21,48 +21,64 @@ app = dash.Dash(
     __name__,
     suppress_callback_exceptions=True,  # Oculta errores de callbacks
     show_undo_redo=False,              # Oculta botones undo/redo
-    external_stylesheets=[]            # Sin estilos externos que puedan mostrar debugging            
+    external_stylesheets=['assets/style.css', 'assets/about.css']            # Sin estilos externos que puedan mostrar debugging            
 )
 
 # Título de la página
 app.title = "Predictor de Riesgo de Stroke"
 
 # Layout principal
+def get_home_layout():
+    return html.Div([
+        
+        # Video de fondo
+        html.Div([
+        html.Video(
+            src='assets/background-video.mp4',
+            autoPlay=True,
+            muted=True,
+            loop=True
+        )
+        ], className="video-background"),
+        
+        # Overlay oscuro
+        html.Div(className="video-overlay"),
+        
+        # Navbar futurista
+        create_navbar(),
+        
+        # Contenido principal
+        html.Div([
+        html.H1("Predictor de Riesgo de Stroke"),
+        
+        create_form_layout(),
+        
+        html.Div(id='results-container'),
+        
+        # Disclaimer médico
+        create_disclaimer(),
+        
+        html.Div(id='history-container'),
+        
+        # Store para guardar datos temporalmente
+        dcc.Store(id='prediction-store')
+        ], style={'position': 'relative', 'z-index': '1'})
+    ])
+
 app.layout = html.Div([
-    
-    # Video de fondo
-    html.Div([
-    html.Video(
-        src='assets/background-video.mp4',
-        autoPlay=True,
-        muted=True,
-        loop=True
-    )
-    ], className="video-background"),
-    
-    # Overlay oscuro
-    html.Div(className="video-overlay"),
-    
-    # Navbar futurista
-    create_navbar(),
-    
-    # Contenido principal
-    html.Div([
-    html.H1("🧠 Predictor de Riesgo de Stroke"),
-    
-    create_form_layout(),
-    
-    html.Div(id='results-container'),
-    
-    # Disclaimer médico
-    create_disclaimer(),
-    
-    html.Div(id='history-container'),
-    
-    # Store para guardar datos temporalmente
-    dcc.Store(id='prediction-store')
-    ], style={'position': 'relative', 'z-index': '1'})
+    dcc.Location(id='url', refresh=False),
+    html.Div(id='page-content')
 ])
+
+@callback(
+    Output('page-content', 'children'),
+    [Input('url', 'pathname')]
+)
+def display_page(pathname):
+    if pathname == '/about':
+        return get_about_layout()
+    else:
+        return get_home_layout()
 
 # Callback para manejar predicciones
 @callback(
