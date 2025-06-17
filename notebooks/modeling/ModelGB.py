@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import optuna
@@ -8,7 +9,11 @@ from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline
 import joblib
 
-df = pd.read_csv("../data/processed/preprocessing.csv")
+# Carga de datos
+script_dir = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(script_dir, '..', '..', 'data', 'processed', 'preprocessing.csv')
+df = pd.read_csv(data_path)
+
 X = df.drop(columns=["stroke"])
 y = df["stroke"]
 
