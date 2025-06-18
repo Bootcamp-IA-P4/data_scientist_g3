@@ -20,12 +20,6 @@ def create_navbar():
             className="nav-link active",
             id="stroke-nav-link"),
 
-            dcc.Link([
-            html.I(className="fas fa-brain"),
-            html.Span("Predicción Imagen")
-            ], 
-            href="/image-prediction", className="nav-link"),
-           
             # Image Prediction
             html.A([
                 html.I(className="nav-icon"),
@@ -44,11 +38,5 @@ def create_navbar():
             className="nav-link",
             id="about-nav-link"),
         ], className="navbar-nav"),
-       
-        # Status indicator (opcional)
-        html.Div([
-            html.Div(className="status-dot"),
-            html.Span("Sistema Activo", className="status-text")
-        ], className="navbar-status")
        
     ], className="navbar-container")

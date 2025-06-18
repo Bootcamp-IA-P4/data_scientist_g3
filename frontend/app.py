@@ -15,6 +15,16 @@ from components.image_components import (create_image_preview, create_image_resu
 )
 import base64
 
+def resolve_latest_stroke_id():
+    """Resolver 'LATEST' al ID más reciente"""
+    try:
+        history_data = api_client.get_predictions_history()
+        if history_data and len(history_data) > 0:
+            return history_data[0].get('id')
+        return None
+    except:
+        return None
+
 # Inicializar la aplicación Dash
 app = dash.Dash(
     __name__,
@@ -159,18 +169,72 @@ def show_history(n_clicks):
     # Crear y retornar tabla de historial
     return create_history_table(history_data)
 
-# Callback para actualizar el enlace de predicción de imagen con el ID correcto
+# ✅ AGREGAR ESTE CALLBACK NUEVO
 @callback(
-    Output('predict-image-link', 'href'),
-    [Input('prediction-store', 'data')],
-    prevent_initial_call=True
+    [Output('stroke-id-dropdown', 'options'),
+     Output('stroke-id-dropdown', 'disabled'),
+     Output('stroke-id-dropdown', 'value'),
+     Output('stroke-id-info', 'children')],
+    [Input('url', 'pathname'),
+     Input('url', 'search')],
+    prevent_initial_call=False
 )
-def update_image_prediction_link(prediction_data):
-    """Actualizar enlace de predicción de imagen con ID del stroke recién hecho"""
-    if prediction_data and 'id' in prediction_data:
-        stroke_id = prediction_data['id']
-        return f"/image-prediction?stroke_id={stroke_id}"
-    return "/image-prediction"
+def load_stroke_predictions_for_dropdown(pathname, search):
+    """Cargar predicciones de stroke disponibles para el dropdown"""
+    
+    if pathname != '/image-prediction':
+        return [], True, None, ""
+    
+    # Obtener predicciones de stroke del backend
+    stroke_data = api_client.get_predictions_history()
+    
+    if not stroke_data:
+        return [], True, None, html.Div([
+            html.I(className="fas fa-exclamation-triangle"),
+            html.Span("No hay predicciones de stroke disponibles. "),
+            html.A("Crear nueva predicción", href="/", className="link-primary")
+        ], className="no-predictions-warning")
+    
+    # ✅ VERIFICAR SI VIENE CON LATEST Y RESOLVERLO
+    if search and 'stroke_id=LATEST' in search:
+        latest_id = resolve_latest_stroke_id()
+        if latest_id:
+            options = create_stroke_id_options(stroke_data)
+            selected_pred = next((p for p in stroke_data if p.get('id') == latest_id), None)
+            
+            if selected_pred:
+                info_msg = html.Div([
+                    html.I(className="fas fa-link"),
+                    html.Span(f"Vinculado a predicción recién realizada (ID #{latest_id})")
+                ], className="stroke-id-preselected")
+                
+                return options, True, latest_id, info_msg
+    
+    # Verificar si viene de una predicción específica (ID numérico)
+    if search and 'stroke_id=' in search and 'LATEST' not in search:
+        try:
+            stroke_id = int(search.split('stroke_id=')[1].split('&')[0])
+            options = create_stroke_id_options(stroke_data)
+            selected_pred = next((p for p in stroke_data if p.get('id') == stroke_id), None)
+            
+            if selected_pred:
+                info_msg = html.Div([
+                    html.I(className="fas fa-link"),
+                    html.Span(f"Vinculado a predicción específica (ID #{stroke_id})")
+                ], className="stroke-id-preselected")
+                
+                return options, True, stroke_id, info_msg
+        except ValueError:
+            pass  # Si no es un número válido, continuar
+    
+    # Forma 2: Dropdown habilitado para selección libre
+    options = create_stroke_id_options(stroke_data)
+    info_msg = html.Div([
+        html.I(className="fas fa-info-circle"),
+        html.Span(f"Seleccione una de las {len(stroke_data)} predicciones disponibles")
+    ], className="stroke-id-selection-info")
+    
+    return options, False, None, info_msg
 
 # Callback para manejar clicks en botones de "Añadir Imagen" desde la tabla de historial  
 @callback(

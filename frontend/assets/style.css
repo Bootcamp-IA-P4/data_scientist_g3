@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('./navbar.css');
 
 :root {
     --color-primary: #2563EB; 
@@ -11,9 +12,9 @@
     --color-background: #0F172A;
     --color-surface: #1E293B; 
     --color-surface-light: #334155; 
-    --color-glass: rgba(30, 41, 59, 0.8); /* Efecto cristal */
+    --color-glass: rgba(30, 41, 59, 0.8);
     
-     --color-text-primary: #F8FAFC; 
+    --color-text-primary: #F8FAFC; 
     --color-text-secondary: #94A3B8; 
     --color-text-on-primary: #FFFFFF; 
     --color-text-muted: #64748B; 
@@ -40,138 +41,14 @@
     --box-shadow-glow: 0 8px 32px rgba(37, 99, 235, 0.2);
 }
 
-.navbar-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: var(--color-glass);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-    box-shadow: var(--box-shadow-main);
-}
-
-/* Logo */
-.navbar-brand-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.navbar-brand {
-    color: var(--color-text-primary);
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: var(--glow-primary);
-}
-
-.navbar-subtitle {
-    color: var(--color-text-secondary);
-    font-size: 0.8rem;
-    font-weight: 400;
-    margin-top: -5px;
-    opacity: 0.8;
-}
-
-/* Navigation Links */
-.navbar-nav {
-    display: flex;
-    gap: 30px;
-    align-items: center;
-}
-
-.nav-link {
-    color: var(--color-text-secondary);
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: var(--border-radius-main);
-    transition: all 0.3s ease;
-    font-weight: 500;
-    font-size: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.nav-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s ease;
-}
-
-.nav-link:hover::before {
-    left: 100%;
-}
-
-.nav-link:hover {
-    color: var(--color-text-primary);
-    background: rgba(37, 99, 235, 0.2);
-    border-color: var(--color-primary);
-    box-shadow: var(--glow-primary);
-    transform: translateY(-2px);
-}
-
-.nav-link.active {
-    color: var(--color-text-on-primary);
-    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-    border-color: var(--color-primary);
-    box-shadow: var(--glow-primary);
-}
-
-.nav-link.active:hover {
-    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-accent-dark));
-    transform: translateY(-2px);
-}
-
-/* Status Indicator */
-.navbar-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--color-success);
-    box-shadow: 0 0 10px var(--color-success);
-    animation: pulse 2s infinite;
-}
-
-.status-text {
-    font-weight: 500;
-}
-
+/*BASE Y FONDO*/
 
 html, body {
     font-family: var(--font-primary);
-    /* background: linear-gradient(135deg, var(--color-background) 0%, #1E293B 100%); */
     background: transparent;
     color: var(--color-text-primary);
     line-height: 1.7;
-    padding: 80px 20px 20px 20px; /* Agregar padding-top para la navbar fija */
+    padding: 80px 20px 20px 20px;
     margin: 0;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
@@ -209,9 +86,10 @@ body::before {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: blur(1px) brightness(0.3);
+    filter: blur(1px) brightness(0.6);
 }
 
+/*TIPOGRAFÍA*/
 div h1 {
     color: var(--color-text-primary);
     text-align: center;
@@ -238,6 +116,7 @@ div h3 {
     font-weight: 500;
 }
 
+/*FORMULARIOS*/
 /* Contenedor del formulario con efecto cristal */
 div.form-container {
     background: var(--color-glass);
@@ -253,7 +132,6 @@ div.form-container {
     width: 90%; 
 }
 
-/* Efecto de brillo sutil en los contenedores */
 div.form-container::before {
     content: '';
     position: absolute;
@@ -281,7 +159,7 @@ div.form-container div.form-group label.form-label {
     font-size: 1.1rem;
 }
 
-/* Inputs numéricos futuristas */
+/* Inputs numéricos */
 div.form-container div.form-group input[type="number"] {
     border: 2px solid var(--color-border);
     border-radius: var(--border-radius-main);
@@ -305,7 +183,18 @@ div.form-container div.form-group input[type="number"]::placeholder {
     color: var(--color-text-muted);
 }
 
-/* Estilos para dropdowns de Dash */
+/* Estados de validación */
+div.form-container div.form-group input.input-valid {
+    border-color: var(--color-success);
+    box-shadow: var(--glow-success);
+}
+
+div.form-container div.form-group input.input-invalid {
+    border-color: var(--color-danger);
+    box-shadow: var(--glow-danger);
+}
+
+/*DROPDOWNS DASH*/
 div.form-container div.form-group div.dash-dropdown {
     margin-bottom: 10px;
     width: 100%;
@@ -336,26 +225,13 @@ div.form-container div.form-group div.dash-dropdown div.Select-placeholder {
     color: var(--color-text-muted);
     font-size: 1.1rem;
     line-height: 1.5;
-
 }
 
-/* TEXTO SELECCIONADO EN BLANCO - SELECTORES ADICIONALES */
-div.form-container div.form-group div.dash-dropdown div.Select-value-container {
-    color: var(--color-text-primary);
-}
-
-div.form-container div.form-group div.dash-dropdown div.Select-value-container div {
-    color: var(--color-text-primary);
-}
-
-div.form-container div.form-group div.dash-dropdown div.Select-value {
-    color: var(--color-text-primary);
-}
-
-div.form-container div.form-group div.dash-dropdown .Select--single .Select-value {
-    color: var(--color-text-primary);
-}
-
+/* Texto seleccionado en blanco */
+div.form-container div.form-group div.dash-dropdown div.Select-value-container,
+div.form-container div.form-group div.dash-dropdown div.Select-value-container div,
+div.form-container div.form-group div.dash-dropdown div.Select-value,
+div.form-container div.form-group div.dash-dropdown .Select--single .Select-value,
 div.form-container div.form-group div.dash-dropdown .Select--single .Select-value .Select-value-label {
     color: var(--color-text-primary);
 }
@@ -398,13 +274,12 @@ div.form-container div.form-group div.dash-dropdown div.Select-menu div.Select-o
     color: var(--color-text-on-primary);
 }
 
-/* Contenedor de botones */
+/*BOTONES*/
 div.form-container > div:last-child {
     text-align: center;
     margin-top: 40px;
 }
 
-/* Botones */
 div.form-container div button.btn-primary {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
     border: none;
@@ -455,7 +330,7 @@ div.form-container div button.btn-primary:disabled {
     box-shadow: none;
 }
 
-/* Tarjetas de resultados */
+/*TARJETAS DE RESULTADOS*/
 div.result-card {
     padding: 30px;
     border-radius: var(--border-radius-main);
@@ -469,7 +344,17 @@ div.result-card {
     animation: fadeIn 0.5s ease-in;
 }
 
-/* Tarjetas de resultados por nivel de riesgo con efectos neón */
+div.result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+/* Tarjetas por nivel de riesgo */
 div.result-card.result-card-low { 
     background: rgba(16, 185, 129, 0.1);
     border-left: 4px solid var(--color-success);
@@ -494,7 +379,7 @@ div.result-card.result-card-critical {
     box-shadow: var(--glow-danger);
 }
 
-/* Elementos de la tarjeta de resultados */
+/* Elementos de resultados */
 div.result-card div.percentage-display {
     font-size: 4em;
     font-weight: 800;
@@ -531,19 +416,7 @@ div.result-card div.recommendation {
     color: var(--color-text-secondary);
 }
 
-/* Disclaimer */
-div.disclaimer {
-    background: rgba(30, 41, 59, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: var(--border-radius-main);
-    margin: 20px 0;
-    font-size: 0.95em;
-    color: var(--color-text-secondary);
-    text-align: center;
-}
-
+/*HISTORIAL Y TABLAS*/
 /* Sección del historial */
 div.history-section {
     background: var(--color-glass);
@@ -567,7 +440,18 @@ div.history-section::before {
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
 }
 
-/* Estilos para la tabla del historial */
+div.history-section h3 {
+    color: var(--color-primary);
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-shadow: var(--glow-primary);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Tabla del historial */
 div.history-section div.dash-table-container {
     font-family: var(--font-primary);
     background: transparent;
@@ -603,15 +487,18 @@ div.history-section div.dash-table-container div.dash-spreadsheet-container div.
     box-shadow: inset 0 0 10px rgba(37, 99, 235, 0.2);
 }
 
-div.history-section h3 {
-    color: var(--color-primary);
-    margin-bottom: 20px;
-    font-weight: 600;
-    text-shadow: var(--glow-primary);
-    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+/*MENSAJES Y ESTADOS*/
+/* Disclaimer */
+div.disclaimer {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: var(--border-radius-main);
+    margin: 20px 0;
+    font-size: 0.95em;
+    color: var(--color-text-secondary);
+    text-align: center;
 }
 
 /* Mensajes de error */
@@ -638,18 +525,7 @@ div.loading-message {
     backdrop-filter: blur(10px);
 }
 
-/* Efectos de brillo adicionales */
-div.result-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-}
-
-/* Animaciones */
+/*ANIMACIONES*/
 @keyframes pulse {
     0% {
         box-shadow: 0 0 10px var(--color-success);
@@ -673,47 +549,9 @@ div.result-card::before {
     }
 }
 
-
-@media (max-width: 480px) {
-    .navbar-brand {
-        font-size: 1.5rem;
-    }
-    
-    .navbar-subtitle {
-        font-size: 0.7rem;
-    }
-    
-    .nav-link {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-    }
-}
-/* Estilos responsivos */
 @media (max-width: 768px) {
-    .navbar-container {
-        flex-direction: column;
-        padding: 15px 20px;
-        gap: 15px;
-    }
-    
-    .navbar-nav {
-        gap: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .nav-link {
-        padding: 8px 15px;
-        font-size: 0.9rem;
-        min-width: auto;
-    }
-    
-    .navbar-status {
-        order: -1;
-    }
-    
     html, body {
-        padding-top: 120px; /* Más espacio en móvil */
+        padding-top: 120px;
     }
     
     div.form-container {
@@ -761,7 +599,6 @@ div.result-card::before {
     }
 }
 
-/* Estilos para tablets */
 @media (max-width: 992px) and (min-width: 769px) {
     div.form-container {
         max-width: 700px;
@@ -773,7 +610,6 @@ div.result-card::before {
     }
 }
 
-/* Estilos para pantallas grandes */
 @media (min-width: 1200px) {
     div.form-container {
         max-width: 650px;
@@ -794,15 +630,4 @@ div.result-card::before {
     div.form-container div.form-group div.dash-dropdown div.Select-placeholder {
         font-size: 1.2rem;
     }
-}
-
-/* Estados de validación */
-div.form-container div.form-group input.input-valid {
-    border-color: var(--color-success);
-    box-shadow: var(--glow-success);
-}
-
-div.form-container div.form-group input.input-invalid {
-    border-color: var(--color-danger);
-    box-shadow: var(--glow-danger);
 }

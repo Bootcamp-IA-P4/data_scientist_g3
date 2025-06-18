@@ -3,51 +3,18 @@ import base64
 from typing import List, Dict, Optional
 
 def create_upload_restrictions_info():
-    """Información sobre restricciones de upload"""
+    """Información sobre restricciones de upload - versión simplificada"""
     return html.Div([
         html.H3("Especificaciones Técnicas"),
         html.Div([
-            html.Div([
-                html.Div([
-                    html.I(className="fas fa-file-image restriction-icon"),
-                    html.Span("Formatos:", className="restriction-label"),
-                    html.Span("JPEG, PNG, WEBP, BMP", className="restriction-value")
-                ], className="restriction-item"),
-                
-                html.Div([
-                    html.I(className="fas fa-weight restriction-icon"),
-                    html.Span("Tamaño máximo:", className="restriction-label"),
-                    html.Span("10 MB", className="restriction-value")
-                ], className="restriction-item"),
-                
-                html.Div([
-                    html.I(className="fas fa-expand-arrows-alt restriction-icon"),
-                    html.Span("Dimensiones:", className="restriction-label"),
-                    html.Span("32×32 a 4096×4096 píxeles", className="restriction-value")
-                ], className="restriction-item")
-            ], className="restrictions-column"),
-            
-            html.Div([
-                html.Div([
-                    html.I(className="fas fa-brain restriction-icon"),
-                    html.Span("Tipo de imagen:", className="restriction-label"),
-                    html.Span("Tomografía computarizada", className="restriction-value")
-                ], className="restriction-item"),
-                
-                html.Div([
-                    html.I(className="fas fa-palette restriction-icon"),
-                    html.Span("Color:", className="restriction-label"),
-                    html.Span("Escala de grises preferida", className="restriction-value")
-                ], className="restriction-item"),
-                
-                html.Div([
-                    html.I(className="fas fa-clock restriction-icon"),
-                    html.Span("Procesamiento:", className="restriction-label"),
-                    html.Span("~2-5 segundos", className="restriction-value")
-                ], className="restriction-item")
-            ], className="restrictions-column")
-        ], className="restrictions-grid")
-    ], className="upload-restrictions")
+            html.P([
+                "", html.Strong("Formatos soportados: "), "JPEG, PNG, WEBP, BMP"
+            ]),
+            html.P([
+                "", html.Strong("Tamaño máximo: "), "10 MB"
+            ]),
+        ], className="specs-list")
+    ], className="upload-restrictions-simple")
 
 def create_image_upload_form():
     """Formulario de upload de imagen con dropdown de stroke ID"""
