@@ -2,10 +2,11 @@ import dash
 from dash import dcc, html, Input, Output, State, callback
 from config.settings import FRONTEND_PORT
 from pages.about import get_about_layout
+from pages.history import get_history_layout
 from services.api_client import api_client
 from components.form_components import (create_form_layout, validate_form_data, prepare_form_data)
 from components.results_components import (create_result_card, create_error_message, create_disclaimer)
-from components.history_components import create_history_table
+from components.history_components import (create_combined_history_table, create_history_stats_summary, filter_combined_data)
 from components.navbar_components import create_navbar
 from pages.image_prediction import get_image_prediction_layout
 from components.image_components import (create_image_preview, create_image_result_card, create_processing_animation, 
@@ -30,7 +31,7 @@ app = dash.Dash(
     __name__,
     suppress_callback_exceptions=True,  # Oculta errores de callbacks
     show_undo_redo=False,              # Oculta botones undo/redo
-    external_stylesheets=['assets/style.css', 'assets/about.css', 'assets/image_prediction.css'] # Sin estilos externos que puedan mostrar debugging            
+    external_stylesheets=['assets/style.css', 'assets/about.css', 'assets/image_prediction.css', 'assets/history.css'] # Añadir estilos de historial            
 )
 
 app.title = "Predictor de Riesgo de Stroke"
@@ -64,8 +65,6 @@ def get_home_layout():
         # Disclaimer médico
         create_disclaimer(),
         
-        html.Div(id='history-container'),
-        
         # Store para guardar datos temporalmente
         dcc.Store(id='prediction-store')
         ], style={'position': 'relative', 'z-index': '1'})
@@ -85,6 +84,8 @@ def display_page(pathname):
         return get_about_layout()
     elif pathname == '/image-prediction':
         return get_image_prediction_layout()
+    elif pathname == '/history':
+        return get_history_layout()
     else:
         return get_home_layout()
 
@@ -148,33 +149,104 @@ def handle_prediction(n_clicks, edad, genero, glucosa, bmi, hipertension,
     
     return result_card, result
 
-# Callback para mostrar historial
+# Callbacks para página de historial
 @callback(
-    Output('history-container', 'children'),
-    [Input('history-button', 'n_clicks')]
+    [Output('history-stats-container', 'children'),
+     Output('combined-history-container', 'children'),
+     Output('stroke-history-store', 'data'),
+     Output('image-history-store', 'data'),
+     Output('combined-history-store', 'data')],
+    [Input('url', 'pathname'),
+     Input('refresh-history-button', 'n_clicks')],
+    prevent_initial_call=False
 )
-def show_history(n_clicks):
-    """
-    Maneja la visualización del historial:
-    1. Obtiene datos del backend
-    2. Crea la tabla de historial
-    """
+def load_history_data(pathname, refresh_clicks):
+    """Cargar datos del historial combinado"""
     
-    if n_clicks == 0:
-        return html.Div()
+    if pathname != '/history':
+        return "", "", [], [], {}
     
-    # Obtener historial del backend
-    history_data = api_client.get_predictions_history()
-    
-    # Crear y retornar tabla de historial
-    return create_history_table(history_data)
+    try:
+        print("📊 Cargando datos del historial combinado...")
+        
+        # Obtener datos combinados
+        combined_data = api_client.get_combined_predictions_history()
+        
+        if not combined_data.get('success', False):
+            error_msg = combined_data.get('error', 'Error desconocido')
+            return (
+                html.Div([
+                    html.H3("❌ Error al cargar historial"),
+                    html.P(f"Error: {error_msg}")
+                ], className="history-error"),
+                "",
+                [],
+                [],
+                {}
+            )
+        
+        stroke_data = combined_data['stroke_data']
+        image_data = combined_data['image_data']
+        stats = combined_data['stats']
+        
+        print(f"✅ Datos cargados - Stroke: {len(stroke_data)}, Imágenes: {len(image_data)}")
+        
+        # Crear componentes
+        stats_component = create_history_stats_summary(stroke_data, image_data)
+        table_component = create_combined_history_table(stroke_data, image_data)
+        
+        return (
+            stats_component,
+            table_component,
+            stroke_data,
+            image_data,
+            combined_data
+        )
+        
+    except Exception as e:
+        print(f"❌ Error cargando historial: {e}")
+        return (
+            html.Div([
+                html.H3("❌ Error al cargar historial"),
+                html.P(f"Error: {str(e)}")
+            ], className="history-error"),
+            "",
+            [],
+            [],
+            {}
+        )
 
-# ✅ AGREGAR ESTE CALLBACK NUEVO
 @callback(
-    [Output('stroke-id-dropdown', 'options'),
-     Output('stroke-id-dropdown', 'disabled'),
-     Output('stroke-id-dropdown', 'value'),
-     Output('stroke-id-info', 'children')],
+    Output('combined-history-container', 'children', allow_duplicate=True),
+    [Input('risk-filter-dropdown', 'value'),
+     Input('image-status-filter-dropdown', 'value')],
+    [State('stroke-history-store', 'data'),
+     State('image-history-store', 'data'),
+     State('url', 'pathname')],
+    prevent_initial_call=True
+)
+def filter_history_table(risk_filter, image_status_filter, stroke_data, image_data, pathname):
+    """Filtrar tabla de historial según criterios seleccionados"""
+    
+    if pathname != '/history' or not stroke_data:
+        return dash.no_update
+    
+    try:
+        # Aplicar filtros y recrear tabla
+        filtered_table = create_combined_history_table(stroke_data, image_data)
+        return filtered_table
+        
+    except Exception as e:
+        print(f"❌ Error filtrando historial: {e}")
+        return html.Div([
+            html.P(f"Error aplicando filtros: {str(e)}")
+        ], className="filter-error")
+
+@callback(
+    Output('stroke-id-dropdown', 'options'),
+    Output('stroke-id-dropdown', 'disabled'),
+    Output('stroke-id-dropdown', 'value'),
+    Output('stroke-id-info', 'children'),
     [Input('url', 'pathname'),
      Input('url', 'search')],
     prevent_initial_call=False
@@ -195,7 +267,7 @@ def load_stroke_predictions_for_dropdown(pathname, search):
             html.A("Crear nueva predicción", href="/", className="link-primary")
         ], className="no-predictions-warning")
     
-    # ✅ VERIFICAR SI VIENE CON LATEST Y RESOLVERLO
+    # Verificar si viene con LATEST y resolverlo
     if search and 'stroke_id=LATEST' in search:
         latest_id = resolve_latest_stroke_id()
         if latest_id:
@@ -227,7 +299,7 @@ def load_stroke_predictions_for_dropdown(pathname, search):
         except ValueError:
             pass  # Si no es un número válido, continuar
     
-    # Forma 2: Dropdown habilitado para selección libre
+    # Dropdown habilitado para selección libre
     options = create_stroke_id_options(stroke_data)
     info_msg = html.Div([
         html.I(className="fas fa-info-circle"),
@@ -239,8 +311,8 @@ def load_stroke_predictions_for_dropdown(pathname, search):
 # Callback para manejar clicks en botones de "Añadir Imagen" desde la tabla de historial  
 @callback(
     Output('url', 'href', allow_duplicate=True),
-    [Input('history-table', 'active_cell')],
-    [State('history-table', 'data')],
+    [Input('combined-history-table', 'active_cell')],
+    [State('combined-history-table', 'data')],
     prevent_initial_call=True
 )
 def handle_add_image_from_history(active_cell, table_data):
@@ -254,7 +326,7 @@ def handle_add_image_from_history(active_cell, table_data):
             row_data = table_data[row_index]
             
             # Verificar si es un caso sin imagen (contiene "Añadir Imagen")
-            if 'Añadir Imagen' in str(row_data.get('Estado Imagen', '')):
+            if 'Añadir' in str(row_data.get('Estado Imagen', '')):
                 stroke_id = row_data.get('ID')
                 if stroke_id:
                     return f"/image-prediction?stroke_id={stroke_id}&origin=history"
@@ -262,7 +334,6 @@ def handle_add_image_from_history(active_cell, table_data):
     # No redirigir si no cumple condiciones
     return dash.no_update
 
-# ✅ CALLBACK PRINCIPAL NUEVO - REEMPLAZA EL TEST SIMPLE
 @callback(
     Output('image-results-container', 'children'),
     [Input('analyze-image-button', 'n_clicks')],
@@ -274,7 +345,7 @@ def handle_add_image_from_history(active_cell, table_data):
 )
 def analyze_image_real(n_clicks, image_contents, filename, stroke_id, pathname):
     """
-    ✅ CALLBACK PRINCIPAL ARREGLADO: Procesa imagen real y la envía al backend
+    Procesa imagen real y la envía al backend
     """
     
     print(f"🔍 DEBUG analyze_image_real llamado:")
@@ -310,7 +381,7 @@ def analyze_image_real(n_clicks, image_contents, filename, stroke_id, pathname):
     processing_msg = create_processing_animation()
     
     try:
-        # ✅ ENVIAR IMAGEN REAL AL BACKEND
+        # Enviar imagen real al backend
         result = api_client.predict_image(
             image_contents=image_contents,
             stroke_prediction_id=stroke_id,
@@ -325,7 +396,7 @@ def analyze_image_real(n_clicks, image_contents, filename, stroke_id, pathname):
             print(f"❌ Error del backend: {error_msg}")
             return create_upload_error_message(f"Error del servidor: {error_msg}")
         
-        # ✅ PROCESAR RESPUESTA EXITOSA
+        # Procesar respuesta exitosa
         prediction = result.get('prediction', 0)
         probability = result.get('probability', 0.0)
         risk_level = result.get('risk_level', 'Bajo')
@@ -341,7 +412,7 @@ def analyze_image_real(n_clicks, image_contents, filename, stroke_id, pathname):
         print(f"   - Model Confidence: {model_confidence}")
         print(f"   - Message: {message}")
         
-        # ✅ CREAR TARJETA DE RESULTADOS
+        # Crear tarjeta de resultados
         result_card = create_image_result_card(
             prediction=prediction,
             probability=probability,
@@ -359,7 +430,6 @@ def analyze_image_real(n_clicks, image_contents, filename, stroke_id, pathname):
         print(f"❌ Error inesperado procesando imagen: {e}")
         return create_upload_error_message(f"Error inesperado: {str(e)}")
 
-# ✅ CALLBACK PRINCIPAL ARREGLADO Y CON DEBUG
 @callback(
     [Output('image-upload-status', 'children'),
      Output('image-upload', 'children'),
@@ -368,7 +438,7 @@ def analyze_image_real(n_clicks, image_contents, filename, stroke_id, pathname):
     [State('image-upload', 'filename'),
      State('stroke-id-dropdown', 'value'),
      State('url', 'pathname')],
-    prevent_initial_call=False  # ✅ CAMBIO: Permitir llamada inicial
+    prevent_initial_call=False
 )
 def handle_image_upload(contents, filename, stroke_id, pathname):
     """Manejar upload de imagen y mostrar preview dentro del área de upload"""
@@ -379,7 +449,7 @@ def handle_image_upload(contents, filename, stroke_id, pathname):
     print(f"  - filename: {filename}")
     print(f"  - stroke_id: {stroke_id}")
     
-    # ✅ ÁREA DE UPLOAD POR DEFECTO
+    # Área de upload por defecto
     upload_area_default = html.Div([
         html.I(className="fas fa-cloud-upload-alt upload-icon"),
         html.P("Arrastra y suelta una imagen aquí o"),
@@ -419,15 +489,15 @@ def handle_image_upload(contents, filename, stroke_id, pathname):
         error_msg = create_upload_error_message(validation['error'])
         return error_msg, upload_area_default, True
     
-    # ✅ CREAR PREVIEW DENTRO DEL ÁREA DE UPLOAD
+    # Crear preview dentro del área de upload
     try:
         print("✅ Creando preview de imagen...")
         
-        # ✅ CONTENIDO CON IMAGEN PARA EL ÁREA DE UPLOAD
+        # Contenido con imagen para el área de upload
         upload_area_with_image = html.Div([
             html.Div([
                 html.Img(
-                    src=contents,  # ✅ USAR TODO EL CONTENIDO
+                    src=contents,
                     className="uploaded-image-preview",
                     style={
                         'max-width': '250px',
@@ -502,7 +572,6 @@ def handle_image_upload(contents, filename, stroke_id, pathname):
         error_msg = create_upload_error_message(f"Error procesando imagen: {str(e)}")
         return error_msg, upload_area_default, True
 
-# ✅ CALLBACK PARA REMOVER IMAGEN ARREGLADO
 @callback(
     [Output('image-upload', 'children', allow_duplicate=True),
      Output('image-upload-status', 'children', allow_duplicate=True),
@@ -579,7 +648,7 @@ def handle_quick_actions(new_pred_clicks, upload_img_clicks, stats_clicks):
     elif button_id == 'upload-image-quick':
         return "/image-prediction"
     elif button_id == 'view-stats-quick':
-        return "/#history"
+        return "/history"
     
     return dash.no_update
 
@@ -597,6 +666,8 @@ def handle_page_errors(pathname):
             return get_about_layout()
         elif pathname == '/image-prediction':
             return get_image_prediction_layout()
+        elif pathname == '/history':
+            return get_history_layout()
         else:
             return get_home_layout()
             

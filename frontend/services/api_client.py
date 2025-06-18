@@ -83,7 +83,6 @@ class StrokeAPIClient:
             print(f"Error inesperado al obtener historial: {e}")
             return []
 
-    # nuevos metodos para imagenes
     def get_image_upload_info(self) -> Dict:
         """
         Obtiene información sobre restricciones de upload de imagen
@@ -130,7 +129,7 @@ class StrokeAPIClient:
             print(f"🔍 Iniciando predicción de imagen para stroke ID {stroke_prediction_id}")
             print(f"📁 Archivo: {filename}")
             
-            # ✅ CAMBIO PRINCIPAL: Decodificar correctamente el base64
+            # Decodificar correctamente el base64
             if ',' in image_contents:
                 # Formato: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEA..."
                 header, base64_data = image_contents.split(',', 1)
@@ -162,7 +161,7 @@ class StrokeAPIClient:
             
             print(f"🎯 Content-Type detectado: {content_type}")
             
-            # ✅ PREPARAR ARCHIVO PARA FASTAPI
+            # Preparar archivo para FastAPI
             files = {
                 'image': (filename, image_bytes, content_type)
             }
@@ -283,12 +282,17 @@ class StrokeAPIClient:
 
     def get_combined_predictions_history(self) -> Dict:
         """
-        Obtiene historial combinado de stroke e imágenes para la tabla
+        Obtiene historial combinado de stroke e imágenes
+        Combina datos en el frontend usando endpoints existentes
         """
         try:
+            print("📊 Obteniendo historial combinado...")
+            
             # Obtener ambos historiales
             stroke_predictions = self.get_predictions_history()
             image_predictions = self.get_image_predictions_history()
+            
+            print(f"✅ Datos obtenidos - Stroke: {len(stroke_predictions)}, Imágenes: {len(image_predictions)}")
             
             # Crear mapa de imágenes por stroke_prediction_id
             images_by_stroke_id = {}
@@ -297,42 +301,48 @@ class StrokeAPIClient:
                 if stroke_id:
                     images_by_stroke_id[stroke_id] = img
             
-            # Combinar datos
-            combined_data = []
-            for stroke in stroke_predictions:
-                stroke_id = stroke.get('id')
-                image_data = images_by_stroke_id.get(stroke_id, None)
-                
-                combined_record = {
-                    'id': stroke_id,
-                    'fecha': stroke.get('created_at', 'N/A'),
-                    'paciente': stroke.get('patient_name', f'Paciente #{stroke_id}'),
-                    'hipertension': stroke.get('hypertension', 'N/A'),
-                    'glucosa': stroke.get('avg_glucose_level', 'N/A'),
-                    'stroke_probability': stroke.get('probability', 0),
-                    'stroke_risk_level': stroke.get('risk_level', 'N/A'),
-                    'estado_clinico': '✅ Completado',
-                    'image_probability': image_data.get('probability', None) if image_data else None,
-                    'image_risk_level': image_data.get('risk_level', None) if image_data else None,
-                    'estado_imagen': '✅ Completado' if image_data else '[📸 Añadir Imagen]',
-                    'has_image': bool(image_data)
-                }
-                combined_data.append(combined_record)
+            print(f"📷 Imágenes mapeadas por stroke_id: {len(images_by_stroke_id)} asociaciones")
+            
+            # Estadísticas
+            total_stroke = len(stroke_predictions)
+            total_images = len(image_predictions)
+            completion_rate = (total_images / total_stroke * 100) if total_stroke > 0 else 0
+            
+            # Contar casos de alto riesgo
+            high_risk_stroke = sum(1 for s in stroke_predictions if s.get('risk_level') in ['Alto', 'Crítico'])
+            high_risk_images = sum(1 for i in image_predictions if i.get('risk_level') in ['Alto', 'Crítico'])
             
             return {
-                'combined_data': combined_data,
-                'total_stroke': len(stroke_predictions),
-                'total_images': len(image_predictions),
-                'completion_rate': len(image_predictions) / len(stroke_predictions) * 100 if stroke_predictions else 0
+                'stroke_data': stroke_predictions,
+                'image_data': image_predictions,
+                'images_by_stroke_id': images_by_stroke_id,
+                'stats': {
+                    'total_stroke': total_stroke,
+                    'total_images': total_images,
+                    'completion_rate': completion_rate,
+                    'high_risk_stroke': high_risk_stroke,
+                    'high_risk_images': high_risk_images,
+                    'cases_with_both': len(images_by_stroke_id)
+                },
+                'success': True
             }
             
         except Exception as e:
-            print(f"Error combinando historiales: {e}")
+            print(f"❌ Error combinando historiales: {e}")
             return {
-                'combined_data': [],
-                'total_stroke': 0,
-                'total_images': 0,
-                'completion_rate': 0
+                'stroke_data': [],
+                'image_data': [],
+                'images_by_stroke_id': {},
+                'stats': {
+                    'total_stroke': 0,
+                    'total_images': 0,
+                    'completion_rate': 0,
+                    'high_risk_stroke': 0,
+                    'high_risk_images': 0,
+                    'cases_with_both': 0
+                },
+                'success': False,
+                'error': str(e)
             }
 
 # Instancia global del cliente API
