@@ -1,5 +1,8 @@
 import requests
 from config.settings import API_BASE_URL
+from typing import Dict, List
+import base64
+import io
 
 class StrokeAPIClient:
     def __init__(self):
@@ -25,7 +28,7 @@ class StrokeAPIClient:
     
     def get_predictions_history(self):
         """
-        Obtiene historial de predicciones
+        Obtiene historial de predicciones de stroke
         GET a /predictions/stroke
         """
         try:
@@ -79,6 +82,258 @@ class StrokeAPIClient:
         except Exception as e:
             print(f"Error inesperado al obtener historial: {e}")
             return []
+
+    # nuevos metodos para imagenes
+    def get_image_upload_info(self) -> Dict:
+        """
+        Obtiene información sobre restricciones de upload de imagen
+        GET a /image/upload-info
+        """
+        try:
+            response = requests.get(
+                f"{self.base_url}/image/upload-info",
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f"Error obteniendo info de upload: {response.status_code}")
+                return {
+                    "max_size_mb": 10,
+                    "allowed_formats": ["JPEG", "PNG", "WEBP", "BMP"],
+                    "min_dimensions": {"width": 32, "height": 32},
+                    "max_dimensions": {"width": 4096, "height": 4096}
+                }
+                
+        except requests.exceptions.RequestException as e:
+            print(f"Error de conexión obteniendo upload info: {e}")
+            return {
+                "max_size_mb": 10,
+                "allowed_formats": ["JPEG", "PNG", "WEBP", "BMP"],
+                "min_dimensions": {"width": 32, "height": 32},
+                "max_dimensions": {"width": 4096, "height": 4096}
+            }
+
+    def predict_image(self, image_contents: str, stroke_prediction_id: int, 
+                      filename: str) -> Dict:
+        """
+        Envía imagen al backend para predicción de stroke
+        POST a /predict/image/{stroke_prediction_id}
+        
+        Args:
+            image_contents: Contenido de imagen en formato data:image/...;base64,xxxxx
+            stroke_prediction_id: ID de la predicción de stroke
+            filename: Nombre del archivo
+        """
+        try:
+            print(f"🔍 Iniciando predicción de imagen para stroke ID {stroke_prediction_id}")
+            print(f"📁 Archivo: {filename}")
+            
+            # ✅ CAMBIO PRINCIPAL: Decodificar correctamente el base64
+            if ',' in image_contents:
+                # Formato: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEA..."
+                header, base64_data = image_contents.split(',', 1)
+                print(f"📋 Header detectado: {header}")
+            else:
+                # Si ya es solo base64 sin header
+                base64_data = image_contents
+                print("📋 Datos ya en formato base64 puro")
+            
+            # Decodificar base64 a bytes
+            try:
+                image_bytes = base64.b64decode(base64_data)
+                print(f"✅ Imagen decodificada: {len(image_bytes)} bytes")
+            except Exception as decode_error:
+                print(f"❌ Error decodificando base64: {decode_error}")
+                return {"error": f"Error decodificando imagen: {str(decode_error)}"}
+            
+            # Detectar content type basado en filename
+            if filename.lower().endswith(('.jpg', '.jpeg')):
+                content_type = 'image/jpeg'
+            elif filename.lower().endswith('.png'):
+                content_type = 'image/png'
+            elif filename.lower().endswith('.webp'):
+                content_type = 'image/webp'
+            elif filename.lower().endswith('.bmp'):
+                content_type = 'image/bmp'
+            else:
+                content_type = 'image/jpeg'  # Default
+            
+            print(f"🎯 Content-Type detectado: {content_type}")
+            
+            # ✅ PREPARAR ARCHIVO PARA FASTAPI
+            files = {
+                'image': (filename, image_bytes, content_type)
+            }
+            
+            print(f"🚀 Enviando imagen a: {self.base_url}/predict/image/{stroke_prediction_id}")
+            
+            response = requests.post(
+                f"{self.base_url}/predict/image/{stroke_prediction_id}",
+                files=files,
+                timeout=60  # Más tiempo para procesamiento de imagen
+            )
+            
+            print(f"📊 Respuesta del servidor - Status: {response.status_code}")
+            
+            if response.status_code == 200:
+                result = response.json()
+                print(f"✅ Predicción imagen exitosa!")
+                print(f"   - Predicción: {result.get('prediction')}")
+                print(f"   - Probabilidad: {result.get('probability')}")
+                print(f"   - Riesgo: {result.get('risk_level')}")
+                print(f"   - Tiempo: {result.get('processing_time_ms')} ms")
+                return result
+            else:
+                # Manejar errores del backend
+                error_detail = "Error desconocido"
+                try:
+                    error_data = response.json()
+                    error_detail = error_data.get('detail', f"Status {response.status_code}")
+                    print(f"❌ Error del backend: {error_detail}")
+                except:
+                    error_detail = f"Status {response.status_code}: {response.text[:200]}"
+                    print(f"❌ Error sin JSON: {error_detail}")
+                
+                return {"error": f"Error del servidor: {error_detail}"}
+                
+        except requests.exceptions.ConnectionError as e:
+            print(f"❌ Error de conexión: {e}")
+            return {"error": f"Error de conexión al backend. Verifique que esté ejecutándose en puerto 8000."}
+        except requests.exceptions.Timeout as e:
+            print(f"❌ Timeout: {e}")
+            return {"error": "Timeout procesando imagen. La imagen puede ser muy grande o el servidor está ocupado."}
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Error de request: {e}")
+            return {"error": f"Error de conexión: {str(e)}"}
+        except Exception as e:
+            print(f"❌ Error inesperado: {e}")
+            return {"error": f"Error inesperado: {str(e)}"}
+    
+    def predict_image_simple_test(self, stroke_prediction_id: int) -> Dict:
+        """Test simple de predicción de imagen sin archivo real"""
+        try:
+            # Solo hacer un test de conectividad
+            response = requests.get(
+                f"{self.base_url}/health",
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                return {
+                    "prediction": 0,
+                    "probability": 0.23,
+                    "risk_level": "Bajo",
+                    "processing_time_ms": 1500,
+                    "stroke_prediction_id": stroke_prediction_id,
+                    "model_confidence": 0.87,
+                    "message": "Test exitoso - Backend funcionando"
+                }
+            else:
+                return {"error": f"Backend no responde: {response.status_code}"}
+                
+        except Exception as e:
+            return {"error": f"Error de conexión: {str(e)}"}
+
+    def get_image_predictions_history(self, limit: int = 50) -> List[Dict]:
+        """
+        Obtiene historial de predicciones de imagen
+        GET a /predictions/images
+        """
+        try:
+            print(f"Solicitando historial de imágenes desde: {self.base_url}/predictions/images")
+            
+            response = requests.get(
+                f"{self.base_url}/predictions/images",
+                params={"limit": limit},
+                timeout=30
+            )
+            
+            print(f"Respuesta historial imágenes - Status: {response.status_code}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                print(f"Datos recibidos historial imágenes: {len(data.get('predictions', []))} elementos")
+                
+                # El backend devuelve ImagePredictionsList
+                if isinstance(data, dict) and 'predictions' in data:
+                    return data['predictions']
+                elif isinstance(data, list):
+                    return data
+                else:
+                    print(f"Estructura inesperada historial imágenes: {type(data)}")
+                    return []
+                    
+            else:
+                print(f"Error obteniendo historial imágenes: {response.status_code}")
+                try:
+                    error_detail = response.json()
+                    print(f"Detalle error historial imágenes: {error_detail}")
+                except:
+                    print(f"Respuesta historial imágenes: {response.text}")
+                return []
+                
+        except requests.exceptions.RequestException as e:
+            print(f"Error de conexión historial imágenes: {e}")
+            return []
+        except Exception as e:
+            print(f"Error inesperado historial imágenes: {e}")
+            return []
+
+    def get_combined_predictions_history(self) -> Dict:
+        """
+        Obtiene historial combinado de stroke e imágenes para la tabla
+        """
+        try:
+            # Obtener ambos historiales
+            stroke_predictions = self.get_predictions_history()
+            image_predictions = self.get_image_predictions_history()
+            
+            # Crear mapa de imágenes por stroke_prediction_id
+            images_by_stroke_id = {}
+            for img in image_predictions:
+                stroke_id = img.get('stroke_prediction_id')
+                if stroke_id:
+                    images_by_stroke_id[stroke_id] = img
+            
+            # Combinar datos
+            combined_data = []
+            for stroke in stroke_predictions:
+                stroke_id = stroke.get('id')
+                image_data = images_by_stroke_id.get(stroke_id, None)
+                
+                combined_record = {
+                    'id': stroke_id,
+                    'fecha': stroke.get('created_at', 'N/A'),
+                    'paciente': stroke.get('patient_name', f'Paciente #{stroke_id}'),
+                    'hipertension': stroke.get('hypertension', 'N/A'),
+                    'glucosa': stroke.get('avg_glucose_level', 'N/A'),
+                    'stroke_probability': stroke.get('probability', 0),
+                    'stroke_risk_level': stroke.get('risk_level', 'N/A'),
+                    'estado_clinico': '✅ Completado',
+                    'image_probability': image_data.get('probability', None) if image_data else None,
+                    'image_risk_level': image_data.get('risk_level', None) if image_data else None,
+                    'estado_imagen': '✅ Completado' if image_data else '[📸 Añadir Imagen]',
+                    'has_image': bool(image_data)
+                }
+                combined_data.append(combined_record)
+            
+            return {
+                'combined_data': combined_data,
+                'total_stroke': len(stroke_predictions),
+                'total_images': len(image_predictions),
+                'completion_rate': len(image_predictions) / len(stroke_predictions) * 100 if stroke_predictions else 0
+            }
+            
+        except Exception as e:
+            print(f"Error combinando historiales: {e}")
+            return {
+                'combined_data': [],
+                'total_stroke': 0,
+                'total_images': 0,
+                'completion_rate': 0
+            }
 
 # Instancia global del cliente API
 api_client = StrokeAPIClient()

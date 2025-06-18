@@ -1,0 +1,512 @@
+.image-prediction-page {
+    min-height: 100vh;
+    position: relative;
+}
+
+.main-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+/*TÍTULOS Y TEXTOS PRINCIPALES*/
+.page-title {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    text-shadow: var(--glow-primary);
+}
+
+.title-accent {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-subtitle {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+/*FORMULARIO DE UPLOAD DE IMAGEN*/
+.image-upload-form {
+    background: rgba(30, 41, 59, 0.8) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 35px !important;
+    margin-bottom: 30px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.form-group {
+    margin-bottom: 25px !important;
+}
+
+.form-label {
+    display: block !important;
+    color: white !important;
+    font-weight: 600 !important;
+    margin-bottom: 10px !important;
+    font-size: 1rem !important;
+}
+
+.image-upload-form h3 {
+    color: #3B82F6;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+/* ✅ ESTILOS MEJORADOS PARA EL DROPDOWN DE STROKE ID */
+.stroke-id-dropdown {
+    margin-bottom: 15px;
+}
+
+/* Control principal del dropdown */
+.stroke-id-dropdown .Select-control {
+    background: #1E3A8A !important; /* Fondo azul */
+    border: 2px solid #3B82F6 !important;
+    border-radius: 8px !important;
+    min-height: 55px !important;
+    padding: 8px 15px !important;
+    transition: all 0.3s ease !important;
+    color: white !important;
+    position: relative !important;
+}
+
+.stroke-id-dropdown .Select-control:hover {
+    border-color: #60A5FA !important;
+    background: #1D4ED8 !important;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+.stroke-id-dropdown .Select-control.is-focused {
+    border-color: #60A5FA !important;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4) !important;
+    background: #1D4ED8 !important;
+}
+
+/* Texto seleccionado en el dropdown */
+.stroke-id-dropdown .Select-value-label {
+    color: white !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+}
+
+/* Placeholder del dropdown */
+.stroke-id-dropdown .Select-placeholder {
+    color: #BFDBFE !important;
+    font-size: 1rem !important;
+}
+
+/* Input de búsqueda dentro del dropdown */
+.stroke-id-dropdown .Select-input > input {
+    color: white !important;
+    background: transparent !important;
+}
+
+/* Flecha del dropdown */
+.stroke-id-dropdown .Select-arrow-zone {
+    color: white !important;
+    padding-right: 10px !important;
+}
+
+.stroke-id-dropdown .Select-arrow {
+    border-color: white transparent transparent !important;
+    border-width: 6px 6px 0 !important;
+}
+
+.stroke-id-dropdown.is-open .Select-arrow {
+    border-color: transparent transparent white !important;
+    border-width: 0 6px 6px !important;
+}
+
+/* Menu desplegable */
+.stroke-id-dropdown .Select-menu-outer {
+    background: #1E3A8A !important;
+    border: 1px solid #3B82F6 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+    z-index: 9999 !important;
+    position: absolute !important;
+}
+
+.stroke-id-dropdown .Select-menu {
+    background: #1E3A8A !important;
+    border-radius: 8px !important;
+    max-height: 200px !important;
+}
+
+/* Opciones del menu */
+.stroke-id-dropdown .Select-option {
+    background: #1E3A8A !important;
+    color: white !important;
+    padding: 12px 15px !important;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2) !important;
+    transition: all 0.2s ease !important;
+}
+
+.stroke-id-dropdown .Select-option:hover {
+    background: #1D4ED8 !important;
+    color: #BFDBFE !important;
+}
+
+.stroke-id-dropdown .Select-option.is-focused {
+    background: #1D4ED8 !important;
+    color: #BFDBFE !important;
+}
+
+.stroke-id-dropdown .Select-option.is-selected {
+    background: #2563EB !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* Estados del dropdown */
+.stroke-id-dropdown.valid .Select-control {
+    border-color: #10B981 !important;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+.stroke-id-dropdown.invalid .Select-control {
+    border-color: #EF4444 !important;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.3) !important;
+}
+
+.stroke-id-dropdown .Select-control.is-disabled {
+    background: #374151 !important;
+    border-color: #6B7280 !important;
+    cursor: not-allowed !important;
+}
+
+.stroke-id-dropdown .Select-control.is-disabled .Select-value-label {
+    color: #9CA3AF !important;
+}
+
+/*INFORMACIÓN DE STROKE ID*/
+.stroke-id-info {
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.stroke-id-preselected {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+    border: 1px solid #10B981;
+}
+
+.stroke-id-selection-info {
+    background: rgba(37, 99, 235, 0.1);
+    color: #3B82F6;
+    border: 1px solid #3B82F6;
+}
+
+.no-predictions-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #F59E0B;
+    border: 1px solid #F59E0B;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/*ÁREA DE UPLOAD DE IMAGEN*/
+.image-upload-area {
+    border: 3px dashed #6B7280;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 40px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    min-height: 200px;
+}
+
+.image-upload-area:hover {
+    border-color: #3B82F6;
+    background: rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+}
+
+.upload-icon {
+    font-size: 3rem !important;
+    color: #8B5CF6 !important;
+    margin-bottom: 15px !important;
+    display: block !important;
+}
+
+.image-upload-area p {
+    color: #9CA3AF !important;
+    margin: 10px 0 !important;
+    font-size: 1.1rem !important;
+}
+
+.upload-hint {
+    font-size: 0.9rem !important;
+    color: #6B7280 !important;
+    margin-top: 10px !important;
+}
+
+/* ✅ ESTILOS PARA IMAGEN DENTRO DEL ÁREA DE UPLOAD */
+.image-preview-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px !important;
+    padding: 20px !important;
+    width: 100% !important;
+}
+
+.uploaded-image-preview {
+    max-width: 250px !important;
+    max-height: 250px !important;
+    border-radius: 12px !important;
+    border: 3px solid #3B82F6 !important;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3) !important;
+    object-fit: cover !important;
+    display: block !important;
+    margin: 0 auto !important;
+    animation: imageAppear 0.6s ease-out !important;
+}
+
+.uploaded-image-preview:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4) !important;
+}
+
+.image-actions {
+    display: flex !important;
+    gap: 15px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+}
+
+.btn-remove-uploaded {
+    background: #EF4444 !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.9rem !important;
+}
+
+.btn-remove-uploaded:hover {
+    background: #DC2626 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+.btn-change-image {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border: 2px solid #6B7280 !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.9rem !important;
+}
+
+.btn-change-image:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: #3B82F6 !important;
+    color: #3B82F6 !important;
+    transform: translateY(-2px) !important;
+}
+
+/*BOTONES*/
+.btn-upload-select {
+    background: linear-gradient(135deg, #3B82F6, #8B5CF6) !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 24px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    margin: 10px !important;
+}
+
+.btn-upload-select:hover {
+    background: linear-gradient(135deg, #2563EB, #7C3AED) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4) !important;
+}
+
+.btn-analyze {
+    background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 18px 40px !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    min-width: 250px !important;
+    margin-top: 20px !important;
+}
+
+.btn-analyze:hover {
+    background: linear-gradient(135deg, #7C3AED 0%, #2563EB 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.4) !important;
+}
+
+.btn-analyze:disabled {
+    background: #4B5563 !important;
+    color: #9CA3AF !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/*ESTADOS DE UPLOAD Y MENSAJES*/
+.upload-status {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.upload-success {
+    background: rgba(16, 185, 129, 0.1) !important;
+    color: #10B981 !important;
+    border: 1px solid #10B981 !important;
+}
+
+.upload-warning {
+    background: rgba(245, 158, 11, 0.1) !important;
+    color: #F59E0B !important;
+    border: 1px solid #F59E0B !important;
+}
+
+.upload-error-message {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #EF4444 !important;
+    border: 1px solid #EF4444 !important;
+    padding: 20px !important;
+    border-radius: 8px !important;
+    text-align: center !important;
+    margin: 20px 0 !important;
+}
+
+/*ANIMACIONES*/
+@keyframes imageAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8) rotate(-5deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*RESPONSIVE*/
+@media (max-width: 768px) {
+    .main-content {
+        padding: 15px;
+    }
+    
+    .image-upload-form {
+        padding: 25px 20px !important;
+    }
+    
+    .stroke-id-dropdown .Select-control {
+        min-height: 50px !important;
+        padding: 6px 12px !important;
+    }
+    
+    .uploaded-image-preview {
+        max-width: 200px !important;
+        max-height: 200px !important;
+    }
+    
+    .image-actions {
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 200px !important;
+    }
+    
+    .btn-remove-uploaded,
+    .btn-change-image {
+        width: 100% !important;
+        text-align: center !important;
+    }
+    
+    .btn-analyze {
+        width: 100% !important;
+        min-width: auto !important;
+        padding: 15px 20px !important;
+        font-size: 1.1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .image-upload-form {
+        padding: 20px 15px !important;
+    }
+    
+    .stroke-id-dropdown .Select-control {
+        min-height: 45px !important;
+        padding: 5px 10px !important;
+    }
+    
+    .uploaded-image-preview {
+        max-width: 150px !important;
+        max-height: 150px !important;
+    }
+    
+    .image-preview-wrapper {
+        padding: 15px !important;
+        gap: 15px !important;
+    }
+}
+
+/* Debug: Forzar visibilidad */
+.image-preview-wrapper,
+.uploaded-image-preview,
+.image-actions {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.uploaded-image-preview {
+    display: block !important;
+}
