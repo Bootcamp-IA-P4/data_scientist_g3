@@ -308,64 +308,132 @@ def analyze_image_simple_test(n_clicks, stroke_id, pathname):
             html.P(f"Error: {str(e)}")
         ], className="error-result")
 
+# ✅ CALLBACK PRINCIPAL ARREGLADO Y CON DEBUG
 @callback(
     [Output('image-upload-status', 'children'),
-     Output('image-preview-container', 'children'),
+     Output('image-upload', 'children'),
      Output('analyze-image-button', 'disabled')],
     [Input('image-upload', 'contents')],
     [State('image-upload', 'filename'),
      State('stroke-id-dropdown', 'value'),
      State('url', 'pathname')],
-    prevent_initial_call=True
+    prevent_initial_call=False  # ✅ CAMBIO: Permitir llamada inicial
 )
 def handle_image_upload(contents, filename, stroke_id, pathname):
-    """Manejar upload de imagen y mostrar preview"""
+    """Manejar upload de imagen y mostrar preview dentro del área de upload"""
+    
+    print(f"🔍 DEBUG handle_image_upload llamado:")
+    print(f"  - pathname: {pathname}")
+    print(f"  - contents: {'SÍ' if contents else 'NO'}")
+    print(f"  - filename: {filename}")
+    print(f"  - stroke_id: {stroke_id}")
+    
+    # ✅ ÁREA DE UPLOAD POR DEFECTO
+    upload_area_default = html.Div([
+        html.I(className="fas fa-cloud-upload-alt upload-icon"),
+        html.P("Arrastra y suelta una imagen aquí o"),
+        html.Button("Seleccionar Archivo", className="btn-upload-select"),
+        html.P("Formatos soportados: JPEG, PNG, WEBP, BMP", className="upload-hint")
+    ])
     
     # Solo funcionar en la página de imagen
     if pathname != '/image-prediction':
-        return "", "", True
+        print("❌ No es página de imagen, retornando default")
+        return "", upload_area_default, True
     
+    # Si no hay contenido, mostrar área por defecto
     if not contents:
-        return "", "", True
+        print("❌ No hay contenido, retornando default")
+        return "", upload_area_default, True
     
+    # Si no hay stroke_id seleccionado
     if not stroke_id:
-        return html.Div([
+        print("❌ No hay stroke_id, retornando warning")
+        warning_msg = html.Div([
             html.I(className="fas fa-exclamation-triangle"),
             html.Span("Primero seleccione una predicción de stroke")
-        ], className="upload-warning"), "", True
+        ], className="upload-warning")
+        return warning_msg, upload_area_default, True
     
-    print(f"Archivo subido: {filename}")
-    print(f"Stroke ID: {stroke_id}")
-    print(f"Contenido length: {len(contents) if contents else 0}")
+    print(f"✅ Procesando archivo: {filename}")
+    print(f"✅ Stroke ID: {stroke_id}")
+    print(f"✅ Contenido length: {len(contents) if contents else 0}")
     
     # Validar archivo
     validation = validate_image_file(filename, contents)
-    print(f"✅ Validación: {validation}")
+    print(f"✅ Validación resultado: {validation}")
     
     if not validation['valid']:
+        print(f"❌ Validación falló: {validation['error']}")
         error_msg = create_upload_error_message(validation['error'])
-        return error_msg, "", True
+        return error_msg, upload_area_default, True
     
-    # Crear preview de imagen
+    # ✅ CREAR PREVIEW DENTRO DEL ÁREA DE UPLOAD
     try:
-        # Extraer contenido base64 de la imagen
-        content_string = contents.split(',')[1]
+        print("✅ Creando preview de imagen...")
         
-        # ✅ PREVIEW SIMPLE PARA TEST
-        simple_preview = html.Div([
-            html.H4("Vista Previa"),
-            html.Img(
-                src=contents,  # ✅ USAR EL CONTENIDO COMPLETO DIRECTAMENTE
-                style={
-                    'max-width': '200px',
-                    'max-height': '200px',
-                    'border': '2px solid #3B82F6',
-                    'border-radius': '8px'
-                }
-            ),
-            html.P(f"{filename}"),
-            html.P(f"{validation['formatted_size']}")
-        ], style={'text-align': 'center', 'padding': '20px'})
+        # ✅ CONTENIDO CON IMAGEN PARA EL ÁREA DE UPLOAD
+        upload_area_with_image = html.Div([
+            html.Div([
+                html.Img(
+                    src=contents,  # ✅ USAR TODO EL CONTENIDO
+                    className="uploaded-image-preview",
+                    style={
+                        'max-width': '250px',
+                        'max-height': '250px',
+                        'border-radius': '12px',
+                        'border': '3px solid #3B82F6',
+                        'box-shadow': '0 8px 25px rgba(37, 99, 235, 0.3)',
+                        'object-fit': 'cover',
+                        'display': 'block',
+                        'margin': '0 auto'
+                    }
+                ),
+                html.Div([
+                    html.Button(
+                        "Remover",
+                        id='remove-image-button',
+                        className="btn-remove-uploaded",
+                        n_clicks=0,
+                        style={
+                            'background': '#EF4444',
+                            'color': 'white',
+                            'border': 'none',
+                            'padding': '10px 20px',
+                            'border-radius': '8px',
+                            'font-weight': '600',
+                            'cursor': 'pointer',
+                            'margin': '5px'
+                        }
+                    ),
+                    html.Button(
+                        "Cambiar",
+                        className="btn-change-image",
+                        style={
+                            'background': 'rgba(255, 255, 255, 0.1)',
+                            'color': 'white',
+                            'border': '2px solid #6B7280',
+                            'padding': '8px 16px',
+                            'border-radius': '8px',
+                            'font-weight': '600',
+                            'cursor': 'pointer',
+                            'margin': '5px'
+                        }
+                    )
+                ], className="image-actions", style={
+                    'display': 'flex',
+                    'gap': '15px',
+                    'justify-content': 'center',
+                    'margin-top': '20px'
+                })
+            ], className="image-preview-wrapper", style={
+                'display': 'flex',
+                'flex-direction': 'column',
+                'align-items': 'center',
+                'gap': '20px',
+                'padding': '20px'
+            })
+        ])
         
         # Mensaje de éxito
         success_msg = html.Div([
@@ -373,36 +441,50 @@ def handle_image_upload(contents, filename, stroke_id, pathname):
             html.Span(f"✅ Imagen cargada: {filename} ({validation['formatted_size']})")
         ], className="upload-success")
         
-        print(f"Preview creado exitosamente")
-        return success_msg, simple_preview, False
+        print(f"✅ Preview creado exitosamente")
+        print(f"✅ Retornando: success_msg, upload_area_with_image, False")
+        
+        return success_msg, upload_area_with_image, False
         
     except Exception as e:
-        print(f"❌ Error en preview: {e}")
+        print(f"❌ Error creando preview: {e}")
         error_msg = create_upload_error_message(f"Error procesando imagen: {str(e)}")
-        return error_msg, "", True
-    
-    # CALLBACK PARA REMOVER IMAGEN
+        return error_msg, upload_area_default, True
+
+# ✅ CALLBACK PARA REMOVER IMAGEN ARREGLADO
 @callback(
-    [Output('image-preview-container', 'children', allow_duplicate=True),
+    [Output('image-upload', 'children', allow_duplicate=True),
      Output('image-upload-status', 'children', allow_duplicate=True),
-     Output('analyze-image-button', 'disabled', allow_duplicate=True)],
+     Output('analyze-image-button', 'disabled', allow_duplicate=True),
+     Output('image-upload', 'contents', allow_duplicate=True)],
     [Input('remove-image-button', 'n_clicks')],
     [State('url', 'pathname')],
     prevent_initial_call=True
 )
 def remove_image_preview(n_clicks, pathname):
-    """Remover preview de imagen"""
+    """Remover preview de imagen y restaurar área de upload"""
+    
+    print(f"🔍 DEBUG remove_image_preview llamado:")
+    print(f"  - n_clicks: {n_clicks}")
+    print(f"  - pathname: {pathname}")
+    
+    upload_area_default = html.Div([
+        html.I(className="fas fa-cloud-upload-alt upload-icon"),
+        html.P("Arrastra y suelta una imagen aquí o"),
+        html.Button("Seleccionar Archivo", className="btn-upload-select"),
+        html.P("Formatos soportados: JPEG, PNG, WEBP, BMP", className="upload-hint")
+    ])
+    
     if pathname != '/image-prediction':
-        return "", "", True
+        print("❌ No es página de imagen")
+        return upload_area_default, "", True, None
         
-    if n_clicks > 0:
-        return "", "", True
-    return "", "", True
-# Callback para validar formulario de imagen en tiempo real
-
-
-# Callback para cargar datos del stroke seleccionado
-
+    if n_clicks and n_clicks > 0:
+        print("✅ Removiendo imagen y restaurando área de upload")
+        return upload_area_default, "", True, None
+    
+    print("❌ No hay clicks, manteniendo estado")
+    return dash.no_update, dash.no_update, dash.no_update, dash.no_update
 
 # Callback para refrescar datos automáticamente
 @callback(

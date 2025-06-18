@@ -50,9 +50,6 @@ def create_image_upload_form():
             html.Div(id='image-upload-status', className="upload-status")
         ], className="form-group"),
         
-        # Preview de imagen subida
-        html.Div(id='image-preview-container', className="image-preview-container"),
-        
         # Botón de análisis
         html.Div([
             html.Button(
@@ -67,7 +64,7 @@ def create_image_upload_form():
     ], className="image-upload-form")
 
 def create_image_preview(filename: str, file_content: str):
-    """Crear preview de la imagen subida"""
+    """Crear preview de la imagen subida - FUNCIÓN MANTENIDA PARA COMPATIBILIDAD"""
     return html.Div([
         html.H4("📷 Vista Previa"),
         html.Div([
