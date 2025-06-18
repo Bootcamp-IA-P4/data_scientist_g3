@@ -1,9 +1,9 @@
-"""Aplicación FastAPI para API de predicción de stroke - macOS Fix"""
+"""Aplicación FastAPI para API de predicción de stroke"""
 
 import os
 import sys
 
-# ✅ FIX PARA macOS - Evitar segmentation fault con PyTorch
+# FIX PARA - Evitar segmentation fault con PyTorch
 if sys.platform == "darwin":  # macOS
     os.environ["OMP_NUM_THREADS"] = "1"
     os.environ["MKL_NUM_THREADS"] = "1" 
@@ -46,13 +46,13 @@ async def root():
 if __name__ == "__main__":
     import uvicorn
     
-    # ✅ CONFIGURACIÓN SEGURA PARA macOS
+    # CONFIGURACIÓN SEGURA PARA macOS
     uvicorn_config = {
         "app": "main:app",
-        "host": os.getenv("API_HOST", "0.0.0.0"), 
+        "host": os.getenv("API_HOST", "0.0.0.0"),
         "port": int(os.getenv("API_PORT", 8000)),
-        "reload": False,  # Disable reload en macOS para evitar problemas
-        "workers": 1,     # Solo 1 worker en macOS
+        "reload": False,  
+        "workers": 1,     
     }
     
     print("🚀 Iniciando servidor con configuración segura para macOS...")
