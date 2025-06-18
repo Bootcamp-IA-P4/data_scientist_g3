@@ -162,6 +162,31 @@ class StrokeAPIClient:
         except Exception as e:
             print(f"Error inesperado en predicción imagen: {e}")
             return {"error": f"Error inesperado: {str(e)}"}
+    
+    def predict_image_simple_test(self, stroke_prediction_id: int) -> Dict:
+        """Test simple de predicción de imagen sin archivo real"""
+        try:
+            # Solo hacer un test de conectividad
+            response = requests.get(
+                f"{self.base_url}/health",
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                return {
+                    "prediction": 0,
+                    "probability": 0.23,
+                    "risk_level": "Bajo",
+                    "processing_time_ms": 1500,
+                    "stroke_prediction_id": stroke_prediction_id,
+                    "model_confidence": 0.87,
+                    "message": "Test exitoso - Backend funcionando"
+                }
+            else:
+                return {"error": f"Backend no responde: {response.status_code}"}
+                
+        except Exception as e:
+            return {"error": f"Error de conexión: {str(e)}"}
 
     def get_image_predictions_history(self, limit: int = 50) -> List[Dict]:
         """

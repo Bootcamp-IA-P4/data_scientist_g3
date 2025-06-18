@@ -266,70 +266,143 @@ def handle_add_image_from_history(active_cell, table_data):
 @callback(
     Output('image-results-container', 'children', allow_duplicate=True),
     [Input('analyze-image-button', 'n_clicks')],
+    [State('stroke-id-dropdown', 'value'),
+     State('url', 'pathname')],
     prevent_initial_call=True
 )
-def show_analysis_notification(n_clicks):
-    """Mostrar notificación mientras se procesa la imagen"""
-    if n_clicks > 0:
-        return create_processing_animation()
-    return ""
+def analyze_image_simple_test(n_clicks, stroke_id, pathname):
+    """Test simple de análisis de imagen"""
+    
+    if pathname != '/image-prediction':
+        return ""
+    
+    if n_clicks == 0 or not stroke_id:
+        return ""
+    
+    # ✅ USAR EL NUEVO MÉTODO DE TEST
+    try:
+        # Test simple sin imagen real
+        result = api_client.predict_image_simple_test(stroke_id)
+        
+        if 'error' in result:
+            return html.Div([
+                html.H3("❌ Error de Conexión"),
+                html.P(f"Error: {result['error']}"),
+                html.P("Verifica que el backend esté ejecutándose en puerto 8000")
+            ], className="error-result")
+        
+        # Mostrar resultado exitoso
+        return html.Div([
+            html.H3("Test de Conexión Exitoso"),
+            html.P(f"Backend responde correctamente"),
+            html.P(f"Stroke ID: {stroke_id}"),
+            html.P(f"Predicción test: {result['prediction']}"),
+            html.P(f"Probabilidad test: {result['probability']:.1f}%"),
+            html.P(f"Tiempo: {result['processing_time_ms']} ms"),
+            html.Button("Probar con imagen real", className="btn-primary")
+        ], className="test-result")
+        
+    except Exception as e:
+        return html.Div([
+            html.H3("❌ Error Inesperado"),
+            html.P(f"Error: {str(e)}")
+        ], className="error-result")
 
-# Callback para validar formulario de imagen en tiempo real
 @callback(
-    [Output('analyze-image-button', 'style'),
-     Output('image-upload-area', 'className')],
-    [Input('stroke-id-dropdown', 'value'),
-     Input('image-upload', 'contents')],
+    [Output('image-upload-status', 'children'),
+     Output('image-preview-container', 'children'),
+     Output('analyze-image-button', 'disabled')],
+    [Input('image-upload', 'contents')],
+    [State('image-upload', 'filename'),
+     State('stroke-id-dropdown', 'value'),
+     State('url', 'pathname')],
     prevent_initial_call=True
 )
-def validate_image_form_realtime(stroke_id, image_contents):
-    """Validar formulario de imagen en tiempo real"""
+def handle_image_upload(contents, filename, stroke_id, pathname):
+    """Manejar upload de imagen y mostrar preview"""
     
-    # Clases base
-    upload_area_class = "image-upload-area"
-    button_style = {}
+    # Solo funcionar en la página de imagen
+    if pathname != '/image-prediction':
+        return "", "", True
     
-    # Validar si ambos campos están completos
-    if stroke_id and image_contents:
-        upload_area_class += " valid"
-        button_style = {
-            'background': 'linear-gradient(135deg, var(--color-accent) 0%, var(--color-primary) 100%)',
-            'transform': 'scale(1.02)',
-            'box-shadow': '0 0 25px rgba(139, 92, 246, 0.4)'
-        }
-    elif image_contents and not stroke_id:
-        upload_area_class += " invalid"
+    if not contents:
+        return "", "", True
     
-    return button_style, upload_area_class
+    if not stroke_id:
+        return html.Div([
+            html.I(className="fas fa-exclamation-triangle"),
+            html.Span("Primero seleccione una predicción de stroke")
+        ], className="upload-warning"), "", True
+    
+    print(f"Archivo subido: {filename}")
+    print(f"Stroke ID: {stroke_id}")
+    print(f"Contenido length: {len(contents) if contents else 0}")
+    
+    # Validar archivo
+    validation = validate_image_file(filename, contents)
+    print(f"✅ Validación: {validation}")
+    
+    if not validation['valid']:
+        error_msg = create_upload_error_message(validation['error'])
+        return error_msg, "", True
+    
+    # Crear preview de imagen
+    try:
+        # Extraer contenido base64 de la imagen
+        content_string = contents.split(',')[1]
+        
+        # ✅ PREVIEW SIMPLE PARA TEST
+        simple_preview = html.Div([
+            html.H4("Vista Previa"),
+            html.Img(
+                src=contents,  # ✅ USAR EL CONTENIDO COMPLETO DIRECTAMENTE
+                style={
+                    'max-width': '200px',
+                    'max-height': '200px',
+                    'border': '2px solid #3B82F6',
+                    'border-radius': '8px'
+                }
+            ),
+            html.P(f"{filename}"),
+            html.P(f"{validation['formatted_size']}")
+        ], style={'text-align': 'center', 'padding': '20px'})
+        
+        # Mensaje de éxito
+        success_msg = html.Div([
+            html.I(className="fas fa-check-circle"),
+            html.Span(f"✅ Imagen cargada: {filename} ({validation['formatted_size']})")
+        ], className="upload-success")
+        
+        print(f"Preview creado exitosamente")
+        return success_msg, simple_preview, False
+        
+    except Exception as e:
+        print(f"❌ Error en preview: {e}")
+        error_msg = create_upload_error_message(f"Error procesando imagen: {str(e)}")
+        return error_msg, "", True
+    
+    # CALLBACK PARA REMOVER IMAGEN
+@callback(
+    [Output('image-preview-container', 'children', allow_duplicate=True),
+     Output('image-upload-status', 'children', allow_duplicate=True),
+     Output('analyze-image-button', 'disabled', allow_duplicate=True)],
+    [Input('remove-image-button', 'n_clicks')],
+    [State('url', 'pathname')],
+    prevent_initial_call=True
+)
+def remove_image_preview(n_clicks, pathname):
+    """Remover preview de imagen"""
+    if pathname != '/image-prediction':
+        return "", "", True
+        
+    if n_clicks > 0:
+        return "", "", True
+    return "", "", True
+# Callback para validar formulario de imagen en tiempo real
+
 
 # Callback para cargar datos del stroke seleccionado
-@callback(
-    Output('stroke-id-info', 'children', allow_duplicate=True),
-    [Input('stroke-id-dropdown', 'value')],
-    [State('stroke-predictions-store', 'data')],
-    prevent_initial_call=True
-)
-def show_selected_stroke_info(selected_id, stroke_predictions):
-    """Mostrar información del stroke seleccionado"""
-    
-    if not selected_id or not stroke_predictions:
-        return ""
-    
-    # Buscar la predicción seleccionada
-    selected_pred = next((p for p in stroke_predictions if p.get('id') == selected_id), None)
-    
-    if not selected_pred:
-        return ""
-    
-    # Crear info card
-    return html.Div([
-        html.H5(f"📋 Predicción #{selected_id}"),
-        html.Div([
-            html.Span(f"Riesgo: {selected_pred.get('risk_level', 'N/A')}", className="info-item"),
-            html.Span(f"Probabilidad: {selected_pred.get('probability', 0):.1f}%", className="info-item"),
-            html.Span(f"Fecha: {selected_pred.get('created_at', 'N/A')[:10] if selected_pred.get('created_at') else 'N/A'}", className="info-item")
-        ], className="stroke-info-details")
-    ], className="selected-stroke-info")
+
 
 # Callback para refrescar datos automáticamente
 @callback(
