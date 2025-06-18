@@ -1,6 +1,8 @@
 import requests
 from config.settings import API_BASE_URL
 from typing import Dict, List
+import base64
+import io
 
 class StrokeAPIClient:
     def __init__(self):
@@ -113,19 +115,59 @@ class StrokeAPIClient:
                 "max_dimensions": {"width": 4096, "height": 4096}
             }
 
-    def predict_image(self, image_data: bytes, stroke_prediction_id: int, 
+    def predict_image(self, image_contents: str, stroke_prediction_id: int, 
                       filename: str) -> Dict:
         """
         Envía imagen al backend para predicción de stroke
         POST a /predict/image/{stroke_prediction_id}
+        
+        Args:
+            image_contents: Contenido de imagen en formato data:image/...;base64,xxxxx
+            stroke_prediction_id: ID de la predicción de stroke
+            filename: Nombre del archivo
         """
         try:
-            # Preparar archivo para envío
+            print(f"🔍 Iniciando predicción de imagen para stroke ID {stroke_prediction_id}")
+            print(f"📁 Archivo: {filename}")
+            
+            # ✅ CAMBIO PRINCIPAL: Decodificar correctamente el base64
+            if ',' in image_contents:
+                # Formato: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEA..."
+                header, base64_data = image_contents.split(',', 1)
+                print(f"📋 Header detectado: {header}")
+            else:
+                # Si ya es solo base64 sin header
+                base64_data = image_contents
+                print("📋 Datos ya en formato base64 puro")
+            
+            # Decodificar base64 a bytes
+            try:
+                image_bytes = base64.b64decode(base64_data)
+                print(f"✅ Imagen decodificada: {len(image_bytes)} bytes")
+            except Exception as decode_error:
+                print(f"❌ Error decodificando base64: {decode_error}")
+                return {"error": f"Error decodificando imagen: {str(decode_error)}"}
+            
+            # Detectar content type basado en filename
+            if filename.lower().endswith(('.jpg', '.jpeg')):
+                content_type = 'image/jpeg'
+            elif filename.lower().endswith('.png'):
+                content_type = 'image/png'
+            elif filename.lower().endswith('.webp'):
+                content_type = 'image/webp'
+            elif filename.lower().endswith('.bmp'):
+                content_type = 'image/bmp'
+            else:
+                content_type = 'image/jpeg'  # Default
+            
+            print(f"🎯 Content-Type detectado: {content_type}")
+            
+            # ✅ PREPARAR ARCHIVO PARA FASTAPI
             files = {
-                'image': (filename, image_data, 'image/jpeg')
+                'image': (filename, image_bytes, content_type)
             }
             
-            print(f"Enviando imagen {filename} para stroke ID {stroke_prediction_id}")
+            print(f"🚀 Enviando imagen a: {self.base_url}/predict/image/{stroke_prediction_id}")
             
             response = requests.post(
                 f"{self.base_url}/predict/image/{stroke_prediction_id}",
@@ -133,34 +175,40 @@ class StrokeAPIClient:
                 timeout=60  # Más tiempo para procesamiento de imagen
             )
             
-            print(f"Respuesta predicción imagen - Status: {response.status_code}")
+            print(f"📊 Respuesta del servidor - Status: {response.status_code}")
             
             if response.status_code == 200:
                 result = response.json()
-                print(f"Predicción imagen exitosa: {result}")
+                print(f"✅ Predicción imagen exitosa!")
+                print(f"   - Predicción: {result.get('prediction')}")
+                print(f"   - Probabilidad: {result.get('probability')}")
+                print(f"   - Riesgo: {result.get('risk_level')}")
+                print(f"   - Tiempo: {result.get('processing_time_ms')} ms")
                 return result
             else:
+                # Manejar errores del backend
                 error_detail = "Error desconocido"
                 try:
                     error_data = response.json()
                     error_detail = error_data.get('detail', f"Status {response.status_code}")
+                    print(f"❌ Error del backend: {error_detail}")
                 except:
-                    error_detail = f"Status {response.status_code}: {response.text}"
+                    error_detail = f"Status {response.status_code}: {response.text[:200]}"
+                    print(f"❌ Error sin JSON: {error_detail}")
                 
-                print(f"Error en predicción imagen: {error_detail}")
                 return {"error": f"Error del servidor: {error_detail}"}
                 
         except requests.exceptions.ConnectionError as e:
-            print(f"Error de conexión en predicción imagen: {e}")
-            return {"error": f"Error de conexión: {str(e)}"}
+            print(f"❌ Error de conexión: {e}")
+            return {"error": f"Error de conexión al backend. Verifique que esté ejecutándose en puerto 8000."}
         except requests.exceptions.Timeout as e:
-            print(f"Timeout en predicción imagen: {e}")
-            return {"error": "Timeout procesando imagen. Intente con una imagen más pequeña."}
+            print(f"❌ Timeout: {e}")
+            return {"error": "Timeout procesando imagen. La imagen puede ser muy grande o el servidor está ocupado."}
         except requests.exceptions.RequestException as e:
-            print(f"Error de request en predicción imagen: {e}")
+            print(f"❌ Error de request: {e}")
             return {"error": f"Error de conexión: {str(e)}"}
         except Exception as e:
-            print(f"Error inesperado en predicción imagen: {e}")
+            print(f"❌ Error inesperado: {e}")
             return {"error": f"Error inesperado: {str(e)}"}
     
     def predict_image_simple_test(self, stroke_prediction_id: int) -> Dict:

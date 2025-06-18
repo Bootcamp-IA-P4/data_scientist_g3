@@ -85,8 +85,13 @@ def create_image_preview(filename: str, file_content: str):
     ], className="image-preview-card")
 
 def create_image_result_card(prediction: int, probability: float, risk_level: str, 
-                           processing_time: int, stroke_id: int, model_confidence: float):
-    """Crear tarjeta de resultados de predicción de imagen"""
+                           processing_time: int, stroke_id: int, model_confidence: float,
+                           message: str = "Análisis completado"):
+    """
+    Crear tarjeta de resultados de predicción de imagen
+    
+    ✅ ARREGLADO: Maneja todos los campos de respuesta del backend
+    """
     
     # Determinar clase CSS y emoji según riesgo
     risk_classes = {
@@ -106,13 +111,21 @@ def create_image_result_card(prediction: int, probability: float, risk_level: st
     risk_class = risk_classes.get(risk_level, "result-card-low")
     risk_emoji = risk_emojis.get(risk_level, "✅")
     
-    # Mensaje principal
+    # Mensaje principal basado en prediction
     if prediction == 1:
         main_message = f"{risk_emoji} INDICADORES DE STROKE DETECTADOS"
         diagnosis_class = "diagnosis-positive"
+        diagnosis_color = "#dc3545"  # Rojo
     else:
         main_message = f"✅ NO SE DETECTARON INDICADORES DE STROKE"
         diagnosis_class = "diagnosis-negative"
+        diagnosis_color = "#28a745"  # Verde
+    
+    # ✅ CONVERTIR PROBABILITY A PORCENTAJE (el backend envía 0-1)
+    probability_percentage = probability * 100
+    
+    # ✅ CONVERTIR MODEL_CONFIDENCE A PORCENTAJE (el backend envía 0-1)
+    confidence_percentage = model_confidence * 100
     
     # Recomendaciones según nivel de riesgo
     recommendations = {
@@ -125,17 +138,19 @@ def create_image_result_card(prediction: int, probability: float, risk_level: st
     return html.Div([
         # Mensaje principal
         html.Div([
-            html.H2(main_message, className=f"diagnosis-message {diagnosis_class}"),
-            html.Div(f"{probability:.1f}%", className="percentage-display"),
+            html.H2(main_message, className=f"diagnosis-message {diagnosis_class}",
+                   style={'color': diagnosis_color}),
+            html.Div(f"{probability_percentage:.1f}%", className="percentage-display"),
             html.P(f"Nivel de riesgo por imagen: {risk_level}", className="risk-level")
         ], className="result-header"),
         
         # Métricas técnicas
         html.Div([
+            html.H4("📊 Métricas del Análisis"),
             html.Div([
                 html.Div([
                     html.Span("🎯 Confianza del Modelo"),
-                    html.Span(f"{model_confidence:.1f}%", className="metric-value")
+                    html.Span(f"{confidence_percentage:.1f}%", className="metric-value")
                 ], className="metric-item"),
                 
                 html.Div([
@@ -155,6 +170,12 @@ def create_image_result_card(prediction: int, probability: float, risk_level: st
             html.H4("📋 Interpretación Clínica"),
             html.P(recommendations.get(risk_level, recommendations["Bajo"]))
         ], className="recommendation"),
+        
+        # ✅ MENSAJE DE CONFIRMACIÓN
+        html.Div([
+            html.I(className="fas fa-check-circle"),
+            html.Span(message)
+        ], className="success-confirmation"),
         
         # Acciones
         html.Div([
@@ -179,14 +200,21 @@ def create_stroke_id_options(stroke_predictions: List[Dict]) -> List[Dict]:
     options = []
     
     for pred in stroke_predictions:
-        # Formato: "ID #1 - Juan P. (Riesgo Alto, 78.5%)"
-        label = (f"ID #{pred.get('id')} - "
-                f"{pred.get('patient_name', 'Paciente')} "
-                f"({pred.get('risk_level', 'N/A')}, {pred.get('probability', 0):.1f}%)")
+        # ✅ ARREGLADO: Usar campos correctos del backend
+        stroke_id = pred.get('id')
+        probability = pred.get('probability', 0) * 100  # Convertir a porcentaje
+        risk_level = pred.get('risk_level', 'N/A')
+        age = pred.get('age', 'N/A')
+        gender = pred.get('gender', 'N/A')
+        
+        # Formato mejorado: "ID #1 - 45 años, Masculino (Alto, 78.5%)"
+        label = (f"ID #{stroke_id} - "
+                f"{age} años, {gender} "
+                f"({risk_level}, {probability:.1f}%)")
         
         options.append({
             'label': label,
-            'value': pred.get('id')
+            'value': stroke_id
         })
     
     return options

@@ -262,51 +262,102 @@ def handle_add_image_from_history(active_cell, table_data):
     # No redirigir si no cumple condiciones
     return dash.no_update
 
-# Callback para mostrar notificación de éxito después de análisis
+# ✅ CALLBACK PRINCIPAL NUEVO - REEMPLAZA EL TEST SIMPLE
 @callback(
-    Output('image-results-container', 'children', allow_duplicate=True),
+    Output('image-results-container', 'children'),
     [Input('analyze-image-button', 'n_clicks')],
-    [State('stroke-id-dropdown', 'value'),
+    [State('image-upload', 'contents'),
+     State('image-upload', 'filename'),
+     State('stroke-id-dropdown', 'value'),
      State('url', 'pathname')],
     prevent_initial_call=True
 )
-def analyze_image_simple_test(n_clicks, stroke_id, pathname):
-    """Test simple de análisis de imagen"""
+def analyze_image_real(n_clicks, image_contents, filename, stroke_id, pathname):
+    """
+    ✅ CALLBACK PRINCIPAL ARREGLADO: Procesa imagen real y la envía al backend
+    """
     
+    print(f"🔍 DEBUG analyze_image_real llamado:")
+    print(f"  - n_clicks: {n_clicks}")
+    print(f"  - pathname: {pathname}")
+    print(f"  - stroke_id: {stroke_id}")
+    print(f"  - filename: {filename}")
+    print(f"  - image_contents: {'SÍ' if image_contents else 'NO'}")
+    
+    # Solo funcionar en la página de imagen
     if pathname != '/image-prediction':
         return ""
     
-    if n_clicks == 0 or not stroke_id:
+    # Solo procesar si se hizo click
+    if n_clicks == 0 or not n_clicks:
         return ""
     
-    # ✅ USAR EL NUEVO MÉTODO DE TEST
+    # Validar que tenemos todos los datos necesarios
+    if not image_contents:
+        return create_upload_error_message("No hay imagen seleccionada. Por favor suba una imagen primero.")
+    
+    if not stroke_id:
+        return create_upload_error_message("No hay predicción de stroke seleccionada. Por favor seleccione una predicción primero.")
+    
+    if not filename:
+        filename = "imagen_tomografia.jpg"  # Nombre por defecto
+    
+    print(f"✅ Iniciando análisis de imagen real...")
+    print(f"✅ Stroke ID: {stroke_id}")
+    print(f"✅ Filename: {filename}")
+    
+    # Mostrar animación de procesamiento primero
+    processing_msg = create_processing_animation()
+    
     try:
-        # Test simple sin imagen real
-        result = api_client.predict_image_simple_test(stroke_id)
+        # ✅ ENVIAR IMAGEN REAL AL BACKEND
+        result = api_client.predict_image(
+            image_contents=image_contents,
+            stroke_prediction_id=stroke_id,
+            filename=filename
+        )
         
+        print(f"📊 Resultado del backend: {result}")
+        
+        # Manejar errores del backend
         if 'error' in result:
-            return html.Div([
-                html.H3("❌ Error de Conexión"),
-                html.P(f"Error: {result['error']}"),
-                html.P("Verifica que el backend esté ejecutándose en puerto 8000")
-            ], className="error-result")
+            error_msg = result['error']
+            print(f"❌ Error del backend: {error_msg}")
+            return create_upload_error_message(f"Error del servidor: {error_msg}")
         
-        # Mostrar resultado exitoso
-        return html.Div([
-            html.H3("Test de Conexión Exitoso"),
-            html.P(f"Backend responde correctamente"),
-            html.P(f"Stroke ID: {stroke_id}"),
-            html.P(f"Predicción test: {result['prediction']}"),
-            html.P(f"Probabilidad test: {result['probability']:.1f}%"),
-            html.P(f"Tiempo: {result['processing_time_ms']} ms"),
-            html.Button("Probar con imagen real", className="btn-primary")
-        ], className="test-result")
+        # ✅ PROCESAR RESPUESTA EXITOSA
+        prediction = result.get('prediction', 0)
+        probability = result.get('probability', 0.0)
+        risk_level = result.get('risk_level', 'Bajo')
+        processing_time = result.get('processing_time_ms', 0)
+        model_confidence = result.get('model_confidence', 0.0)
+        message = result.get('message', 'Imagen procesada correctamente')
+        
+        print(f"✅ Predicción exitosa:")
+        print(f"   - Prediction: {prediction}")
+        print(f"   - Probability: {probability}")
+        print(f"   - Risk Level: {risk_level}")
+        print(f"   - Processing Time: {processing_time} ms")
+        print(f"   - Model Confidence: {model_confidence}")
+        print(f"   - Message: {message}")
+        
+        # ✅ CREAR TARJETA DE RESULTADOS
+        result_card = create_image_result_card(
+            prediction=prediction,
+            probability=probability,
+            risk_level=risk_level,
+            processing_time=processing_time,
+            stroke_id=stroke_id,
+            model_confidence=model_confidence,
+            message=message
+        )
+        
+        print(f"✅ Tarjeta de resultados creada exitosamente")
+        return result_card
         
     except Exception as e:
-        return html.Div([
-            html.H3("❌ Error Inesperado"),
-            html.P(f"Error: {str(e)}")
-        ], className="error-result")
+        print(f"❌ Error inesperado procesando imagen: {e}")
+        return create_upload_error_message(f"Error inesperado: {str(e)}")
 
 # ✅ CALLBACK PRINCIPAL ARREGLADO Y CON DEBUG
 @callback(
