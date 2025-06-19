@@ -50,6 +50,8 @@ Thumbs.db
 /.qodo
 /htmlcov
 /tests/htmlcov
+/tests/unit/htmlcov
+/tests/integration/htmlcov
 
 
 /tests/test_data.json
