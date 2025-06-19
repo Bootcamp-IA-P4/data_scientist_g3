@@ -28,6 +28,15 @@ def create_navbar():
             href="/image-prediction",
             className="nav-link",
             id="image-nav-link"),
+
+            # History
+            html.A([
+                html.I(className="nav-icon"),
+                "Historial"
+            ],
+            href="/history",
+            className="nav-link",
+            id="history-nav-link"),
            
             # About
              html.A([

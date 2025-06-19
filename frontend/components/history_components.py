@@ -131,6 +131,254 @@ def create_history_table(history_data):
         table
     ], className="history-section")
 
+
+def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict]):
+    """
+    Crea la tabla combinada del historial de predicciones de stroke e imagen
+    """
+    
+    if not stroke_data:
+        return html.Div([
+            html.H3("Historial Combinado de Predicciones"),
+            html.P("No hay predicciones en el historial.",
+                  style={'text-align': 'center', 'color': "#6c757d", 'font-style': 'italic'})
+        ], className="history-section")
+    
+    # Crear mapa de imágenes por stroke_prediction_id
+    images_by_stroke_id = {}
+    for img in image_data:
+        stroke_id = img.get('stroke_prediction_id')
+        if stroke_id:
+            images_by_stroke_id[stroke_id] = img
+    
+    # Combinar datos
+    combined_table_data = []
+    try:
+        for stroke in stroke_data:
+            stroke_id = stroke.get('id')
+            image_info = images_by_stroke_id.get(stroke_id, None)
+            
+            # Datos de stroke
+            stroke_resultado = "Sin riesgo" if stroke.get('prediction', 0) == 0 else "Con riesgo"
+            stroke_percentage = f"{(stroke.get('probability', 0) * 100):.1f}%"
+            
+            # Datos de imagen
+            if image_info:
+                image_percentage = f"{(image_info.get('probability', 0) * 100):.1f}%"
+                image_risk = image_info.get('risk_level', 'N/A')
+                image_status = "✅ Completado"
+            else:
+                image_percentage = "Análisis no realizado"
+                image_risk = "Análisis no realizado"
+                image_status = f"[📸 Añadir Tomografía]"
+            
+            combined_table_data.append({
+                'ID': stroke_id,
+                'Fecha': stroke.get('fecha_creacion', ''),
+                'Edad': stroke.get('age', ''),
+                'Género': stroke.get('gender', ''),
+                'Stroke %': stroke_percentage,
+                'Riesgo Stroke': stroke.get('risk_level', ''),
+                'Estado Imagen': image_status,
+                'Imagen %': image_percentage,
+                'Riesgo Imagen': image_risk
+            })
+            
+    except Exception as e:
+        print(f"Error procesando datos combinados: {e}")
+        return html.Div([
+            html.H3("Historial Combinado de Predicciones"),
+            html.P("Error al procesar los datos del historial.",
+                  style={'text-align': 'center', 'color': 'red'})
+        ], className="history-section")
+    
+    # Crear tabla
+    if dash_table is None:
+        table = create_html_combined_table(combined_table_data)
+    else:
+        try:
+            table = dash_table.DataTable(
+                id='combined-history-table',
+                data=combined_table_data,
+                columns=[
+                    {'name': 'ID', 'id': 'ID', 'type': 'numeric'},
+                    {'name': 'Fecha', 'id': 'Fecha'},
+                    {'name': 'Edad', 'id': 'Edad', 'type': 'numeric'},
+                    {'name': 'Género', 'id': 'Género'},
+                    {'name': 'Stroke %', 'id': 'Stroke %'},
+                    {'name': 'Riesgo', 'id': 'Riesgo Stroke'},
+                    {'name': 'Imagen', 'id': 'Estado Imagen'},
+                    {'name': 'Imagen %', 'id': 'Imagen %'},
+                    {'name': 'Riesgo Img', 'id': 'Riesgo Imagen'}
+                ],
+                style_cell={
+                    'textAlign': 'center', 
+                    'padding': '12px 8px',
+                    'fontFamily': 'Inter, sans-serif',
+                    'fontSize': '0.9rem'
+                },
+                style_header={
+                    'backgroundColor': 'linear-gradient(135deg, #2563EB, #8B5CF6)', 
+                    'color': 'white', 
+                    'fontWeight': 'bold',
+                    'border': 'none'
+                },
+                style_data={
+                    'backgroundColor': 'rgba(30, 41, 59, 0.3)',
+                    'color': '#F8FAFC',
+                    'border': '1px solid rgba(255, 255, 255, 0.1)'
+                },
+                style_data_conditional=[
+                    # Filas con riesgo alto de stroke
+                    {
+                        'if': {'filter_query': '{Riesgo Stroke} = "Alto"'},
+                        'backgroundColor': 'rgba(239, 68, 68, 0.2)',
+                        'color': '#FEF2F2',
+                    },
+                    {
+                        'if': {'filter_query': '{Riesgo Stroke} = "Crítico"'},
+                        'backgroundColor': 'rgba(239, 68, 68, 0.3)',
+                        'color': '#FEF2F2',
+                    },
+                    # Filas sin imagen
+                    {
+                        'if': {'filter_query': '{Estado Imagen} contains "Añadir"'},
+                        'backgroundColor': 'rgba(245, 158, 11, 0.1)',
+                        'border': '1px solid rgba(245, 158, 11, 0.3)'
+                    }
+                ],
+                sort_action="native",
+                filter_action="native",
+                page_action="native",
+                page_current=0,
+                page_size=15,
+                style_table={'overflowX': 'auto'}
+            )
+        except Exception as e:
+            print(f"Error creando DataTable combinada: {e}")
+            table = html.P("Error al crear la tabla combinada del historial.")
+    
+    return html.Div([
+        html.H3("Historial Combinado de Predicciones"),
+        table
+    ], className="history-section combined-history")
+
+
+def create_html_combined_table(table_data: List[Dict]):
+    """
+    Crear tabla HTML combinada como fallback
+    """
+    if not table_data:
+        return html.P("No hay datos para mostrar.")
+    
+    headers = ['ID', 'Fecha', 'Edad', 'Género', 'Stroke %', 'Riesgo', 'Imagen', 'Imagen %', 'Riesgo Img']
+    columns = ['ID', 'Fecha', 'Edad', 'Género', 'Stroke %', 'Riesgo Stroke', 'Estado Imagen', 'Imagen %', 'Riesgo Imagen']
+    
+    # Header
+    header_row = html.Tr([html.Th(header) for header in headers])
+    
+    # Filas de datos
+    table_rows = []
+    for row in table_data:
+        cells = []
+        for col in columns:
+            cell_value = row.get(col, '')
+            
+            # Tratamiento especial para botón de añadir tomografía
+            if col == 'Estado Imagen' and 'Añadir' in str(cell_value):
+                cells.append(html.Td([
+                    html.A(
+                        "📸 Añadir Tomografía",
+                        href=f"/image-prediction?stroke_id={row.get('ID')}",
+                        className="btn-add-image-small"
+                    )
+                ]))
+            else:
+                cells.append(html.Td(cell_value))
+        
+        table_rows.append(html.Tr(cells))
+    
+    return html.Table([
+        html.Thead(header_row),
+        html.Tbody(table_rows)
+    ], className="fallback-table", style={
+        'width': '100%',
+        'border-collapse': 'collapse',
+        'margin': '20px 0'
+    })
+
+
+def create_history_stats_summary(stroke_data: List[Dict], image_data: List[Dict]):
+    """
+    Crear resumen de estadísticas del historial
+    """
+    total_stroke = len(stroke_data)
+    total_images = len(image_data)
+    completion_rate = (total_images / total_stroke * 100) if total_stroke > 0 else 0
+    
+    # Análisis de riesgo
+    high_risk_count = sum(1 for s in stroke_data if s.get('risk_level') in ['Alto', 'Crítico'])
+    high_risk_percentage = (high_risk_count / total_stroke * 100) if total_stroke > 0 else 0
+    
+    return html.Div([
+        html.H3("📊 Resumen del Historial"),
+        
+        html.Div([
+            html.Div([
+                html.Div("📋", className="stat-icon"),
+                html.Div([
+                    html.H4(str(total_stroke)),
+                    html.P("Predicciones Stroke")
+                ], className="stat-content")
+            ], className="stat-card"),
+            
+            html.Div([
+                html.Div("📷", className="stat-icon"),
+                html.Div([
+                    html.H4(str(total_images)),
+                    html.P("Análisis de Imagen")
+                ], className="stat-content")
+            ], className="stat-card"),
+            
+            html.Div([
+                html.Div("✅", className="stat-icon"),
+                html.Div([
+                    html.H4(f"{completion_rate:.1f}%"),
+                    html.P("Completitud")
+                ], className="stat-content")
+            ], className="stat-card"),
+            
+            html.Div([
+                html.Div("🚨", className="stat-icon"),
+                html.Div([
+                    html.H4(f"{high_risk_percentage:.1f}%"),
+                    html.P("Alto Riesgo")
+                ], className="stat-content")
+            ], className="stat-card")
+            
+        ], className="stats-grid")
+    ], className="history-stats-section")
+
+
+def filter_combined_data(combined_data: List[Dict], risk_filter: str, image_status_filter: str):
+    """
+    Filtrar datos combinados según criterios seleccionados
+    """
+    filtered_data = combined_data.copy()
+    
+    # Filtro por riesgo de stroke
+    if risk_filter != 'all':
+        filtered_data = [item for item in filtered_data if item.get('Riesgo Stroke') == risk_filter]
+    
+    # Filtro por estado de imagen
+    if image_status_filter == 'with_image':
+        filtered_data = [item for item in filtered_data if 'Completado' in item.get('Estado Imagen', '')]
+    elif image_status_filter == 'without_image':
+        filtered_data = [item for item in filtered_data if 'Añadir' in item.get('Estado Imagen', '')]
+    
+    return filtered_data
+
+
 def prepare_history_data(raw_data):
     """
     Procesa los datos del historial según la estructura que viene del backend
