@@ -67,13 +67,11 @@ class TestSystemComplete:
         
         print("✅ Integridad de datos verificada")
         
-        return {
-            "prediction_id": prediction_id,
-            "image_id": image_id,
-            "stroke_result": stroke_result,
-            "image_result": image_result,
-            "history_prediction": our_prediction
-        }
+        assert prediction_id is not None, "ID de predicción debe existir"
+        assert image_id is not None, "ID de imagen debe existir"
+        assert stroke_result is not None, "Resultado de stroke debe existir"
+        assert image_result is not None, "Resultado de imagen debe existir"
+        assert our_prediction is not None, "Predicción en historial debe existir"
     
     @pytest.mark.critical
     def test_cross_system_validation_no_image_without_stroke(self, test_client, test_image):
