@@ -488,7 +488,6 @@ Las contribuciones son bienvenidas. Para contribuir:
 -   Seguir PEP 8 para código Python
 -   Incluir tests para nuevas funcionalidades
 -   Documentar funciones y clases
--   Mantener cobertura de tests > 80%
 
 ## 📄 Estructura de Testing
 
@@ -505,13 +504,6 @@ Las contribuciones son bienvenidas. Para contribuir:
 -   **Base de datos**: Persistencia y recuperación de datos
 -   **Flujo completo**: Integración end-to-end
 -   **Sistema completo**: Validación del sistema completo
-
-### Cobertura Actual
-
--   **Líneas cubiertas**: 85%+
--   **Funciones críticas**: 100%
--   **Casos de error**: 90%+
--   **Flujos principales**: 100%
 
 ## ⚠️ Consideraciones Médicas
 
