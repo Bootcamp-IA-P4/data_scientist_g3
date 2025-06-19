@@ -1,0 +1,59 @@
+# services:
+#   backend:
+#     build:
+#       context: ./backend/app
+#       dockerfile: Dockerfile
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/app/Dockerfile
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+      - DATABASE_URL=${DATABASE_URL}   # <-- AGREGA ESTA LÍNEA
+      # - name=value
+      # - .env
+    ports:
+      - "8000:8000"
+    # depends_on:
+    #   - supabase
+    restart: unless-stopped
+    networks:
+      - app-network
+    volumes:
+      # - ./models:/backend/app/models
+      - ./data:/backend/app/data
+      - ./src:/backend/app/src
+
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    # environment:
+    # - DOCKERIZED=1        # <-- Agrega esta línea
+    ports:
+      - "8050:8050"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # supabase:
+  #   image: supabase/postgres:15.1.0.63
+  #   environment:
+  #     POSTGRES_PASSWORD: ${SUPABASE_DB_PASSWORD}
+  #     POSTGRES_DB: postgres
+  #     POSTGRES_USER: postgres
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
