@@ -135,6 +135,7 @@ def create_history_table(history_data):
 def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict]):
     """
     Crea la tabla combinada del historial de predicciones de stroke e imagen
+    ✅ PASO 1: SOLO AÑADIR BOTÓN CLICKEABLE
     """
     
     if not stroke_data:
@@ -162,7 +163,7 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
             stroke_resultado = "Sin riesgo" if stroke.get('prediction', 0) == 0 else "Con riesgo"
             stroke_percentage = f"{(stroke.get('probability', 0) * 100):.1f}%"
             
-            # Datos de imagen
+            # ✅ CAMBIO: Datos de imagen con botón clickeable
             if image_info:
                 image_percentage = f"{(image_info.get('probability', 0) * 100):.1f}%"
                 image_risk = image_info.get('risk_level', 'N/A')
@@ -170,7 +171,8 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
             else:
                 image_percentage = "Análisis no realizado"
                 image_risk = "Análisis no realizado"
-                image_status = f"[📸 Añadir Tomografía]"
+                # ✅ CAMBIO: Texto simple para que sea clickeable
+                image_status = "📸 Añadir Tomografía"
             
             combined_table_data.append({
                 'ID': stroke_id,
@@ -178,10 +180,10 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
                 'Edad': stroke.get('age', ''),
                 'Género': stroke.get('gender', ''),
                 'Stroke %': stroke_percentage,
-                'Riesgo Stroke': stroke.get('risk_level', ''),
-                'Estado Imagen': image_status,
+                'Riesgo': stroke.get('risk_level', ''),  # ✅ CAMBIO: Nombre simplificado
+                'Imagen': image_status,  # ✅ CAMBIO: Nombre simplificado
                 'Imagen %': image_percentage,
-                'Riesgo Imagen': image_risk
+                'Riesgo Img': image_risk,  # ✅ CAMBIO: Nombre simplificado
             })
             
     except Exception as e:
@@ -198,7 +200,7 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
     else:
         try:
             table = dash_table.DataTable(
-                id='combined-history-table',
+                id='combined-history-table',  # ✅ IMPORTANTE: ID para el callback
                 data=combined_table_data,
                 columns=[
                     {'name': 'ID', 'id': 'ID', 'type': 'numeric'},
@@ -206,22 +208,27 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
                     {'name': 'Edad', 'id': 'Edad', 'type': 'numeric'},
                     {'name': 'Género', 'id': 'Género'},
                     {'name': 'Stroke %', 'id': 'Stroke %'},
-                    {'name': 'Riesgo', 'id': 'Riesgo Stroke'},
-                    {'name': 'Imagen', 'id': 'Estado Imagen'},
+                    {'name': 'Riesgo', 'id': 'Riesgo'},          # ✅ CAMBIO: Nombre simplificado
+                    {'name': 'Imagen', 'id': 'Imagen'},          # ✅ CAMBIO: Nombre simplificado  
                     {'name': 'Imagen %', 'id': 'Imagen %'},
-                    {'name': 'Riesgo Img', 'id': 'Riesgo Imagen'}
+                    {'name': 'Riesgo Img', 'id': 'Riesgo Img'}   # ✅ CAMBIO: Nombre simplificado
                 ],
                 style_cell={
                     'textAlign': 'center', 
                     'padding': '12px 8px',
                     'fontFamily': 'Inter, sans-serif',
-                    'fontSize': '0.9rem'
+                    'fontSize': '0.9rem',
+                    'whiteSpace': 'normal',
+                    'height': 'auto'
                 },
                 style_header={
-                    'backgroundColor': 'linear-gradient(135deg, #2563EB, #8B5CF6)', 
+                    'backgroundColor': '#2563EB', 
                     'color': 'white', 
                     'fontWeight': 'bold',
-                    'border': 'none'
+                    'border': 'none',
+                    'fontSize': '0.95rem',
+                    'padding': '16px 8px',
+                    'textAlign': 'center'
                 },
                 style_data={
                     'backgroundColor': 'rgba(30, 41, 59, 0.3)',
@@ -231,28 +238,37 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
                 style_data_conditional=[
                     # Filas con riesgo alto de stroke
                     {
-                        'if': {'filter_query': '{Riesgo Stroke} = "Alto"'},
+                        'if': {'filter_query': '{Riesgo} = "Alto"'},
                         'backgroundColor': 'rgba(239, 68, 68, 0.2)',
                         'color': '#FEF2F2',
                     },
                     {
-                        'if': {'filter_query': '{Riesgo Stroke} = "Crítico"'},
+                        'if': {'filter_query': '{Riesgo} = "Crítico"'},
                         'backgroundColor': 'rgba(239, 68, 68, 0.3)',
                         'color': '#FEF2F2',
                     },
-                    # Filas sin imagen
+                    # ✅ CAMBIO: Estilo para celdas clickeables
                     {
-                        'if': {'filter_query': '{Estado Imagen} contains "Añadir"'},
-                        'backgroundColor': 'rgba(245, 158, 11, 0.1)',
-                        'border': '1px solid rgba(245, 158, 11, 0.3)'
+                        'if': {
+                            'column_id': 'Imagen',
+                            'filter_query': '{Imagen} contains "Añadir"'
+                        },
+                        'backgroundColor': 'rgba(59, 130, 246, 0.25)',
+                        'color': '#DBEAFE',
+                        'fontWeight': 'bold',
+                        'textDecoration': 'underline',
+                        'cursor': 'pointer'
                     }
                 ],
                 sort_action="native",
-                filter_action="native",
+                filter_action="none",  # ✅ CAMBIO: Sin filtros para eliminar segunda fila
                 page_action="native",
                 page_current=0,
                 page_size=15,
-                style_table={'overflowX': 'auto'}
+                style_table={'overflowX': 'auto'},
+                # ✅ CAMBIO: Configuración para detectar clicks
+                cell_selectable=True,
+                active_cell=None
             )
         except Exception as e:
             print(f"Error creando DataTable combinada: {e}")
@@ -260,6 +276,25 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
     
     return html.Div([
         html.H3("Historial Combinado de Predicciones"),
+        
+        # ✅ CAMBIO: Instrucciones para el usuario
+        html.Div([
+            html.P([
+                "💡 ",
+                html.Strong("Tip: "),
+                "Haz click en '📸 Añadir Tomografía' para vincular una imagen."
+            ], style={
+                'background': 'rgba(59, 130, 246, 0.1)',
+                'border': '1px solid rgba(59, 130, 246, 0.3)',
+                'borderRadius': '8px',
+                'padding': '12px',
+                'marginBottom': '20px',
+                'color': '#DBEAFE',
+                'fontSize': '0.9rem',
+                'textAlign': 'center'
+            })
+        ]),
+        
         table
     ], className="history-section combined-history")
 
@@ -321,7 +356,7 @@ def create_history_stats_summary(stroke_data: List[Dict], image_data: List[Dict]
     high_risk_percentage = (high_risk_count / total_stroke * 100) if total_stroke > 0 else 0
     
     return html.Div([
-        html.H3("📊 Resumen del Historial"),
+        html.H3("Resumen del Historial"),
         
         html.Div([
             html.Div([
@@ -344,7 +379,7 @@ def create_history_stats_summary(stroke_data: List[Dict], image_data: List[Dict]
                 html.Div("✅", className="stat-icon"),
                 html.Div([
                     html.H4(f"{completion_rate:.1f}%"),
-                    html.P("Completitud")
+                    html.P("Completado")
                 ], className="stat-content")
             ], className="stat-card"),
             

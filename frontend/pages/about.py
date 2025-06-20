@@ -41,16 +41,6 @@ def get_about_layout():
                         "la detección temprana de factores de riesgo cardiovascular."
                     ]),
                     
-                    # Tech stack
-                    html.Div([
-                        html.Span("Python", className="tech-badge"),
-                        html.Span("Machine Learning", className="tech-badge"),
-                        html.Span("Dash", className="tech-badge"),
-                        html.Span("Scikit-learn", className="tech-badge"),
-                        html.Span("HTML/CSS", className="tech-badge"),
-                        html.Span("Data Science", className="tech-badge"),
-                    ], className="tech-stack")
-                    
                 ], className="project-info"),
                 
                 # Equipo
@@ -58,7 +48,7 @@ def get_about_layout():
                     
                     html.Div([
                         html.Div([
-                            html.Div("👨‍💻", className="avatar")
+                            html.Div("", className="avatar avatar-pepe")
                         ], className="avatar-frame"),
                         html.H3("Pepe", className="member-name"),
                         html.P("Scrum manager", className="member-role"),
@@ -68,7 +58,7 @@ def get_about_layout():
                     
                     html.Div([
                         html.Div([
-                            html.Div("👩‍⚕️", className="avatar")
+                            html.Div("", className="avatar avatar-maryna")
                         ], className="avatar-frame"),
                         html.H3("Maryna", className="member-name"),
                         html.P("developer", className="member-role"),
@@ -78,7 +68,7 @@ def get_about_layout():
                     
                     html.Div([
                         html.Div([
-                            html.Div("👨‍🎨", className="avatar")
+                            html.Div("", className="avatar avatar-jorge")
                         ], className="avatar-frame"),
                         html.H3("Jorge", className="member-name"),
                         html.P("Developer", className="member-role"),
@@ -88,17 +78,17 @@ def get_about_layout():
                     
                     html.Div([
                         html.Div([
-                            html.Div("👩‍💼", className="avatar")
+                            html.Div("", className="avatar avatar-mariela")
                         ], className="avatar-frame"),
-                        html.H3("Mariela", className="member-name"),
+                        html.H3("Marie", className="member-name"),
                         html.P("Developer", className="member-role"),
-                        html.P("Diseñadora de experiencia de usuario. Creadora de la interfaz del proyecto.", 
+                        html.P("Diseñadora de experiencia de usuario. Frontend", 
                                className="member-description")
                     ], className="team-member"),
                     
                     html.Div([
                         html.Div([
-                            html.Div("👨‍🔬", className="avatar")
+                            html.Div("", className="avatar avatar-maxi")
                         ], className="avatar-frame"),
                         html.H3("Maxi", className="member-name"),
                         html.P("Data Scientist", className="member-role"),

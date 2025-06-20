@@ -17,7 +17,6 @@ def get_history_layout():
         # Overlay oscuro
         html.Div(className="video-overlay"),
         
-        # Navbar
         create_navbar(),
         
         # Contenido principal
@@ -70,13 +69,13 @@ def get_history_layout():
                 
                 html.Div([
                     html.Button(
-                        "🔄 Actualizar",
+                        "Actualizar",
                         id='refresh-history-button',
                         className="btn-secondary",
                         n_clicks=0
                     ),
                     html.Button(
-                        "📊 Exportar CSV",
+                        "Exportar CSV",
                         id='export-csv-button',
                         className="btn-secondary",
                         n_clicks=0
