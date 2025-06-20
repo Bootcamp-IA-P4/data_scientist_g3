@@ -1,4 +1,4 @@
-/* Estilos específicos para la página de historial */
+/* Estilos específicos para la página de historial - LIMPIO */
 
 .history-page {
     min-height: 100vh;
@@ -106,97 +106,6 @@
     font-size: 0.9rem;
     color: var(--color-text-secondary);
     margin: 5px 0 0 0;
-}
-
-/* Filtros */
-.history-filters {
-    background: var(--color-glass);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-main);
-    padding: 25px;
-    margin-bottom: 30px;
-    box-shadow: var(--box-shadow-main);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: end;
-}
-
-.filter-group {
-    flex: 1;
-    min-width: 200px;
-}
-
-.filter-label {
-    display: block;
-    color: var(--color-text-primary);
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-}
-
-.filter-dropdown .Select-control {
-    background: rgba(15, 23, 42, 0.8) !important;
-    border: 2px solid var(--color-border) !important;
-    border-radius: var(--border-radius-main) !important;
-    padding: 8px 12px !important;
-    transition: all 0.3s ease !important;
-    min-height: 45px !important;
-}
-
-.filter-dropdown .Select-control:hover,
-.filter-dropdown .Select-control.is-focused {
-    border-color: var(--color-primary) !important;
-    box-shadow: var(--glow-primary) !important;
-}
-
-.filter-dropdown .Select-value-label,
-.filter-dropdown .Select-placeholder {
-    color: var(--color-text-primary) !important;
-    font-size: 0.9rem !important;
-}
-
-.filter-dropdown .Select-menu-outer {
-    background: var(--color-surface) !important;
-    border: 1px solid var(--color-border) !important;
-    border-radius: var(--border-radius-main) !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-.filter-dropdown .Select-option {
-    color: var(--color-text-primary) !important;
-    background: transparent !important;
-    padding: 12px 15px !important;
-}
-
-.filter-dropdown .Select-option:hover,
-.filter-dropdown .Select-option.is-focused {
-    background: var(--color-primary) !important;
-    color: var(--color-text-on-primary) !important;
-}
-
-.filter-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.filter-actions .btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--color-text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 10px 20px;
-    border-radius: var(--border-radius-main);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-.filter-actions .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: var(--color-primary);
-    box-shadow: var(--glow-primary);
 }
 
 /* Tabla combinada */
@@ -323,26 +232,6 @@
         font-size: 1.4rem;
     }
     
-    .history-filters {
-        flex-direction: column;
-        gap: 15px;
-        padding: 20px;
-    }
-    
-    .filter-group {
-        min-width: 100%;
-    }
-    
-    .filter-actions {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .filter-actions .btn-secondary {
-        flex: 1;
-        text-align: center;
-    }
-    
     .history-stats-section,
     .combined-history {
         padding: 20px;
@@ -373,15 +262,6 @@
     
     .stat-content h4 {
         font-size: 1.6rem;
-    }
-    
-    .history-filters {
-        padding: 15px;
-    }
-    
-    .filter-dropdown .Select-control {
-        min-height: 40px !important;
-        padding: 6px 10px !important;
     }
     
     /* Ocultar algunas columnas en móvil muy pequeño */
