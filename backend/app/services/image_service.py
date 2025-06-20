@@ -97,23 +97,7 @@ class LazyImagePipeline:
         self._load_pipeline_lazy()
         return self._status_func()
     
-    # @property
-    # def is_available(self) -> bool:
-    #     """Check si el pipeline está disponible sin cargarlo"""
-    #     if self._pipeline_loaded:
-    #         return True
-    #     if self._pipeline_error:
-    #         return False
-        
-    #     # No cargar, solo verificar si existe el archivo
-    #     try:
-    #         current_dir = Path(__file__).resolve().parent
-    #         project_root = current_dir.parent.parent.parent
-    #         model_path = project_root / "models" / "CNN_PyTorch" / "modelo_cnn_stroke_pytorch.zip"
-    #         return model_path.exists()
-    #     except:
-    #         return False
-    
+    #DESARROLLO PARA PRODUCCIÓN
     @property
     def is_available(self) -> bool:
         """Check si el pipeline está disponible sin cargarlo"""
@@ -121,12 +105,30 @@ class LazyImagePipeline:
             return True
         if self._pipeline_error:
             return False
-
+                
+        # No cargar, solo verificar si existe el archivo
         try:
-            model_path = Path("/backend/models/CNN_PyTorch/modelo_cnn_stroke_pytorch.zip")
+            current_dir = Path(__file__).resolve().parent
+            project_root = current_dir.parent.parent.parent
+            model_path = project_root / "models" / "CNN_PyTorch" / "modelo_cnn_stroke_pytorch.zip"
             return model_path.exists()
-        except Exception:
+        except:
             return False
+    
+    # SOLO PARA DOCKERIZADO - NO CARGAR EN PRODUCCIÓN
+    # @property
+    # def is_available(self) -> bool:
+    #     """Check si el pipeline está disponible sin cargarlo"""
+    #     if self._pipeline_loaded:
+    #         return True
+    #     if self._pipeline_error:
+    #         return False
+
+    #     try:
+    #         model_path = Path("/backend/models/CNN_PyTorch/modelo_cnn_stroke_pytorch.zip")
+    #         return model_path.exists()
+    #     except Exception:
+    #         return False
 
 
 class ImageService:

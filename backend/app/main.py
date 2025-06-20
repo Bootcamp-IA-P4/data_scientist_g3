@@ -64,8 +64,8 @@ if __name__ == "__main__":
         
         uvicorn_config = {
             "app": "main:app",
-            "host": os.getenv("API_HOST", "0.0.0.0"), # Para dockerizado
-            # "host": os.getenv("API_HOST", "127.0.0.1"),
+            # "host": os.getenv("API_HOST", "0.0.0.0"), # Para dockerizado
+            "host": os.getenv("API_HOST", "127.0.0.1"), # Para desarrollo local
             "port": int(os.getenv("API_PORT", 8000)),
             "reload": False,
             "workers": 1,
