@@ -24,8 +24,8 @@ services:
       - app-network
     volumes:
       # - ./models:/backend/app/models
-      - ./data:/backend/app/data
-      - ./src:/backend/app/src
+      # - ./data:/backend/app/data
+      # - ./src:/backend/app/src
 
 
   frontend:
