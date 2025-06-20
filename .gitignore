@@ -58,3 +58,9 @@ Thumbs.db
 /tests/test_image.png
 /tests/test_image.jpg
 /tests/test_image.jpeg
+
+# MLflow
+mlruns/
+**/mlruns/
+mlartifacts/
+**/mlartifacts/
