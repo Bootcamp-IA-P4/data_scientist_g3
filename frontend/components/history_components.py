@@ -132,6 +132,8 @@ def create_history_table(history_data):
     ], className="history-section")
 
 
+# En history_components.py, reemplaza la función create_combined_history_table:
+
 def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict]):
     """
     Crea la tabla combinada del historial de predicciones de stroke e imagen
@@ -171,8 +173,8 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
             else:
                 image_percentage = "N/A"
                 image_risk = "N/A"
-                # ✅ ARREGLADO: Usar formato especial para detectar en callback
-                image_status = "Añadir Tomografía"
+                # ✅ CAMBIO CRÍTICO: Formato markdown para crear enlace
+                image_status = f"[AÑADIR TOMOGRAFÍA](/image-prediction?stroke_id={stroke_id})"
             
             combined_table_data.append({
                 'ID': stroke_id,
@@ -199,7 +201,7 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
         table = create_html_combined_table(combined_table_data)
     else:
         try:
-            # ✅ ARREGLADO: DataTable con botones funcionales
+            # ✅ ARREGLADO: DataTable con botones funcionales y cabeceras actualizadas
             table = dash_table.DataTable(
                 id='combined-history-table',
                 data=combined_table_data,
@@ -210,9 +212,9 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
                     {'name': 'Género', 'id': 'Género'},
                     {'name': 'Stroke %', 'id': 'Stroke %'},
                     {'name': 'Riesgo', 'id': 'Riesgo Stroke'},
-                    {'name': 'Imagen', 'id': 'Estado Imagen', 'presentation': 'markdown'},  # ✅ Permite renderizar markdown/HTML
-                    {'name': 'Imagen %', 'id': 'Imagen %'},
-                    {'name': 'Riesgo Img', 'id': 'Riesgo Imagen'}
+                    {'name': 'Tomografía', 'id': 'Estado Imagen', 'presentation': 'markdown'},  # ✅ CRUCIAL: markdown activado
+                    {'name': 'Stroke Tomografía', 'id': 'Imagen %'},
+                    {'name': 'Riesgo Tomografía', 'id': 'Riesgo Imagen'}
                 ],
                 style_cell={
                     'textAlign': 'center', 
@@ -245,7 +247,7 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
                     },
                     # ✅ Filas con botón de añadir tomografía
                     {
-                        'if': {'filter_query': '{Estado Imagen} contains "ADD_TOMOGRAPHY"'},
+                        'if': {'filter_query': '{Estado Imagen} contains "AÑADIR"'},
                         'backgroundColor': 'rgba(245, 158, 11, 0.1)',
                         'border': '1px solid rgba(245, 158, 11, 0.3)'
                     }
@@ -255,7 +257,12 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
                 page_action="native",
                 page_current=0,
                 page_size=15,
-                style_table={'overflowX': 'auto'}
+                style_table={'overflowX': 'auto'},
+                # ✅ CRÍTICO: Habilitar markdown
+                markdown_options={
+                    "html": False,
+                    "link_target": "_self"
+                }
             )
         except Exception as e:
             print(f"Error creando DataTable combinada: {e}")
@@ -270,12 +277,13 @@ def create_combined_history_table(stroke_data: List[Dict], image_data: List[Dict
 def create_html_combined_table(table_data: List[Dict]):
     """
     Crear tabla HTML combinada como fallback
-    ✅ ARREGLADO: Botones de tomografía funcionan con hrefs
+    ✅ ARREGLADO: Botones de tomografía funcionan con hrefs y cabeceras actualizadas
     """
     if not table_data:
         return html.P("No hay datos para mostrar.")
     
-    headers = ['ID', 'Fecha', 'Edad', 'Género', 'Stroke %', 'Riesgo', 'Imagen', 'Imagen %', 'Riesgo Img']
+    # ✅ CABECERAS ACTUALIZADAS
+    headers = ['ID', 'Fecha', 'Edad', 'Género', 'Stroke %', 'Riesgo', 'Tomografía', 'Stroke Tomografía', 'Riesgo Tomografía']
     columns = ['ID', 'Fecha', 'Edad', 'Género', 'Stroke %', 'Riesgo Stroke', 'Estado Imagen', 'Imagen %', 'Riesgo Imagen']
     
     # Header
@@ -290,20 +298,18 @@ def create_html_combined_table(table_data: List[Dict]):
             
             # ✅ ARREGLADO: Tratamiento especial para botón de añadir tomografía
             if col == 'Estado Imagen' and str(cell_value) == "Añadir Tomografía":
-                stroke_id = str(cell_value).replace('ADD_TOMOGRAPHY_', '')
+                stroke_id = row.get('ID')  # ✅ Obtener stroke_id de la fila actual
                 cells.append(html.Td([
                     html.A(
                         "Añadir Tomografía",
                         href=f"/image-prediction?stroke_id={stroke_id}",
                         className="btn-add-image-small",
-                        # ✅ Agregar target para debugging
                         target="_self"
                     )
                 ]))
             else:
                 # ✅ Mostrar texto normal para casos completados
-                display_value = "✅ Completado" if str(cell_value).startswith('ADD_TOMOGRAPHY_') else cell_value
-                cells.append(html.Td(display_value))
+                cells.append(html.Td(cell_value))
         
         table_rows.append(html.Tr(cells))
     
