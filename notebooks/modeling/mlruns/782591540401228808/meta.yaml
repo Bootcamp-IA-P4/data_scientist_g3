@@ -1,6 +1,0 @@
-artifact_location: file:c:/Users/jlmateos.ext/OneDrive/IA/Scripts/Repos/data_scientist_g3/notebooks/modeling/mlruns/782591540401228808
-creation_time: 1750163250109
-experiment_id: '782591540401228808'
-last_update_time: 1750163250109
-lifecycle_stage: active
-name: stroke_prediction_xgboost

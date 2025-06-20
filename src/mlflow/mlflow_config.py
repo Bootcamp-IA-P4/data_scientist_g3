@@ -4,7 +4,15 @@ import os
 def setup_mlflow():
     """Configuración inicial de MLflow"""
     # Configurar el directorio para almacenar los experimentos
-    mlflow.set_tracking_uri("file:///C:/Users/jlmateos.ext/OneDrive/IA/Scripts/Repos/data_scientist_g3/notebooks/modeling/mlruns")
+    ruta_1 = "file:///C:/Users/jlmateos.ext/OneDrive/IA/Scripts/Repos/data_scientist_g3/notebooks/modeling/mlruns"
+    ruta_2 = "file:///C:/Users/Usuario/OneDrive/IA/Scripts/Repos/data_scientist_g3/notebooks/modeling/mlruns"
+    
+    try:
+        mlflow.set_tracking_uri(ruta_1)
+        # Intentar crear un directorio de prueba para verificar permisos
+        os.makedirs(ruta_1.replace('file:///', ''), exist_ok=True)
+    except PermissionError:
+        mlflow.set_tracking_uri(ruta_2)
     
     # Crear un experimento si no existe
     experiment_name = "stroke_prediction"

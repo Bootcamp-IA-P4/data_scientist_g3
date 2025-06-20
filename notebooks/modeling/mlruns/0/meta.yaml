@@ -1,6 +1,6 @@
-artifact_location: file:c:/Users/jlmateos.ext/OneDrive/IA/Scripts/Repos/data_scientist_g3/notebooks/modeling/mlruns/0
-creation_time: 1750163250073
+artifact_location: mlflow-artifacts:/0
+creation_time: 1750337009074
 experiment_id: '0'
-last_update_time: 1750163250073
+last_update_time: 1750337009074
 lifecycle_stage: active
 name: Default

@@ -48,3 +48,9 @@ Thumbs.db
 .streamlit/secrets.toml
 
 /.qodo
+
+# MLflow
+mlruns/
+**/mlruns/
+mlartifacts/
+**/mlartifacts/
