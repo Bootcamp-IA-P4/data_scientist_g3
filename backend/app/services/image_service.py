@@ -97,6 +97,23 @@ class LazyImagePipeline:
         self._load_pipeline_lazy()
         return self._status_func()
     
+    # @property
+    # def is_available(self) -> bool:
+    #     """Check si el pipeline está disponible sin cargarlo"""
+    #     if self._pipeline_loaded:
+    #         return True
+    #     if self._pipeline_error:
+    #         return False
+        
+    #     # No cargar, solo verificar si existe el archivo
+    #     try:
+    #         current_dir = Path(__file__).resolve().parent
+    #         project_root = current_dir.parent.parent.parent
+    #         model_path = project_root / "models" / "CNN_PyTorch" / "modelo_cnn_stroke_pytorch.zip"
+    #         return model_path.exists()
+    #     except:
+    #         return False
+    
     @property
     def is_available(self) -> bool:
         """Check si el pipeline está disponible sin cargarlo"""
@@ -104,14 +121,11 @@ class LazyImagePipeline:
             return True
         if self._pipeline_error:
             return False
-        
-        # No cargar, solo verificar si existe el archivo
+
         try:
-            current_dir = Path(__file__).resolve().parent
-            project_root = current_dir.parent.parent.parent
-            model_path = project_root / "models" / "CNN_PyTorch" / "modelo_cnn_stroke_pytorch.zip"
+            model_path = Path("/backend/models/CNN_PyTorch/modelo_cnn_stroke_pytorch.zip")
             return model_path.exists()
-        except:
+        except Exception:
             return False
 
 
@@ -123,7 +137,7 @@ class ImageService:
         self.service_ready = True  # Siempre listo, carga bajo demanda
     
     async def process_image(self, image_data: bytes, stroke_prediction_id: int, 
-                          filename: str) -> Dict:
+                        filename: str) -> Dict:
         """Procesar imagen para predicción - Con carga lazy"""
         
         try:
@@ -244,7 +258,7 @@ def get_service() -> ImageService:
 
 # FUNCIONES PRINCIPALES PARA ENDPOINTS
 async def process_image_prediction(image_data: bytes, stroke_prediction_id: int, 
-                                 filename: str, content_type: str = None) -> Dict:
+                                filename: str, content_type: str = None) -> Dict:
     """Función principal para procesar imagen"""
     return await get_service().process_image(image_data, stroke_prediction_id, filename)
 
