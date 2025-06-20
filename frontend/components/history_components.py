@@ -330,7 +330,7 @@ def create_history_stats_summary(stroke_data: List[Dict], image_data: List[Dict]
     high_risk_percentage = (high_risk_count / total_stroke * 100) if total_stroke > 0 else 0
     
     return html.Div([
-        html.H3("📊 Resumen del Historial"),
+        html.H3("Resumen del Historial"),
         
         html.Div([
             html.Div([
