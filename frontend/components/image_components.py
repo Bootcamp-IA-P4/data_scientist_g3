@@ -195,6 +195,156 @@ def create_image_result_card(prediction: int, probability: float, risk_level: st
         
     ], className=f"result-card image-result-card {risk_class}")
 
+def create_image_result_card_with_navigation(prediction: int, probability: float, risk_level: str, 
+                                           processing_time: int, stroke_id: int, model_confidence: float,
+                                           message: str = "Análisis completado", origin_search: str = None):
+    """
+    Crear tarjeta de resultados con botones de navegación contextuales
+    """
+    
+    # Determinar clase CSS y emoji según riesgo
+    risk_classes = {
+        "Bajo": "result-card-low",
+        "Medio": "result-card-medium", 
+        "Alto": "result-card-high",
+        "Crítico": "result-card-critical"
+    }
+    
+    risk_emojis = {
+        "Bajo": "✅",
+        "Medio": "⚠️", 
+        "Alto": "🚨",
+        "Crítico": "🆘"
+    }
+    
+    risk_class = risk_classes.get(risk_level, "result-card-low")
+    risk_emoji = risk_emojis.get(risk_level, "✅")
+    
+    # Mensaje principal basado en prediction
+    if prediction == 1:
+        main_message = f"{risk_emoji} INDICADORES DE STROKE DETECTADOS"
+        diagnosis_class = "diagnosis-positive"
+        diagnosis_color = "#dc3545"
+    else:
+        main_message = f"✅ NO SE DETECTARON INDICADORES DE STROKE"
+        diagnosis_class = "diagnosis-negative"
+        diagnosis_color = "#28a745"
+    
+    # Convertir probabilidades a porcentaje
+    probability_percentage = probability * 100
+    confidence_percentage = model_confidence * 100
+    
+    # Recomendaciones según nivel de riesgo
+    recommendations = {
+        "Bajo": "Las imágenes no muestran indicadores significativos de stroke. Mantenga controles regulares.",
+        "Medio": "Se detectaron algunas anomalías menores. Considere evaluación médica adicional.",
+        "Alto": "Se detectaron indicadores importantes. Consulte urgentemente con un neurólogo.",
+        "Crítico": "Se detectaron indicadores críticos. Busque atención neurológica inmediata."
+    }
+    
+    # ✅ BOTONES DE NAVEGACIÓN CONTEXTUALES
+    navigation_buttons = []
+    
+    # Determinar origen de la navegación
+    came_from_history = origin_search and 'origin=history' in origin_search
+    came_from_latest = origin_search and 'stroke_id=LATEST' in origin_search
+    
+    if came_from_history:
+        # Vino desde historial - botón para volver al historial
+        navigation_buttons.extend([
+            html.A(
+                [html.I(className="fas fa-arrow-left"), " Volver al Historial"],
+                href="/history?updated=true",
+                className="btn-primary",
+                style={'marginRight': '10px'}
+            ),
+            html.A(
+                [html.I(className="fas fa-plus"), " Nueva Predicción"],
+                href="/",
+                className="btn-secondary"
+            )
+        ])
+    elif came_from_latest:
+        # Vino desde predicción reciente - opciones múltiples
+        navigation_buttons.extend([
+            html.A(
+                [html.I(className="fas fa-chart-line"), " Ver Historial Completo"],
+                href="/history",
+                className="btn-primary",
+                style={'marginRight': '10px'}
+            ),
+            html.A(
+                [html.I(className="fas fa-plus"), " Nueva Predicción"],
+                href="/",
+                className="btn-secondary"
+            )
+        ])
+    else:
+        # Navegación libre - opciones estándar
+        navigation_buttons.extend([
+            html.A(
+                [html.I(className="fas fa-chart-bar"), " Ver Historial"],
+                href="/history",
+                className="btn-secondary",
+                style={'marginRight': '10px'}
+            ),
+            html.A(
+                [html.I(className="fas fa-camera"), " Analizar Nueva Imagen"],
+                href="/image-prediction",
+                className="btn-primary"
+            )
+        ])
+    
+    return html.Div([
+        # Mensaje principal
+        html.Div([
+            html.H2(main_message, className=f"diagnosis-message {diagnosis_class}",
+                   style={'color': diagnosis_color}),
+            html.Div(f"{probability_percentage:.1f}%", className="percentage-display"),
+            html.P(f"Nivel de riesgo por imagen: {risk_level}", className="risk-level")
+        ], className="result-header"),
+        
+        # Métricas técnicas
+        html.Div([
+            html.H4("📊 Métricas del Análisis"),
+            html.Div([
+                html.Div([
+                    html.Span("🎯 Confianza del Modelo"),
+                    html.Span(f"{confidence_percentage:.1f}%", className="metric-value")
+                ], className="metric-item"),
+                
+                html.Div([
+                    html.Span("⚡ Tiempo de Procesamiento"),
+                    html.Span(f"{processing_time} ms", className="metric-value")
+                ], className="metric-item"),
+                
+                html.Div([
+                    html.Span("🔗 ID Stroke Vinculado"),
+                    html.Span(f"#{stroke_id}", className="metric-value")
+                ], className="metric-item")
+            ], className="metrics-grid")
+        ], className="technical-metrics"),
+        
+        # Recomendación
+        html.Div([
+            html.H4("📋 Interpretación Clínica"),
+            html.P(recommendations.get(risk_level, recommendations["Bajo"]))
+        ], className="recommendation"),
+        
+        # Mensaje de confirmación
+        html.Div([
+            html.I(className="fas fa-check-circle"),
+            html.Span(message)
+        ], className="success-confirmation"),
+        
+        # ✅ ACCIONES CONTEXTUALES
+        html.Div([
+            html.H4("🧾 Próximos Pasos"),
+            html.Div(navigation_buttons, className="contextual-navigation")
+        ], className="result-actions-contextual")
+        
+    ], className=f"result-card image-result-card {risk_class}")
+
 def create_stroke_id_options(stroke_predictions: List[Dict]) -> List[Dict]:
     """Crear opciones para el dropdown de stroke IDs"""
     options = []
@@ -206,11 +356,11 @@ def create_stroke_id_options(stroke_predictions: List[Dict]) -> List[Dict]:
         risk_level = pred.get('risk_level', 'N/A')
         age = pred.get('age', 'N/A')
         gender = pred.get('gender', 'N/A')
+        fecha = pred.get('fecha_creacion', 'N/A')
         
-        # Formato mejorado: "ID #1 - 45 años, Masculino (Alto, 78.5%)"
-        label = (f"ID #{stroke_id} - "
-                f"{age} años, {gender} "
-                f"({risk_level}, {probability:.1f}%)")
+        # ✅ FORMATO MEJORADO CON MÁS INFORMACIÓN
+        label = (f"#{stroke_id} - {age} años, {gender} - "
+                f"{risk_level} ({probability:.1f}%) - {fecha}")
         
         options.append({
             'label': label,
