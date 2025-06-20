@@ -1,4 +1,22 @@
-/* Estilos específicos para la página de historial - LIMPIO */
+/* Estilos específicos para la página de historial */
+
+/* Variables CSS necesarias */
+:root {
+    --color-primary: #2563EB;
+    --color-primary-light: #3B82F6;
+    --color-accent: #8B5CF6;
+    --color-background: #0F172A;
+    --color-surface: #1E293B;
+    --color-glass: rgba(30, 41, 59, 0.8);
+    --color-text-primary: #F8FAFC;
+    --color-text-secondary: #94A3B8;
+    --color-text-on-primary: #FFFFFF;
+    --color-border: #334155;
+    --color-warning: #F59E0B;
+    --glow-primary: 0 0 20px rgba(37, 99, 235, 0.5);
+    --border-radius-main: 12px;
+    --box-shadow-main: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
 
 .history-page {
     min-height: 100vh;
@@ -13,7 +31,7 @@
     padding: 10px;
 }
 
-/* Títulos de la página */
+/* ===== TÍTULOS ===== */
 .history-page .page-title {
     text-align: center;
     margin-bottom: 15px;
@@ -41,7 +59,7 @@
     line-height: 1.6;
 }
 
-/* Sección de estadísticas */
+/* ===== SECCIÓN DE ESTADÍSTICAS ===== */
 .history-stats-section {
     background: var(--color-glass);
     backdrop-filter: blur(20px);
@@ -108,7 +126,7 @@
     margin: 5px 0 0 0;
 }
 
-/* Tabla combinada */
+/* ===== TABLA COMBINADA ===== */
 .combined-history {
     background: var(--color-glass);
     backdrop-filter: blur(20px);
@@ -129,37 +147,140 @@
     background-clip: text;
 }
 
-/* Hover para dash-table */
-.combined-history .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner tr:hover td {
-    background: rgba(37, 99, 235, 0.15) !important;
-    color: #F8FAFC !important;
+/* ===== HOVER PARA FILAS ===== */
+.dash-table-container tr:hover td {
+    background: rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s ease !important;
 }
 
-/* Botón añadir tomografía */
-.btn-add-image-small {
-    background: linear-gradient(135deg, var(--color-warning), #F97316);
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    white-space: nowrap;
+/* ===== ENLACES DE TOMOGRAFÍA ===== */
+.dash-table-container .cell-markdown a,
+.dash-table-container .dash-cell-value a,
+.dash-table-container a[href*="image-prediction"],
+.dash-table-container a[href*="stroke_id"],
+.combined-history .cell-markdown a,
+.combined-history .dash-cell-value a,
+.combined-history a[href*="image-prediction"],
+.combined-history a[href*="stroke_id"] {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent)) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 8px 16px !important;
+    border-radius: var(--border-radius-main) !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
+    box-shadow: var(--glow-primary) !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
 }
 
-.btn-add-image-small:hover {
-    background: linear-gradient(135deg, #F97316, #EA580C);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
-    color: white;
-    text-decoration: none;
+/* Efecto de brillo como la navbar (SOLO EN TABLA) */
+.dash-table-container .cell-markdown a::before,
+.dash-table-container .dash-cell-value a::before,
+.dash-table-container a[href*="image-prediction"]::before,
+.dash-table-container a[href*="stroke_id"]::before,
+.combined-history .cell-markdown a::before,
+.combined-history .dash-cell-value a::before,
+.combined-history a[href*="image-prediction"]::before,
+.combined-history a[href*="stroke_id"]::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent) !important;
+    transition: left 0.5s ease !important;
 }
 
-/* Tabla HTML fallback */
+/* Hover para enlaces - igual que navbar (SOLO EN TABLA) */
+.dash-table-container .cell-markdown a:hover,
+.dash-table-container .dash-cell-value a:hover,
+.dash-table-container a[href*="image-prediction"]:hover,
+.dash-table-container a[href*="stroke_id"]:hover,
+.combined-history .cell-markdown a:hover,
+.combined-history .dash-cell-value a:hover,
+.combined-history a[href*="image-prediction"]:hover,
+.combined-history a[href*="stroke_id"]:hover {
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-accent)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--glow-primary), 0 4px 15px rgba(37, 99, 235, 0.3) !important;
+    border-color: var(--color-primary) !important;
+}
+
+/* Activar brillo en hover  */
+.dash-table-container .cell-markdown a:hover::before,
+.dash-table-container .dash-cell-value a:hover::before,
+.dash-table-container a[href*="image-prediction"]:hover::before,
+.dash-table-container a[href*="stroke_id"]:hover::before,
+.combined-history .cell-markdown a:hover::before,
+.combined-history .dash-cell-value a:hover::before,
+.combined-history a[href*="image-prediction"]:hover::before,
+.combined-history a[href*="stroke_id"]:hover::before {
+    left: 100% !important;
+}, 255, 0.1), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+/* Hover para enlaces  */
+.cell-markdown a:hover,
+.dash-cell-value a:hover,
+a[href*="image-prediction"]:hover,
+a[href*="stroke_id"]:hover {
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-accent)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--glow-primary), 0 4px 15px rgba(37, 99, 235, 0.3) !important;
+    border-color: var(--color-primary) !important;
+}
+
+/* Activar brillo en hover */
+.cell-markdown a:hover::before,
+.dash-cell-value a:hover::before,
+a[href*="image-prediction"]:hover::before,
+a[href*="stroke_id"]:hover::before {
+    left: 100% !important;
+}
+
+/* ===== ESTILOS ESPECÍFICOS PARA CELDAS ===== */
+
+/* Centrar contenido de todas las celdas markdown */
+.cell-markdown,
+.cell-markdown p,
+.dash-cell-value.cell-markdown,
+.dash-cell-value.cell-markdown p {
+    text-align: center !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Celdas con enlace de tomografía  */
+.dash-cell[data-dash-column="Estado Imagen"]:has(a) {
+    background: rgba(37, 99, 235, 0.1) !important;
+    border-color: rgba(37, 99, 235, 0.3) !important;
+}
+
+/* Hover para filas con botón de tomografía */
+.dash-table-container tr:hover .dash-cell[data-dash-column="Estado Imagen"]:has(a) {
+    background: rgba(37, 99, 235, 0.2) !important;
+    border-left: 3px solid var(--color-primary) !important;
+}
+
+/* ===== COLORES DE RIESGO ===== */
+
+/* Filas con riesgo alto de stroke */
+.dash-table-container .dash-cell:contains("Alto"),
+.dash-table-container .dash-cell:contains("Crítico") {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #FEF2F2 !important;
+}
+
+/* ===== TABLA HTML FALLBACK ===== */
 .fallback-table {
     width: 100%;
     border-collapse: collapse;
@@ -185,20 +306,15 @@
     color: var(--color-text-primary);
     border-bottom: 1px solid var(--color-border);
     font-size: 0.9rem;
+    transition: all 0.3s ease;
 }
 
 .fallback-table tr:hover td {
-    background: rgba(37, 99, 235, 0.15);
-    box-shadow: inset 0 0 10px rgba(37, 99, 235, 0.1);
+    background: rgba(0, 0, 0, 0.2) !important;
+    transform: translateX(2px);
 }
 
-/* Estados especiales en la tabla */
-.fallback-table td:has(.btn-add-image-small) {
-    background: rgba(245, 158, 11, 0.1);
-    border-left: 3px solid var(--color-warning);
-}
-
-/* Responsive */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .history-page .main-content {
         padding: 15px;
@@ -243,9 +359,12 @@
         font-size: 0.8rem;
     }
     
-    .btn-add-image-small {
-        padding: 4px 8px;
-        font-size: 0.7rem;
+    .cell-markdown a,
+    .dash-cell-value a,
+    a[href*="image-prediction"],
+    a[href*="stroke_id"] {
+        padding: 6px 12px !important;
+        font-size: 0.7rem !important;
     }
 }
 
@@ -264,9 +383,19 @@
         font-size: 1.6rem;
     }
     
-    /* Ocultar algunas columnas en móvil muy pequeño */
-    .fallback-table th:nth-child(n+7),
-    .fallback-table td:nth-child(n+7) {
+    /* Ocultar columnas menos importantes en móvil */
+    .dash-table-container .dash-cell[data-dash-column="Fecha"],
+    .dash-table-container .dash-header[data-dash-column="Fecha"],
+    .dash-table-container .dash-cell[data-dash-column="Imagen %"],
+    .dash-table-container .dash-header[data-dash-column="Imagen %"] {
         display: none;
+    }
+    
+    .cell-markdown a,
+    .dash-cell-value a,
+    a[href*="image-prediction"],
+    a[href*="stroke_id"] {
+        padding: 4px 8px !important;
+        font-size: 0.65rem !important;
     }
 }
