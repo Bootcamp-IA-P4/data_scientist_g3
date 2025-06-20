@@ -33,10 +33,10 @@ WORKDIR /backend
 COPY backend/app ./app
 
 # Copia la carpeta src de la raíz a /backend/src
-COPY src ./src
+COPY ../src ./src
 
 # Copia la carpeta models de la raíz a /backend/models
-COPY models ./models
+COPY ../models ./models
 
 # Copia requirements.txt de la raíz
 COPY requirements.txt .
