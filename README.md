@@ -22,152 +22,146 @@ La plataforma puede clasificar pacientes en cuatro niveles de riesgo:  **Bajo**,
 
 ## 🏗️ Estructura del Proyecto
 
-```
 data_scientist_g3/
 │
-├── 🐍 backend/                                # Backend FastAPI
+├── 🐍 backend/                                      # Backend FastAPI
 │   └── app/
-│       ├── api/                               # Endpoints de la API
+│       ├── api/                                     # Endpoints de la API
 │       │   └── endpoints/
-│       │       └── predictions.py             # Endpoints de predicción
+│       │       └── predictions.py                   # Endpoints de predicción
 │       │
-│       ├── database/                          # Gestión de base de datos
-│       │   └── supabase_client.py             # Cliente PostgreSQL
+│       ├── database/                                # Gestión de base de datos
+│       │   └── supabase_client.py                   # Cliente PostgreSQL
 │       │
-│       ├── models/                            # Esquemas y validación
-│       │   └── schemas.py                     # Modelos Pydantic
+│       ├── models/                                  # Esquemas y validación
+│       │   └── schemas.py                           # Modelos Pydantic
 │       │
-│       ├── services/                          # Lógica de negocio
-│       │   ├── stroke_service.py              # Servicio de predicción clínica
-│       │   └── image_service.py               # Servicio de análisis de imágenes
+│       ├── services/                                # Lógica de negocio
+│       │   ├── stroke_service.py                    # Servicio de predicción clínica
+│       │   └── image_service.py                     # Servicio de análisis de imágenes
 │       │
-│       └── main.py                            # Aplicación FastAPI principal
+│       └── main.py                                  # Aplicación FastAPI principal
 │
-├── 🖥️ frontend/                              # Frontend Dash/Plotly
-│   ├── assets/                                # Recursos estáticos
-│   │   ├── style.css                          # Estilos principales
-│   │   ├── navbar.css                         # Estilos navegación
-│   │   ├── image_prediction.css               # Estilos predicción imagen
-│   │   ├── history.css                        # Estilos historial
-│   │   ├── about.css                          # Estilos página equipo
-│   │   └── background-video.mp4               # Video de fondo
+├── 🖥️ frontend/                                    # Frontend Dash/Plotly
+│   ├── assets/                                      # Recursos estáticos
+│   │   ├── style.css                                # Estilos principales
+│   │   ├── navbar.css                               # Estilos navegación
+│   │   ├── image_prediction.css                     # Estilos predicción imagen
+│   │   ├── history.css                              # Estilos historial
+│   │   ├── about.css                                # Estilos página equipo
+│   │   └── background-video.mp4                     # Video de fondo
 │   │
-│   ├── components/                            # Componentes reutilizables
-│   │   ├── form_components.py                 # Formularios de predicción
-│   │   ├── image_components.py                # Componentes de imagen
-│   │   ├── history_components.py              # Componentes de historial
-│   │   ├── navbar_components.py               # Navegación
-│   │   └── results_components.py              # Resultados y métricas
+│   ├── components/                                  # Componentes reutilizables
+│   │   ├── form_components.py                       # Formularios de predicción
+│   │   ├── image_components.py                      # Componentes de imagen
+│   │   ├── history_components.py                    # Componentes de historial
+│   │   ├── navbar_components.py                     # Navegación
+│   │   └── results_components.py                    # Resultados y métricas
 │   │
-│   ├── pages/                                 # Páginas principales
-│   │   ├── about.py                           # Página del equipo
-│   │   ├── history.py                         # Historial de predicciones
-│   │   └── image_prediction.py                # Predicción por imagen
+│   ├── pages/                                       # Páginas principales
+│   │   ├── about.py                                 # Página del equipo
+│   │   ├── history.py                               # Historial de predicciones
+│   │   └── image_prediction.py                      # Predicción por imagen
 │   │
-│   ├── services/                              # Comunicación con API
-│   │   └── api_client.py                      # Cliente HTTP para backend
+│   ├── services/                                    # Comunicación con API
+│   │   └── api_client.py                            # Cliente HTTP para backend
 │   │
-│   ├── config/                                # Configuración
-│   │   └── settings.py                        # Configuración de la app
+│   ├── config/                                      # Configuración
+│   │   └── settings.py                              # Configuración de la app
 │   │
-│   └── app.py                                 # Aplicación Dash principal
+│   └── app.py                                       # Aplicación Dash principal
 │
-├── 🤖 models/                                 # Modelos entrenados
-│   ├── xgboost/                               # Modelo XGBoost optimizado
-│   │   ├── xgboost_stroke_optimized_*.pkl     # Modelo principal
-│   │   ├── optimized_model_config_*.json      # Configuración del modelo
-│   │   └── OPTIMIZED_MODEL_INSTRUCTIONS_*.md  # Documentación del modelo
+├── 🤖 models/                                       # Modelos entrenados
+│   ├── xgboost/                                     # Modelo XGBoost optimizado
+│   │   ├── xgboost_stroke_optimized_*.pkl           # Modelo principal
+│   │   ├── optimized_model_config_*.json            # Configuración del modelo
+│   │   └── OPTIMIZED_MODEL_INSTRUCTIONS_*.md        # Documentación del modelo
 │   │
-│   ├── CNN_PyTorch/                           # Modelo CNN PyTorch
-│   │   └── modelo_cnn_stroke_pytorch.zip      # Red neuronal convolucional
+│   ├── CNN_PyTorch/                                 # Modelo CNN PyTorch
+│   │   └── modelo_cnn_stroke_pytorch.zip            # Red neuronal convolucional
 │   │
-│   ├── extra_trees/                           # Modelo Extra Trees
-│   ├── ligthgbm/                              # Modelo LightGBM
-│   ├── MGB/                                   # Modelo Gradient Boosting
-│   ├── lda/                                   # Análisis Discriminante Lineal
-│   └── scaler_recreated.pkl                   # StandardScaler para preprocesamiento
+│   ├── extra_trees/                                 # Modelo Extra Trees
+│   ├── ligthgbm/                                    # Modelo LightGBM
+│   ├── MGB/                                         # Modelo Gradient Boosting
+│   ├── lda/                                         # Análisis Discriminante Lineal
+│   └── scaler_recreated.pkl                         # StandardScaler para preprocesamiento
 │
-├── 📊 data/                                   # Datasets
-│   ├── raw/                                   # Datos originales
-│   │   └── stroke_dataset.csv                # Dataset principal de stroke
-│   ├── processed/                             # Datos procesados
-│   │   └── preprocessing.csv                  # Datos limpios para ML
-│   └── tc/                                    # Datos de tomografías
-│       └── Brain_Data_Organised/              # Imágenes organizadas por clase
-│           ├── Normal(1551)/                  # Escáneres normales
-│           └── Stroke(950)/                   # Escáneres con stroke
+├── 📊 data/                                         # Datasets
+│   ├── raw/                                         # Datos originales
+│   │   └── stroke_dataset.csv                       # Dataset principal de stroke
+│   ├── processed/                                   # Datos procesados
+│   │   └── preprocessing.csv                        # Datos limpios para ML
+│   └── tc/                                          # Datos de tomografías
+│       └── Brain_Data_Organised/                    # Imágenes organizadas por clase
+│           ├── Normal(1551)/                        # Escáneres normales
+│           └── Stroke(950)/                         # Escáneres con stroke
 │
-├── 🔬 src/                                    # Pipelines de ML
+├── 🔬 src/                                          # Pipelines de ML
 │   └── pipeline/
-│       ├── stroke_pipeline.py                # Pipeline de predicción clínica
-│       └── image_pipeline.py                 # Pipeline de análisis de imágenes
+│       ├── stroke_pipeline.py                       # Pipeline de predicción clínica
+│       └── image_pipeline.py                        # Pipeline de análisis de imágenes
 │
-├── 📓 notebooks/                              # Jupyter Notebooks
-│   ├── eda.ipynb                              # Análisis exploratorio
-│   ├── preprocessing.ipynb                    # Preprocesamiento de datos
-│   ├── evaluation.ipynb                       # Evaluación de modelos
-│   └── modeling/                              # Notebooks de modelado
-│       ├── xgboost.ipynb                      # Desarrollo modelo XGBoost
-│       ├── CNN_fin_v6.ipynb                   # Desarrollo modelo CNN
-│       ├── lihgtGBM.ipynb                     # Modelo LightGBM
-│       ├── extra_trees.py                     # Modelo Extra Trees
-│       └── tc_cnn_keras.ipynb                 # CNN con TensorFlow/Keras
+├── 📓 notebooks/                                    # Jupyter Notebooks
+│   ├── eda.ipynb                                    # Análisis exploratorio
+│   ├── preprocessing.ipynb                          # Preprocesamiento de datos
+│   ├── evaluation.ipynb                             # Evaluación de modelos
+│   └── modeling/                                    # Notebooks de modelado
+│     ├── mlruns/                                    # Experimentos MLFlow
+│     ├── xgboost.ipynb                              # Desarrollo modelo XGBoost
+│     ├── CNN_fin_v6.ipynb                           # Desarrollo modelo CNN
+│     ├── lihgtGBM.ipynb                             # Modelo LightGBM
+│     ├── extra_trees.py                             # Modelo Extra Trees
+│     └── tc_cnn_keras.ipynb                         # CNN con TensorFlow/Keras
 │
-├── 🗄️ db/                                     # Base de datos
-│   ├── schema.sql                             # Esquema PostgreSQL
-│   └── create_database.py                     # Script de inicialización
+├── 🗄️ db/                                          # Base de datos
+│   ├── schema.sql                                   # Esquema PostgreSQL
+│   └── create_database.py                           # Script de inicialización
 │
-├── 🧪 tests/                                  # Suite de testing
-│   ├── unit/                                  # Tests unitarios
-│   │   ├── test_stroke_pipeline.py            # Tests pipeline clínico
-│   │   ├── test_image_pipeline.py             # Tests pipeline imagen
-│   │   ├── test_stroke_service.py             # Tests servicio clínico
-│   │   ├── test_image_service.py              # Tests servicio imagen
-│   │   └── test_schemas.py                    # Tests validación datos
+├── 🧪 tests/                                        # Suite de testing
+│   ├── unit/                                        # Tests unitarios
+│   │   ├── test_stroke_pipeline.py                  # Tests pipeline clínico
+│   │   ├── test_image_pipeline.py                   # Tests pipeline imagen
+│   │   ├── test_stroke_service.py                   # Tests servicio clínico
+│   │   ├── test_image_service.py                    # Tests servicio imagen
+│   │   └── test_schemas.py                          # Tests validación datos
 │   │
-│   ├── integration/                           # Tests de integración
-│   │   ├── test_api_endpoints.py              # Tests endpoints API
-│   │   ├── test_api_endpoints_detailed.py     # Tests detallados API
-│   │   ├── test_database.py                   # Tests base de datos
-│   │   ├── test_supabase_client.py            # Tests cliente DB
-│   │   ├── test_complete_workflow.py          # Tests flujo completo
-│   │   └── test_system_complete.py            # Tests sistema completo
+│   ├── integration/                                 # Tests de integración
+│   │   ├── test_api_endpoints.py                    # Tests endpoints API
+│   │   ├── test_api_endpoints_detailed.py           # Tests detallados API
+│   │   ├── test_database.py                         # Tests base de datos
+│   │   ├── test_supabase_client.py                  # Tests cliente DB
+│   │   ├── test_complete_workflow.py                # Tests flujo completo
+│   │   └── test_system_complete.py                  # Tests sistema completo
 │   │
-│   ├── fixtures/                              # Datos de prueba
-│   │   └── test_data.json                     # Datos de pacientes test
+│   ├── fixtures/                                    # Datos de prueba
+│   │   └── test_data.json                           # Datos de pacientes test
 │   │
-│   ├── conftest.py                            # Configuración pytest
-│   ├── pytest.ini                             # Configuración testing
-│   └── requirements-test.txt                  # Dependencias testing
+│   ├── conftest.py                                  # Configuración pytest
+│   ├── pytest.ini                                   # Configuración testing
+│   └── requirements-test.txt                        # Dependencias testing
 │
-├── 📈 reports/                                # Reportes y métricas
-│   ├── figures/                               # Gráficos de rendimiento
-│   │   ├── confusion_matrix.png               # Matriz de confusión
-│   │   ├── feature_importance.png             # Importancia características
-│   │   ├── learning_curves.png                # Curvas de aprendizaje
-│   │   ├── roc_curve.png                      # Curva ROC
-│   │   └── performance_metrics.png            # Métricas de rendimiento
-│   └── performance_report.md                  # Reporte de rendimiento
+├── 📈 reports/                                      # Reportes y métricas
+│   ├── figures/                                     # Gráficos de rendimiento
+│   │   ├── confusion_matrix.png                     # Matriz de confusión
+│   │   ├── feature_importance.png                   # Importancia características
+│   │   ├── learning_curves.png                      # Curvas de aprendizaje
+│   │   ├── roc_curve.png                            # Curva ROC
+│   │   └── performance_metrics.png                  # Métricas de rendimiento
+│   └── performance_report.md                        # Reporte de rendimiento
 │
-├── 🐳 Docker/                                 # Containerización (En desarrollo)
-│   ├── Dockerfile.backend                     # Container FastAPI
-│   ├── Dockerfile.frontend                    # Container Dash
-│   ├── docker-compose.yml                     # Orquestación completa
-│   └── nginx.conf                             # Configuración proxy
-│
-├── 📊 MLFlow/                                 # Gestión de experimentos (En desarrollo)
-│   ├── mlruns/                                # Experimentos MLflow
-│   └── artifacts/                             # Artefactos de modelos
+├── 🐳 Docker/                                       # Containerización (En desarrollo)
+│   ├── Dockerfile.backend                           # Container FastAPI
+│   ├── Dockerfile.frontend                          # Container Dash
+│   ├── docker-compose.yml                           # Orquestación completa
+│   └── nginx.conf                                   # Configuración proxy
 │
 ├── 🔧 Configuración/
-│   ├── requirements.txt                       # Dependencias Python
-│   ├── .env_example                           # Variables de entorno ejemplo
-│   ├── .gitignore                             # Archivos ignorados Git
-│   └── README.md                              # Este archivo
+│   ├── requirements.txt                             # Dependencias Python
+│   ├── .env_example                                 # Variables de entorno ejemplo
+│   ├── .gitignore                                   # Archivos ignorados Git
+│   └── README.md                                    # Este archivo
 │
 └── 📖 Documentación adicional
-
-```
 
 ## 🛠️ Tecnologías Utilizadas
 
