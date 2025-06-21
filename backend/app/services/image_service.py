@@ -287,4 +287,22 @@ if __name__ == "__main__":
 
         try:
             # Test sin cargar pipeline
-            status =
+            status = await get_image_pipeline_status()
+            print(f"Status inicial: {status}")
+
+            # Test disponibilidad
+            service = get_service()
+            available = service.pipeline.is_available
+            print(f"Pipeline disponible: {'✅' if available else '❌'}")
+
+            if available:
+                print("✅ Image Service listo (carga lazy)")
+                print("✅ No hay segmentation fault en startup")
+                print("✅ Pipeline se cargará cuando sea necesario")
+            else:
+                print("⚠️ Pipeline no disponible pero servicio funcional")
+
+        except Exception as e:
+            print(f"❌ Error en test: {e}")
+
+    asyncio.run(test())
