@@ -700,6 +700,6 @@ def handle_page_errors(pathname):
 # if __name__ == '__main__':
 #     app.run(debug=True, host='127.0.0.1', port=FRONTEND_PORT)
 
- # SOLO DESCOMENTA PARA DOCKERIZAR
+# SOLO DESCOMENTA PARA DOCKERIZAR
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=FRONTEND_PORT)
