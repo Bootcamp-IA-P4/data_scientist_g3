@@ -809,15 +809,13 @@ def display_page(pathname):
 import os
 
 if __name__ == '__main__':
-    # Detecta entorno: Render/Docker usa 0.0.0.0, local usa 127.0.0.1
+    # Usa FRONTEND_HOST si está definida, si no:
+    # - Si PORT está definida (Render), usa 0.0.0.0
+    # - Si no, usa 127.0.0.1 (local)
     host = os.environ.get("FRONTEND_HOST")
     if not host:
-        # Render define PORT pero no FRONTEND_HOST, así que si PORT existe, forzamos 0.0.0.0
         host = "0.0.0.0" if os.environ.get("PORT") else "127.0.0.1"
-    port = int(os.environ.get("PORT", FRONTEND_PORT))
+    port = int(os.environ.get("PORT", 10000))  # 10000 es el default de Render
     app.run(debug=True, host=host, port=port)
 
-# ⬅️ Así funcionará automáticamente en local, Docker y Render:
-# - En Render: PORT está definida, host será 0.0.0.0
-# - En Docker: puedes definir FRONTEND_HOST=0.0.0.0 en tu .env
-# - En local: sin variables, host será 127.0.0.1
+# ⬅️ Así funcionará automáticamente en local, Docker y Render.
