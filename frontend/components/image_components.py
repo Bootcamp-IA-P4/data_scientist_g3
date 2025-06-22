@@ -179,19 +179,16 @@ def create_image_result_card(prediction: int, probability: float, risk_level: st
         
         # Acciones
         html.Div([
-            html.Button(
-                "📊 Ver Historial Completo",
-                id='view-history-from-image',
-                className="btn-secondary",
-                n_clicks=0
-            ),
-            html.Button(
-                "🔄 Analizar Nueva Imagen",
-                id='analyze-new-image',
-                className="btn-primary",
-                n_clicks=0
+            html.A(
+                "Ver Historial Completo",
+                href="/history",
+                className="btn-primary btn-analyze",  
+                style={
+                    'textDecoration': 'none',  
+                    'display': 'inline-block'  
+                }
             )
-        ], className="result-actions")
+            ], className="result-actions")
         
     ], className=f"result-card image-result-card {risk_class}")
 
