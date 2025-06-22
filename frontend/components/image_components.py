@@ -53,7 +53,7 @@ def create_image_upload_form():
         # Botón de análisis
         html.Div([
             html.Button(
-                "🔍 Analizar Imagen",
+                "Analizar Imagen",
                 id='analyze-image-button',
                 className="btn-primary btn-analyze",
                 disabled=True,
@@ -386,12 +386,6 @@ def create_upload_error_message(error_msg: str):
         html.I(className="fas fa-exclamation-triangle error-icon"),
         html.H4("Error en la Imagen"),
         html.P(error_msg),
-        html.Button(
-            "🔄 Intentar de Nuevo",
-            id='retry-upload-button',
-            className="btn-retry",
-            n_clicks=0
-        )
     ], className="upload-error-message")
 
 def format_file_size(size_bytes: int) -> str:

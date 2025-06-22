@@ -157,7 +157,7 @@ def handle_prediction(n_clicks, edad, genero, glucosa, bmi, hipertension,
      Output('image-history-store', 'data'),
      Output('combined-history-store', 'data')],
     [Input('url', 'pathname'),
-     Input('refresh-history-button', 'n_clicks')],
+    Input('url', 'pathname')],
     prevent_initial_call=False
 )
 def load_history_data(pathname, refresh_clicks):
@@ -308,66 +308,33 @@ def load_stroke_predictions_for_dropdown(pathname, search):
     
     return options, False, None, info_msg
 
-# Callback para manejar clicks en botones de "Añadir Imagen" desde la tabla de historial  
+# Callback para manejar clicks en botones de "Añadir Imagen" desde la tabla de historial
 @callback(
-    Output('url', 'href', allow_duplicate=True),
+    [Output('url', 'pathname', allow_duplicate=True),
+     Output('url', 'search', allow_duplicate=True)],
     [Input('combined-history-table', 'active_cell')],
-    [State('combined-history-table', 'data'),
-     State('url', 'pathname')],
+    [State('combined-history-table', 'data')],
     prevent_initial_call=True
 )
-def handle_add_image_from_history(active_cell, table_data, current_pathname):
-    """
-    Manejar click en botón 'Añadir Tomografía' desde tabla de historial
-    """
-    print(f"🔍 DEBUG handle_add_image_from_history:")
-    print(f"  - current_pathname: {current_pathname}")
-    print(f"  - active_cell: {active_cell}")
-    print(f"  - table_data length: {len(table_data) if table_data else 0}")
-    
-    # Solo funcionar en la página de historial
-    if current_pathname != '/history':
-        print("❌ No está en página de historial")
-        return dash.no_update
-    
-    # Verificar que tenemos los datos necesarios
-    if not active_cell or not table_data:
-        print("❌ No hay active_cell o table_data")
-        return dash.no_update
-    
-    try:
-        row_index = active_cell.get('row')
-        column_id = active_cell.get('column_id')
+def handle_add_image_from_history(active_cell, table_data):
+    """Manejar click en botón 'Añadir Imagen' desde tabla de historial"""
+    if active_cell and table_data:
+        row_index = active_cell['row']
+        column_id = active_cell['column_id']
         
-        print(f"  - row_index: {row_index}")
-        print(f"  - column_id: {column_id}")
-        
-        # Verificar si se hizo click en la columna de imagen
-        if column_id == 'Imagen' and row_index is not None:
+        # Verificar si se hizo click en columna "Imagen" 
+        if column_id == 'Estado Imagen':
             row_data = table_data[row_index]
-            imagen_status = row_data.get('Imagen', '')
-            stroke_id = row_data.get('ID')
             
-            print(f"  - imagen_status: {imagen_status}")
-            print(f"  - stroke_id: {stroke_id}")
-            
-            # Verificar si es un caso sin imagen (contiene "Añadir")
-            if 'Añadir' in str(imagen_status) and stroke_id:
-                navigation_url = f"/image-prediction?stroke_id={stroke_id}&origin=history"
-                print(f"✅ Navegando a: {navigation_url}")
-                return navigation_url
-            else:
-                print("❌ No es una celda de 'Añadir' o no hay stroke_id")
-        else:
-            print("❌ No es la columna 'Imagen'")
-    
-    except (IndexError, KeyError, TypeError) as e:
-        print(f"❌ Error procesando click: {e}")
-        return dash.no_update
+            # ✅ ARREGLADO: Verificar si es un caso sin imagen (texto "📸 Añadir Tomografía")
+            if 'Añadir Tomografía' in str(row_data.get('Estado Imagen', '')):
+                stroke_id = row_data.get('ID')
+                if stroke_id:
+                    print(f"🔄 Redirigiendo a imagen para stroke ID: {stroke_id}")
+                    return f"/image-prediction", f"?stroke_id={stroke_id}&origin=history"
     
     # No redirigir si no cumple condiciones
-    print("❌ No cumple condiciones para navegación")
-    return dash.no_update
+    return dash.no_update, dash.no_update
 
 @callback(
     Output('image-results-container', 'children'),

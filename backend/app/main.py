@@ -2,12 +2,17 @@
 
 import os
 import sys
+import platform
 
 # FIX PARA - Evitar segmentation fault con PyTorch
 if sys.platform == "darwin":  # macOS
     os.environ["OMP_NUM_THREADS"] = "1"
     os.environ["MKL_NUM_THREADS"] = "1" 
     os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
+elif sys.platform == "win32":  # Windows
+    os.environ["OMP_NUM_THREADS"] = "1"
+    os.environ["MKL_NUM_THREADS"] = "1"
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 from fastapi import FastAPI
@@ -43,17 +48,38 @@ app.include_router(predictions.router)
 async def root():
     return {"message": "API de Predicción de Stroke funcionando correctamente"}
 
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "platform": platform.system()}
+
 if __name__ == "__main__":
     import uvicorn
     
-    # CONFIGURACIÓN SEGURA PARA macOS
-    uvicorn_config = {
-        "app": "main:app",
-        "host": os.getenv("API_HOST", "0.0.0.0"),
-        "port": int(os.getenv("API_PORT", 8000)),
-        "reload": False,  
-        "workers": 1,     
-    }
+    # CONFIGURACIÓN PARA DIFERENTES PLATAFORMAS
+    if sys.platform == "win32":
+        # Windows - usar asyncio.WindowsProactorEventLoopPolicy
+        import asyncio
+        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+        
+        uvicorn_config = {
+            "app": "main:app",
+            "host": os.getenv("API_HOST", "127.0.0.1"),
+            "port": int(os.getenv("API_PORT", 8000)),
+            "reload": False,
+            "workers": 1,
+            "loop": "asyncio",
+        }
+        print("🚀 Iniciando servidor con configuración para Windows...")
+    else:
+        # macOS/Linux
+        uvicorn_config = {
+            "app": "main:app",
+            "host": os.getenv("API_HOST", "0.0.0.0"),
+            "port": int(os.getenv("API_PORT", 8000)),
+            "reload": False,
+            "workers": 1,
+        }
+        print("🚀 Iniciando servidor con configuración para Unix...")
     
-    print("🚀 Iniciando servidor con configuración segura para macOS...")
     uvicorn.run(**uvicorn_config)
