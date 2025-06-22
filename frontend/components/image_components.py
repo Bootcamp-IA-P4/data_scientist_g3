@@ -53,7 +53,7 @@ def create_image_upload_form():
         # Botón de análisis
         html.Div([
             html.Button(
-                "🔍 Analizar Imagen",
+                "Analizar Imagen",
                 id='analyze-image-button',
                 className="btn-primary btn-analyze",
                 disabled=True,

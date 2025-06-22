@@ -47,18 +47,7 @@ def get_image_prediction_layout():
             
             # Contenedor de resultados
             html.Div(id='image-results-container'),
-            
-            # Disclaimer médico específico para imágenes
-            html.Div([
-                html.H4("⚠️ Aviso Médico Importante"),
-                html.P([
-                    "Esta herramienta analiza imágenes de tomografía computarizada con fines ",
-                    "educativos y de investigación. Los resultados NO constituyen un diagnóstico ",
-                    "médico profesional. Siempre consulte con un radiólogo o neurólogo certificado ",
-                    "para la interpretación definitiva de estudios de imagen."
-                ])
-            ], className="medical-disclaimer"),
-            
+                       
             # Stores para manejar estado
             dcc.Store(id='image-prediction-store'),
             dcc.Store(id='upload-restrictions-store'),
