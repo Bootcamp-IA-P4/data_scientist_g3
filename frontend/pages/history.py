@@ -4,19 +4,6 @@ from components.navbar_components import create_navbar
 def get_history_layout():
     """Layout de la página de historial combinado de predicciones - SIN FILTROS"""
     return html.Div([
-        # Video de fondo
-        html.Div([
-            html.Video(
-                src='assets/background-video.mp4',
-                autoPlay=True,
-                muted=True,
-                loop=True
-            )
-        ], className="video-background"),
-        
-        # Overlay oscuro
-        html.Div(className="video-overlay"),
-        
         # Navbar
         create_navbar(),
         

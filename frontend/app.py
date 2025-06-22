@@ -40,18 +40,6 @@ app.title = "Predictor de Riesgo de Stroke"
 def get_home_layout():
     return html.Div([
         
-        html.Div([
-        html.Video(
-            src='assets/background-video.mp4',
-            autoPlay=True,
-            muted=True,
-            loop=True
-        )
-        ], className="video-background"),
-        
-        # Overlay oscuro
-        html.Div(className="video-overlay"),
-        
         create_navbar(),
         
         # Contenido principal
@@ -71,6 +59,19 @@ def get_home_layout():
     ])
 
 app.layout = html.Div([
+    html.Div([
+        html.Video(
+            src='assets/background-video.mp4',
+            autoPlay=True,
+            muted=True,
+            loop=True,
+            preload="auto"  # Mejora la carga
+        )
+    ], className="video-background"),
+    
+    # OVERLAY GLOBAL
+    html.Div(className="video-overlay"),
+
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content')
 ])

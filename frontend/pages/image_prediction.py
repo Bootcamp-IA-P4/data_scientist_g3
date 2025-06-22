@@ -9,19 +9,6 @@ from components.image_components import (
 def get_image_prediction_layout():
     """Layout de la página de predicción de imágenes"""
     return html.Div([
-        # Video de fondo
-        html.Div([
-            html.Video(
-                src='assets/background-video.mp4',
-                autoPlay=True,
-                muted=True,
-                loop=True
-            )
-        ], className="video-background"),
-        
-        # Overlay oscuro
-        html.Div(className="video-overlay"),
-        
         # Navbar
         create_navbar(),
         
