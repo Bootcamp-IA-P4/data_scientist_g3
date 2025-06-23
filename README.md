@@ -17,7 +17,7 @@
 
 ### ☁️ Versión Alternativa (Azure)
 **🔗 Link**: [neurowise.eastus.cloudapp.azure.com](http://neurowise.eastus.cloudapp.azure.com)
-- Aplicación completa con interfaz Dash
+- Aplicación con interfaz Dash (pendientes estilos finales)
 - Base de datos integrada (Supabase)
 - Todas las funcionalidades operativas
 
