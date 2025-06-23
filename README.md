@@ -192,13 +192,73 @@ data_scientist_g3/
 -   **Optuna**  - Optimización de hiperparámetros
 -   **PIL/Pillow**  - Procesamiento de imágenes
 -   **TorchVision**  - Transformaciones de imagen
+-   **MLflow**  - Gestión del ciclo de vida de ML
 
 ### 4.1.4. Testing y Calidad
 
 -   **Pytest**  - Framework de testing
 -   **Coverage**  - Cobertura de código
 -   **Black**  - Formateador de código
--   **Flake8**  - Linter de código
+
+## 4.2. 📊 MLflow - Gestión de Experimentos
+
+NeuroWise utiliza MLflow para gestionar el ciclo de vida completo de los experimentos de Machine Learning:
+
+### 4.2.1. Estructura
+
+```
+src/mlflow/
+├── __init__.py
+└── mlflow_config.py          # Configuración central de MLflow
+```
+
+### 4.2.2. Configuración
+
+La configuración de MLflow está centralizada en `src/mlflow/mlflow_config.py` y proporciona:
+
+- Configuración flexible del URI de tracking
+- Gestión de experimentos y runs
+- Logging de métricas, parámetros y modelos
+- Soporte para múltiples entornos de desarrollo
+
+### 4.2.3. Uso en Notebooks
+
+Los notebooks en `notebooks/modeling/` utilizan MLflow para:
+
+- Tracking de experimentos
+- Registro de hiperparámetros
+- Monitoreo de métricas de rendimiento
+- Versionado de modelos
+
+### 4.2.4. Configuración del Entorno
+
+Para configurar MLflow en tu entorno:
+
+1. Por defecto, MLflow creará un directorio `mlruns` en `notebooks/modeling/`
+2. Opcionalmente, configura tu propio URI de tracking:
+   ```bash
+   export MLFLOW_TRACKING_URI=<tu_uri_preferido>
+   ```
+
+### 4.2.5. Ejecución de MLflow
+
+1. Iniciar el servidor MLflow UI (desde la raíz del proyecto):
+   ```bash
+   mlflow ui --port 5000
+   ```
+
+2. Acceder a la interfaz web:
+   - Abre tu navegador y visita: `http://localhost:5000`
+   - Visualiza experimentos, métricas y modelos
+
+3. Ejecutar notebooks con tracking:
+   - Los notebooks en `notebooks/modeling/` ya incluyen la configuración necesaria
+   - MLflow registrará automáticamente métricas y parámetros durante la ejecución
+
+4. Ver resultados:
+   - Compara diferentes runs en la UI de MLflow
+   - Analiza métricas y parámetros
+   - Descarga modelos guardados
 
 ## 5. 📋 Requisitos Previos
 
