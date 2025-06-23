@@ -1,18 +1,25 @@
 import mlflow
 import os
+from pathlib import Path
 
 def setup_mlflow():
     """Configuración inicial de MLflow"""
-    # Configurar el directorio para almacenar los experimentos
-    ruta_1 = "file:///C:/Users/jlmateos.ext/OneDrive/IA/Scripts/Repos/data_scientist_g3/notebooks/modeling/mlruns"
-    ruta_2 = "file:///C:/Users/Usuario/OneDrive/IA/Scripts/Repos/data_scientist_g3/notebooks/modeling/mlruns"
+    # Obtener la ruta base del proyecto
+    project_root = Path(__file__).parent.parent.parent
     
-    try:
-        mlflow.set_tracking_uri(ruta_1)
-        # Intentar crear un directorio de prueba para verificar permisos
-        os.makedirs(ruta_1.replace('file:///', ''), exist_ok=True)
-    except PermissionError:
-        mlflow.set_tracking_uri(ruta_2)
+    # Configurar el directorio para almacenar los experimentos
+    # Primero intentar usar la ruta definida en variable de entorno
+    mlruns_path = os.getenv('MLFLOW_TRACKING_URI')
+    
+    if not mlruns_path:
+        # Si no hay variable de entorno, usar ruta relativa al proyecto
+        default_path = project_root / 'notebooks' / 'modeling' / 'mlruns'
+        mlruns_path = f"file:///{str(default_path.absolute())}"
+    
+    mlflow.set_tracking_uri(mlruns_path)
+    
+    # Asegurar que el directorio existe
+    os.makedirs(mlruns_path.replace('file:///', ''), exist_ok=True)
     
     # Crear un experimento si no existe
     experiment_name = "stroke_prediction"
