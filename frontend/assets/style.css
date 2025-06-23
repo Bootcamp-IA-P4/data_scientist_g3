@@ -330,6 +330,55 @@ div.form-container div button.btn-primary:disabled {
     box-shadow: none;
 }
 
+/*BOTÓN TOMOGRAFÍA EN RESULT-CARD*/
+div.result-card div.result-actions a.btn-secondary {
+    background: linear-gradient(135deg, var(--color-surface-light) 0%, var(--color-border) 100%);
+    border: 2px solid var(--color-border-accent);
+    color: var(--color-text-primary);
+    font-size: 1.2rem;
+    padding: 15px 40px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-radius: var(--border-radius-main);
+    box-shadow: 0 4px 15px rgba(51, 65, 85, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    margin: 10px 15px;
+    min-width: 200px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+div.result-card div.result-actions a.btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+div.result-card div.result-actions a.btn-secondary:hover::before {
+    left: 100%;
+}
+
+div.result-card div.result-actions a.btn-secondary:hover {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    border-color: var(--color-accent);
+    box-shadow: var(--glow-accent);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+div.result-card div.result-actions a.btn-secondary:active {
+    transform: translateY(0);
+}
+
 /*TARJETAS DE RESULTADOS*/
 div.result-card {
     padding: 30px;
@@ -596,6 +645,13 @@ div.loading-message {
     
     div h1 {
         font-size: 2rem;
+    }
+
+    div.result-card div.result-actions a.btn-secondary {
+        width: 100%;
+        margin: 10px 0;
+        min-width: auto;
+        padding: 12px 20px;
     }
 }
 

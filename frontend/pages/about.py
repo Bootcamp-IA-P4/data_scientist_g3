@@ -5,19 +5,6 @@ def get_about_layout():
     """Retorna el layout de la página About"""
     return html.Div([
         
-        # Video de fondo
-        html.Div([
-            html.Video(
-                src='assets/background-video.mp4',
-                autoPlay=True,
-                muted=True,
-                loop=True
-            )
-        ], className="video-background"),
-        
-        # Overlay
-        html.Div(className="video-overlay"),
-        
         create_navbar(),
         
         # Contenido principal

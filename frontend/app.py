@@ -40,18 +40,6 @@ app.title = "Predictor de Riesgo de Stroke"
 def get_home_layout():
     return html.Div([
         
-        html.Div([
-        html.Video(
-            src='assets/background-video.mp4',
-            autoPlay=True,
-            muted=True,
-            loop=True
-        )
-        ], className="video-background"),
-        
-        # Overlay oscuro
-        html.Div(className="video-overlay"),
-        
         create_navbar(),
         
         # Contenido principal
@@ -71,6 +59,19 @@ def get_home_layout():
     ])
 
 app.layout = html.Div([
+    html.Div([
+        html.Video(
+            src='assets/background-video.mp4',
+            autoPlay=True,
+            muted=True,
+            loop=True,
+            preload="auto"  # Mejora la carga
+        )
+    ], className="video-background"),
+    
+    # OVERLAY GLOBAL
+    html.Div(className="video-overlay"),
+
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content')
 ])
@@ -698,5 +699,30 @@ def handle_page_errors(pathname):
             ], className="error-page-content")
         ])
 
+import os
+
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=FRONTEND_PORT)
+    # Usa FRONTEND_HOST si está definida, si no:
+    # - Si PORT está definida (Render), usa 0.0.0.0
+    # - Si no, usa 127.0.0.1 (local)
+    host = os.environ.get("FRONTEND_HOST")
+    if not host:
+        host = "0.0.0.0" if os.environ.get("PORT") else "127.0.0.1"
+    port = int(os.environ.get("PORT", 10000))  # 10000 es el default de Render
+    app.run(debug=False, host=host, port=port)
+
+# ⬅️ Así funcionará automáticamente en local, Docker y Render.
+
+# # # SOLO DESCOMENTA PARA EJECUTAR LOCALMENTE
+# # if __name__ == '__main__':
+# #     app.run(host='127.0.0.1', port=FRONTEND_PORT)
+
+# # # SOLO DESCOMENTA PARA DOCKERIZAR
+# # if __name__ == '__main__':
+# #     app.run(debug=False, host='0.0.0.0', port=FRONTEND_PORT)
+
+# import os
+# if __name__ == '__main__':
+#     port = int(os.environ.get("PORT", FRONTEND_PORT))
+#     app.run(debug=True, host='0.0.0.0', port=port)
+

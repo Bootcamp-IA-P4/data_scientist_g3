@@ -28,22 +28,13 @@ def create_result_card(prediction, probability, risk_level, show_image_button= T
     recommendation = get_recommendation(risk_level)
 
     action_buttons = []
-    action_buttons.append(
-        html.Button(
-            "Ver Historial",
-            id='view-history-button',
-            className="btn-secondary",
-            n_clicks=0
-        )
-    )
-    
-    # Botón de análisis de imagen (condicional)
+
     if show_image_button:
         action_buttons.append(
             html.A(
                 "Predecir con Tomografía",
                 href="/image-prediction?stroke_id=LATEST",
-                className="btn-secondary btn-image-analysis",
+                className="btn-secondary",
                 id="predict-image-link"
             )
         )
