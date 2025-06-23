@@ -9,14 +9,14 @@
 
 🚀 **Aplicaciones desplegadas**:
 
-### ☁️ Versión Principal (Azure)
-**🔗 Link**: [neurowise.eastus.cloudapp.azure.com](http://neurowise.eastus.cloudapp.azure.com)
+### 📱 Versión Principal (Render)
+**🔗 Link**: [https://data-scientist-g3-1-d1kn.onrender.com](https://data-scientist-g3-1-d1kn.onrender.com)
 - Aplicación completa con interfaz Dash
 - Base de datos integrada (Supabase)
 - Todas las funcionalidades operativas
 
-### 📱 Versión Alternativa (Render)
-**🔗 Link**: [https://data-scientist-g3-1-d1kn.onrender.com](https://data-scientist-g3-1-d1kn.onrender.com)
+### ☁️ Versión Alternativa (Azure)
+**🔗 Link**: [neurowise.eastus.cloudapp.azure.com](http://neurowise.eastus.cloudapp.azure.com)
 - Aplicación completa con interfaz Dash
 - Base de datos integrada (Supabase)
 - Todas las funcionalidades operativas
