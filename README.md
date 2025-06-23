@@ -22,6 +22,7 @@ La plataforma puede clasificar pacientes en cuatro niveles de riesgo:  **Bajo**,
 
 ## 4. 🏗️ Estructura del Proyecto
 
+```
 data_scientist_g3/
 │
 ├── 🐍 backend/                                      # Backend FastAPI
