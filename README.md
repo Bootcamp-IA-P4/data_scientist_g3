@@ -3,7 +3,7 @@
 
 ## 1. 📱 Capturas de Pantalla
 
-<div align="center"> <img src="https://via.placeholder.com/800x400/2563EB/FFFFFF?text=NeuroWise+Desktop+View" alt="Vista Desktop" width="450" style="margin-right: 20px;"/> <img src="https://via.placeholder.com/300x600/8B5CF6/FFFFFF?text=NeuroWise+Mobile+View" alt="Vista Móvil" width="135"/> <br/> <em>Interfaz Desktop y Móvil - Diseño completamente responsivo</em> </div>
+<div align="center"> <img src="frontend/assets/images/desktop.png" alt="Vista Desktop" width="450" style="margin-right: 20px;"/> <img src="frontend/assets/images/mobile.png" alt="Vista Móvil" width="135"/> <br/> <em>Interfaz Desktop y Móvil - Diseño completamente responsivo</em> </div>
 
 ## 2. 🌐 Demo en Vivo
 
@@ -510,23 +510,23 @@ NeuroWise ofrece una propuesta única en el mercado:
 
 Somos un equipo multidisciplinario de Data Scientists especializados en inteligencia artificial aplicada a la salud:
 
-### 15.1. 🧑‍💼  [Pepe](https://github.com/peperuizdev)  - Scrum Manager
+### 🧑‍💼  [Pepe](https://github.com/peperuizdev)  - Scrum Manager
 
 Especialista en machine learning y arquitectura de software. Responsable de la coordinación del proyecto y la implementación de modelos de clasificación.
 
-### 15.2. 👩‍💻  [Maryna](https://github.com/MarynaDRST)  - Developer
+### 👩‍💻  [Maryna](https://github.com/MarynaDRST)  - Developer
 
 Desarrolladora de modelos de machine learning y redes neuronales. Especializada en deep learning y procesamiento de imágenes médicas.
 
-### 15.3. 👨‍🎨  [Jorge](https://github.com/Jorgeluuu)  - Developer
+### 👨‍🎨  [Jorge](https://github.com/Jorgeluuu)  - Developer
 
 Creador de modelos de machine learning y especialista en optimización de algoritmos. Enfocado en el rendimiento y escalabilidad del sistema.
 
-### 15.4. 👩‍💼  [Mariela](https://github.com/marie-adi)  - Developer
+### 👩‍💼  [Mariela](https://github.com/marie-adi)  - Developer
 
 Diseñadora de experiencia de usuario y desarrolladora frontend. Creadora de la interfaz intuitiva y responsiva de la plataforma.
 
-### 15.5. 👨‍🔬  [Maximiliano](https://github.com/MaximilianoScarlato)  - Data Scientist
+### 👨‍🔬  [Maximiliano](https://github.com/MaximilianoScarlato)  - Data Scientist
 
 Científico de datos especializado en análisis de modelos de redes neuronales y evaluación de rendimiento de sistemas de ML.
 
