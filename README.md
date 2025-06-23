@@ -1,17 +1,17 @@
 
 # 🧠 NeuroWise AI Prediction Platform
 
-## 📱 Capturas de Pantalla
+## 1. 📱 Capturas de Pantalla
 
 <div align="center"> <img src="https://via.placeholder.com/800x400/2563EB/FFFFFF?text=NeuroWise+Desktop+View" alt="Vista Desktop" width="450" style="margin-right: 20px;"/> <img src="https://via.placeholder.com/300x600/8B5CF6/FFFFFF?text=NeuroWise+Mobile+View" alt="Vista Móvil" width="135"/> <br/> <em>Interfaz Desktop y Móvil - Diseño completamente responsivo</em> </div>
 
-## 🌐 Demo en Vivo
+## 2. 🌐 Demo en Vivo
 
 🚀  **Aplicación desplegada**: [Próximamente - En desarrollo]
 
 _Nota: El proyecto se encuentra actualmente en desarrollo activo. La demo estará disponible próximamente._
 
-## 📚 Descripción del Proyecto
+## 3. 📚 Descripción del Proyecto
 
 NeuroWise es una plataforma avanzada de inteligencia artificial que implementa un sistema de clasificación multimodal para la predicción de riesgo de ictus. El sistema combina dos enfoques complementarios:
 
@@ -20,7 +20,7 @@ NeuroWise es una plataforma avanzada de inteligencia artificial que implementa u
 
 La plataforma puede clasificar pacientes en cuatro niveles de riesgo:  **Bajo**,  **Medio**,  **Alto**  y  **Crítico**, proporcionando recomendaciones médicas específicas para cada caso.
 
-## 🏗️ Estructura del Proyecto
+## 4. 🏗️ Estructura del Proyecto
 
 data_scientist_g3/
 │
@@ -163,9 +163,11 @@ data_scientist_g3/
 │
 └── 📖 Documentación adicional
 
-## 🛠️ Tecnologías Utilizadas
+```
 
-### Backend
+## 4.1. 🛠️ Tecnologías Utilizadas
+
+### 4.1.1. Backend
 
 -   **Python 3.10+**
 -   **FastAPI**  - Framework web moderno y rápido
@@ -176,13 +178,13 @@ data_scientist_g3/
 -   **Pydantic**  - Validación de datos
 -   **Uvicorn**  - Servidor ASGI
 
-### Frontend
+### 4.1.2. Frontend
 
 -   **Python Dash**  - Framework web interactivo
 -   **HTML5 & CSS3**  - Estructura y estilos
 -   **JavaScript**  - Interactividad del cliente
 
-### Machine Learning
+### 4.1.3. Machine Learning
 
 -   **Scikit-learn**  - Herramientas de ML
 -   **Pandas & NumPy**  - Manipulación de datos
@@ -190,14 +192,14 @@ data_scientist_g3/
 -   **PIL/Pillow**  - Procesamiento de imágenes
 -   **TorchVision**  - Transformaciones de imagen
 
-### Testing y Calidad
+### 4.1.4. Testing y Calidad
 
 -   **Pytest**  - Framework de testing
 -   **Coverage**  - Cobertura de código
 -   **Black**  - Formateador de código
 -   **Flake8**  - Linter de código
 
-## 📋 Requisitos Previos
+## 5. 📋 Requisitos Previos
 
 -   Python 3.10
 -   PostgreSQL 12+ (o cuenta Supabase)
@@ -205,9 +207,9 @@ data_scientist_g3/
 -   8GB RAM mínimo (recomendado para modelos ML)
 -   GPU opcional (acelera el análisis de imágenes)
 
-## 🚀 Instalación y Configuración
+## 6. 🚀 Instalación y Configuración
 
-### 1. Clonar el repositorio
+### 6.1. Clonar el repositorio
 
 ```bash
 git clone https://github.com/tu-usuario/data_scientist_g3.git
@@ -215,7 +217,7 @@ cd data_scientist_g3
 
 ```
 
-### 2. Configurar entorno virtual
+### 6.2. Configurar entorno virtual
 
 ```bash
 python -m venv venv
@@ -225,7 +227,7 @@ pip install -r requirements.txt
 
 ```
 
-### 3. Configurar variables de entorno
+### 6.3. Configurar variables de entorno
 
 ```bash
 cp .env_example .env
@@ -233,7 +235,7 @@ cp .env_example .env
 
 ```
 
-### 4. Ejecutar el sistema
+### 6.4. Ejecutar el sistema
 
 ```bash
 # Backend
@@ -245,13 +247,13 @@ python frontend/app.py
 
 ```
 
-### 5. Verificar instalación
+### 6.5. Verificar instalación
 
 -   **Backend API**: http://localhost:8000
 -   **Frontend**: http://localhost:8050
 -   **Documentación**: http://localhost:8000/docs
 
-## 🧪 Ejecutar Tests
+## 7. 🧪 Ejecutar Tests
 
 ```bash
 # Todos los tests
@@ -269,7 +271,7 @@ pytest tests/integration/test_api_endpoints.py -v
 
 ```
 
-## 🐳 Docker (En desarrollo)
+## 8. 🐳 Docker (En desarrollo)
 
 ```bash
 # Construir y ejecutar con Docker Compose
@@ -280,7 +282,7 @@ pytest tests/integration/test_api_endpoints.py -v
 
 ```
 
-## 📊 MLFlow (En desarrollo)
+## 9. 📊 MLFlow (En desarrollo)
 
 ```bash
 # Iniciar MLflow server
@@ -290,7 +292,7 @@ pytest tests/integration/test_api_endpoints.py -v
 
 ```
 
-## 🔍 Verificación del Sistema
+## 10. 🔍 Verificación del Sistema
 
 Una vez completada la instalación, verifica que todo funcione correctamente:
 
@@ -299,44 +301,44 @@ Una vez completada la instalación, verifica que todo funcione correctamente:
 -   **Estado de modelos**: http://localhost:8000/pipeline/status
 -   **Documentación API**: http://localhost:8000/docs
 
-## 🎯 Características Principales
+## 11. 🎯 Características Principales
 
-### 🩺 Predicción Clínica
+### 11.1. 🩺 Predicción Clínica
 
 -   Análisis de 17 características médicas y demográficas
 -   Modelo XGBoost optimizado con 98.5% de precisión
 -   Interpretabilidad mediante análisis de importancia de características
 -   Clasificación en 4 niveles de riesgo con recomendaciones específicas
 
-### 📷 Análisis de Neuroimágenes
+### 11.2. 📷 Análisis de Neuroimágenes
 
 -   Procesamiento de tomografías computarizadas del cerebro
 -   Red neuronal convolucional con 98.13% de accuracy
 -   Soporte para formatos JPEG, PNG, WEBP, BMP
 -   Validación automática de calidad de imagen
 
-### 📊 Dashboard Interactivo
+### 11.3. 📊 Dashboard Interactivo
 
 -   Interfaz responsive para desktop y móvil
 -   Historial completo de predicciones
 
-### 🔄 Análisis Multimodal
+### 11.4. 🔄 Análisis Multimodal
 
 -   Combinación de datos clínicos e imágenes médicas
 -   Correlación entre diferentes métodos de predicción
 -   Validación cruzada de resultados
 -   Recomendaciones médicas integradas
 
-## 📊 Modelos de Machine Learning
+## 12. 📊 Modelos de Machine Learning
 
-### 🎯  **Estrategia de Screening Dual**
+### 12.1. 🎯  **Estrategia de Screening Dual**
 
 Nuestra propuesta comercial única implementa un sistema de screening de dos capas que maximiza la detección temprana:
 
 1.  **Primera Capa - Screening Masivo**: XGBoost optimizado para alta sensibilidad (78% recall)
 2.  **Segunda Capa - Confirmación**: CNN con alta precisión (98.13% accuracy) para casos sospechosos
 
-### 1.  **XGBoost Optimizado (Screening Primario)**
+### 12.2.  **XGBoost Optimizado (Screening Primario)**
 
 -   **Tipo**: Gradient Boosting para clasificación binaria
 -   **Precisión**: 85% en conjunto de prueba
@@ -347,7 +349,7 @@ Nuestra propuesta comercial única implementa un sistema de screening de dos cap
 -   **Optimización**: 161 trials con Optuna
 -   **Ventaja Clínica**: Alto recall minimiza casos perdidos, ideal para screening inicial
 
-### 2.  **Red Neuronal Convolucional (Confirmación)**
+### 12.3.  **Red Neuronal Convolucional (Confirmación)**
 
 -   **Arquitectura**: CNN personalizada desarrollada con Keras y PyTorch
 -   **Framework Final**: PyTorch (mejores resultados vs Keras)
@@ -358,16 +360,16 @@ Nuestra propuesta comercial única implementa un sistema de screening de dos cap
 -   **Formato**: TorchScript para optimización en producción
 -   **Ventaja Clínica**: Alta precisión confirma casos sospechosos, reduce falsos positivos
 
-### 3.  **Modelos de Investigación**
+### 12.4.  **Modelos de Investigación**
 
 -   **LightGBM**: Modelo rápido para comparación
 -   **Extra Trees**: Ensemble method con interpretabilidad
 -   **Linear Discriminant Analysis**: Modelo lineal de referencia
 -   **Gradient Boosting**: Implementación sklearn
 
-## 🔄 Flujo de Trabajo
+## 13. 🔄 Flujo de Trabajo
 
-### Predicción Clínica
+### 13.1. Predicción Clínica
 
 1.  Usuario ingresa datos médicos del paciente
 2.  Validación de rangos médicos (edad 0-120, glucosa 50-500, etc.)
@@ -376,7 +378,7 @@ Nuestra propuesta comercial única implementa un sistema de screening de dos cap
 5.  Cálculo de nivel de riesgo y recomendaciones
 6.  Almacenamiento en base de datos PostgreSQL
 
-### Análisis de Imagen
+### 13.2. Análisis de Imagen
 
 1.  Upload de tomografía computarizada
 2.  Validación de formato, tamaño y calidad
@@ -385,16 +387,16 @@ Nuestra propuesta comercial única implementa un sistema de screening de dos cap
 5.  Vinculación con predicción clínica existente
 6.  Correlación de resultados multimodales
 
-### Historial y Seguimiento
+### 13.3. Historial y Seguimiento
 
 1.  Visualización de predicciones históricas
 2.  Estadísticas agregadas y tendencias
 3.  Filtrado por nivel de riesgo y estado de imagen
 4.  Exportación de datos para análisis adicional
 
-## 🏥 Impacto Clínico y Propuesta de Valor
+## 14. 🏥 Impacto Clínico y Propuesta de Valor
 
-### 💡  **Ventaja Comercial: Sistema de Screening Dual**
+### 14.1. 💡  **Ventaja Comercial: Sistema de Screening Dual**
 
 NeuroWise ofrece una propuesta única en el mercado:
 
@@ -412,23 +414,23 @@ NeuroWise ofrece una propuesta única en el mercado:
 -   Reduce costos de imaging innecesario
 -   Optimiza recursos médicos especializados
 
-### 📈 Métricas de Rendimiento
+### 14.2. 📈 Métricas de Rendimiento
 
-#### Modelo XGBoost (Screening)
+#### 14.2.1. Modelo XGBoost (Screening)
 
 -   **Sensibilidad (Recall)**: 78% - Detecta 78 de cada 100 casos reales
 -   **Especificidad**: 85% - Identifica correctamente casos sanos
 -   **F1-Score**: 0.266 - Balanceado para minimizar casos perdidos
 -   **ROC-AUC**: 0.848 - Excelente capacidad discriminativa
 
-#### Modelo CNN (Confirmación)
+#### 14.2.2. Modelo CNN (Confirmación)
 
 -   **Accuracy**: 98.13% - Precisión excepcional en imágenes
 -   **ROC-AUC**: 0.987 - Capacidad discriminativa sobresaliente
 -   **Precisión por clase**: 97%+ para stroke y normal
 -   **Recall por clase**: 95%+ para ambas categorías
 
-### 🎯 Flujo Clínico Optimizado
+### 14.3. 🎯 Flujo Clínico Optimizado
 
 1.  **Screening inicial**  con datos básicos del paciente
 2.  **Casos de bajo riesgo**  → Seguimiento preventivo estándar
@@ -436,38 +438,38 @@ NeuroWise ofrece una propuesta única en el mercado:
 4.  **Confirmación con CNN**  → Diagnóstico de alta precisión
 5.  **Decisión clínica informada**  con doble validación
 
-### Interpretación de Niveles de Riesgo
+### 14.4. Interpretación de Niveles de Riesgo
 
 -   **Bajo (0-30%)**: Mantener controles preventivos regulares
 -   **Medio (30-60%)**: Evaluación médica adicional recomendada
 -   **Alto (60-90%)**: Consulta neurológica urgente necesaria
 -   **Crítico (90-100%)**: Atención médica inmediata requerida
 
-## 👥 Nuestro Equipo
+## 15. 👥 Nuestro Equipo
 
 Somos un equipo multidisciplinario de Data Scientists especializados en inteligencia artificial aplicada a la salud:
 
-### 🧑‍💼  [Pepe](https://github.com/peperuizdev)  - Scrum Manager
+### 15.1. 🧑‍💼  [Pepe](https://github.com/peperuizdev)  - Scrum Manager
 
 Especialista en machine learning y arquitectura de software. Responsable de la coordinación del proyecto y la implementación de modelos de clasificación.
 
-### 👩‍💻  [Maryna](https://github.com/MarynaDRST)  - Developer
+### 15.2. 👩‍💻  [Maryna](https://github.com/MarynaDRST)  - Developer
 
 Desarrolladora de modelos de machine learning y redes neuronales. Especializada en deep learning y procesamiento de imágenes médicas.
 
-### 👨‍🎨  [Jorge](https://github.com/Jorgeluuu)  - Developer
+### 15.3. 👨‍🎨  [Jorge](https://github.com/Jorgeluuu)  - Developer
 
 Creador de modelos de machine learning y especialista en optimización de algoritmos. Enfocado en el rendimiento y escalabilidad del sistema.
 
-### 👩‍💼  [Mariela](https://github.com/marie-adi)  - Developer
+### 15.4. 👩‍💼  [Mariela](https://github.com/marie-adi)  - Developer
 
 Diseñadora de experiencia de usuario y desarrolladora frontend. Creadora de la interfaz intuitiva y responsiva de la plataforma.
 
-### 👨‍🔬  [Maximiliano](https://github.com/MaximilianoScarlato)  - Data Scientist
+### 15.5. 👨‍🔬  [Maximiliano](https://github.com/MaximilianoScarlato)  - Data Scientist
 
 Científico de datos especializado en análisis de modelos de redes neuronales y evaluación de rendimiento de sistemas de ML.
 
-## 🤝 Contribución
+## 16. 🤝 Contribución
 
 Las contribuciones son bienvenidas. Para contribuir:
 
@@ -477,47 +479,222 @@ Las contribuciones son bienvenidas. Para contribuir:
 4.  Push a la rama (`git push origin feature/AmazingFeature`)
 5.  Abre un Pull Request
 
-### Estándares de Desarrollo
+### 16.1. Estándares de Desarrollo
 
 -   Seguir PEP 8 para código Python
 -   Incluir tests para nuevas funcionalidades
 -   Documentar funciones y clases
 
-## 📄 Estructura de Testing
+## 17. 📄 Estructura de Testing
 
-### Tests Unitarios
+### 17.1. Tests Unitarios
 
 -   **Pipeline de stroke**: Validación de transformaciones y predicciones
 -   **Pipeline de imagen**: Procesamiento y validación de imágenes
 -   **Servicios**: Lógica de negocio y manejo de errores
 -   **Esquemas**: Validación de datos de entrada
 
-### Tests de Integración
+### 17.2. Tests de Integración
 
 -   **API endpoints**: Funcionamiento completo de la API
 -   **Base de datos**: Persistencia y recuperación de datos
 -   **Flujo completo**: Integración end-to-end
 -   **Sistema completo**: Validación del sistema completo
 
-## ⚠️ Consideraciones Médicas
+## 18. ⚠️ Consideraciones Médicas
 
 **IMPORTANTE**: Esta herramienta está diseñada únicamente con fines educativos y de investigación. No sustituye el juicio clínico profesional ni debe utilizarse como único criterio para decisiones médicas.
 
-### Limitaciones
+### 18.1. Limitaciones
 
 -   Los modelos se entrenaron con datos específicos que pueden no representar todas las poblaciones
 -   Las predicciones deben interpretarse siempre en conjunto con la evaluación clínica
 -   Se requiere validación adicional antes de cualquier uso clínico real
 -   Los resultados pueden variar según la calidad de los datos de entrada
 
-### Recomendaciones
+### 18.2. Recomendaciones
 
 -   Siempre consultar con profesionales médicos certificados
 -   Utilizar como herramienta de apoyo, no de diagnóstico definitivo
 -   Validar resultados con métodos clínicos establecidos
 -   Considerar el contexto clínico completo del paciente
 
-## 📝 Licencia
+## 20. 🚀 Instrucciones para Dockerizar y Renderizar el Proyecto
+
+---
+
+### 20.1. Configuración del archivo `.env`
+
+1. Usa el archivo `.env` que adjuntaste como base.
+2. **Para Docker/Render:**  
+   - Descomenta las líneas bajo el bloque `# Backend Configuration - DOCKER/RENDER` y comenta las de LOCAL.
+   - Haz lo mismo para el frontend si lo vas a dockerizar/renderizar.
+3. **Para Local:**  
+   - Deja comentadas las líneas de Docker/Render y descomentadas las de LOCAL.
+
+---
+
+### 20.2. Dockerizar localmente
+
+#### 20.2.1. Ubícate en la raíz del proyecto
+
+```bash
+cd /ruta/a/tu/proyecto/data_scientist_g3
+```
+
+#### 20.2.2. Levanta los servicios con Docker Compose
+
+```bash
+docker compose up --build
+```
+
+Esto construirá y levantará tanto el backend como el frontend.
+
+#### 20.2.3. Accede a las aplicaciones
+
+- **Frontend:** [http://127.0.0.1:8050](http://127.0.0.1:8050)
+- **Backend:** [http://localhost:8000](http://localhost:8000)
+
+---
+
+### 20.3. Renderizar (Desplegar en Render.com)
+
+#### 20.3.1. Mueve el Dockerfile del backend
+
+Mueve el archivo Dockerfile de `backend/app` a la raíz del proyecto, junto a `docker-compose.yml`:
+
+```bash
+mv backend/app/Dockerfile ./
+```
+
+Asegúrate de que el Dockerfile y docker-compose.yml estén en la raíz del repo.
+
+---
+
+#### 20.3.2. Backend en Render
+
+1. **Nuevo servicio > Web Service**
+2. **Repositorio:**  
+   ```
+   https://github.com/Bootcamp-IA-P4/data_scientist_g3
+   ```
+3. **Branch:**  
+   ```
+   feature/api-refactor
+   ```
+4. **Dockerfile Path:**  
+   ```
+   ./Dockerfile
+   ```
+5. **Docker Build Context Directory:**  
+   ```
+   .
+   ```
+6. **Docker Command:**  
+   (deja vacío para usar el CMD del Dockerfile)
+7. **Variables de entorno:**  
+   Copia todas las variables del `.env` en la sección Environment Variables de Render, por ejemplo:
+   - `CORS_ORIGINS`
+   - `DATABASE_URL`
+   - `ENVIRONMENT`
+   - `SUPABASE_ANON_KEY`
+   - `SUPABASE_DB_PASSWORD`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `SUPABASE_URL`
+
+---
+
+#### 20.3.3. Frontend en Render
+
+1. **Nuevo servicio > Web Service**
+2. **Repositorio:**  
+   ```
+   https://github.com/Bootcamp-IA-P4/data_scientist_g3
+   ```
+3. **Branch:**  
+   ```
+   feature/api-refactor
+   ```
+4. **Root Directory:**  
+   ```
+   frontend
+   ```
+5. **Dockerfile Path:**  
+   ```
+   frontend/Dockerfile
+   ```
+6. **Docker Build Context Directory:**  
+   ```
+   frontend
+   ```
+7. **Variables de entorno:**  
+   Copia las necesarias del `.env` (por ejemplo, `API_BASE_URL`, etc).
+
+---
+
+### 20.4. Edición de `image_service.py` para Render/Docker
+
+**Ruta:**  
+`backend/app/services/image_service.py`  
+**Líneas:** 100 a 131
+
+#### Para Render/Docker
+
+1. **Comenta** el bloque de desarrollo local (ruta relativa).
+2. **Descomenta** el bloque para Docker/Render (ruta absoluta):
+
+```python
+#DESARROLLO PARA PRODUCCIÓN
+# @property
+# def is_available(self) -> bool:
+#     """Check si el pipeline está disponible sin cargarlo"""
+#     if self._pipeline_loaded:
+#         return True
+#     if self._pipeline_error:
+#         return False
+#     try:
+#         current_dir = Path(__file__).resolve().parent
+#         project_root = current_dir.parent.parent.parent
+#         model_path = project_root / "models" / "CNN_PyTorch" / "modelo_cnn_stroke_pytorch.zip"
+#         return model_path.exists()
+#     except:
+#         return False
+
+# SOLO PARA DOCKERIZADO - NO CARGAR EN PRODUCCIÓN
+@property
+def is_available(self) -> bool:
+    """Check si el pipeline está disponible sin cargarlo"""
+    if self._pipeline_loaded:
+        return True
+    if self._pipeline_error:
+        return False
+    try:
+        model_path = Path("/backend/models/CNN_PyTorch/modelo_cnn_stroke_pytorch.zip")
+        return model_path.exists()
+    except Exception:
+        return False
+```
+
+---
+
+### 20.5. URLs de acceso en Render
+
+- **Backend:**  
+  [https://data-scientist-g3-wwo1.onrender.com](https://data-scientist-g3-wwo1.onrender.com)
+- **Frontend:**  
+  [https://data-scientist-g3-1-d1kn.onrender.com](https://data-scientist-g3-1-d1kn.onrender.com)
+
+---
+
+### 20.6. Notas
+
+- **El modelo debe estar en la ruta `/backend/models/CNN_PyTorch/modelo_cnn_stroke_pytorch.zip`** dentro del contenedor Docker y en el repo para Render.
+- **No subas claves sensibles a tu repo público.** Usa el panel de variables de entorno de Render.
+- **Revisa los logs de Render** para solucionar cualquier error de rutas o dependencias.
+
+---
+
+## 21. 📝 Licencia
 
 Este proyecto está distribuido bajo la Licencia Factoria F5
 
