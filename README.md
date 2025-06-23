@@ -7,9 +7,19 @@
 
 ## 2. 🌐 Demo en Vivo
 
-🚀  **Aplicación desplegada**: [Próximamente - En desarrollo]
+🚀 **Aplicaciones desplegadas**:
 
-_Nota: El proyecto se encuentra actualmente en desarrollo activo. La demo estará disponible próximamente._
+### ☁️ Versión Principal (Azure)
+**🔗 Link**: [neurowise.eastus.cloudapp.azure.com](http://neurowise.eastus.cloudapp.azure.com)
+- Aplicación completa con interfaz Dash
+- Base de datos integrada (Supabase)
+- Todas las funcionalidades operativas
+
+### 📱 Versión Alternativa (Render)
+**🔗 Link**: [https://data-scientist-g3-1-d1kn.onrender.com](https://data-scientist-g3-1-d1kn.onrender.com)
+- Aplicación completa con interfaz Dash
+- Base de datos integrada (Supabase)
+- Todas las funcionalidades operativas
 
 ## 3. 📚 Descripción del Proyecto
 
